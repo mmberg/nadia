@@ -29,7 +29,7 @@ public class ITO {
 	public ParseResults parse(String utterance){
 		//may use AQD but don't need to
 		String answer_type=aqd.getAQDType().getAnswerType();
-		ParseResults results = null;
+		ParseResults results = new ParseResults(utterance);
 		try{
 			results=Parsers.parse(utterance, answer_type);
 		}
