@@ -72,7 +72,6 @@ public class SodaRecognizer {
 		}
 		
 		utterance.setSoda(act);
-		//return act;
 	}
 	
 	public void test_predict(){
