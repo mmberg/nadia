@@ -8,7 +8,8 @@ import java.util.logging.Logger;
 import net.mmberg.nadia.processor.nlu.aqdparser.ParseResults;
 import net.mmberg.nadia.processor.nlu.aqdparser.Parsers;
 import net.mmberg.nadia.processor.nlu.soda.*;
-import net.mmberg.nadia.common.classification.*;
+import net.mmberg.nadia.processor.nlu.soda.classification.SodaRecognizer;
+import net.mmberg.nadia.utterance.UserUtterance;
 import net.mmberg.nadia.dialogmodel.*;
 import net.mmberg.nadia.dialogmodel.aqd.AQD;
 import net.mmberg.nadia.dialogmodel.aqd.AQDType;
@@ -119,8 +120,9 @@ public class DialogManager {
 			//process user answer
 			//-------------------
 			
-			String act=sodarec.predict(new Utterance(user_answer),context); //identify dialog act
-			System.out.println("result: "+act);
+			UserUtterance answer=new UserUtterance(user_answer);
+			sodarec.predict(answer,context); //identify dialog act (sets features and soda by reference)
+			System.out.println("result: "+answer.getSoda());
 			
 			ParseResults results=process(ito,user_answer);
 			logger.info(results.toString());

@@ -1,0 +1,137 @@
+package net.mmberg.nadia.processor.nlu.soda.classification;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+
+import net.mmberg.nadia.processor.nlu.aqdparser.ParseResults;
+import net.mmberg.nadia.processor.nlu.soda.Soda;
+import net.mmberg.nadia.processor.nlu.soda.classification.features.*;
+import net.mmberg.nadia.processor.manage.DialogManagerContext;
+import net.mmberg.nadia.utterance.TrainingUtterance;
+import net.mmberg.nadia.utterance.UserUtterance;
+
+public class SodaRecognizer {
+
+	private MaximumEntropyModel model;
+	
+	public SodaRecognizer(){
+		
+	}
+		
+
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		SodaRecognizer sr= new SodaRecognizer();
+		sr.train();
+		sr.test_predict();
+	}
+	
+	
+	public void train(){
+
+		ArrayList<TrainingUtterance> training_utterances=new ArrayList<TrainingUtterance>(Arrays.asList(
+				//seek:
+				new TrainingUtterance("How is the weather in Paris", Soda.INFORMATION_SEEKING),
+				new TrainingUtterance("Tell me the weather in Paris",Soda.INFORMATION_SEEKING),
+				new TrainingUtterance("Where do you want to go",Soda.INFORMATION_SEEKING),
+				new TrainingUtterance("What is your destination",Soda.INFORMATION_SEEKING),
+				new TrainingUtterance("Please tell me where you want to go",Soda.INFORMATION_SEEKING),
+				new TrainingUtterance("Please tell me your destination",Soda.INFORMATION_SEEKING),
+				//action:
+				new TrainingUtterance("Could you please turn the light on",Soda.ACTION_REQUESTING),
+				new TrainingUtterance("Turn the light on",Soda.ACTION_REQUESTING),
+				new TrainingUtterance("Please switch the light off",Soda.ACTION_REQUESTING),
+				new TrainingUtterance("Can you switch the light off",Soda.ACTION_REQUESTING),
+				new TrainingUtterance("Could you turn off the computer",Soda.ACTION_REQUESTING),
+				//prov:
+				new TrainingUtterance("To London",Soda.INFORMATION_PROVIDING),
+				new TrainingUtterance("I want to go to London",Soda.INFORMATION_PROVIDING),
+				new TrainingUtterance("Paris",Soda.INFORMATION_PROVIDING),
+				new TrainingUtterance("I'd like to go to Paris",Soda.INFORMATION_PROVIDING)
+			));
+		
+		extractFeatures(training_utterances); //adds features to utterances (by reference); required by MaximumEntropyModel
+		model = new MaximumEntropyModel();
+		model.train(training_utterances);
+	}
+	
+	public void predict(UserUtterance utterance, DialogManagerContext context){
+		extractFeature(utterance);
+		String act=(model!=null)?model.predict(utterance):"unknown";
+		
+		//Post-Processing
+		if(act.equals(Soda.INFORMATION_PROVIDING)){
+			//if no question is open or if the answer cannot be parsed with the current question, make it a seeking act
+			if(!context.isQuestionOpen() || 
+					(context.getCurrentQuestion().parse(utterance.getText()).getState()==ParseResults.NOMATCH)){
+				act=Soda.INFORMATION_SEEKING;
+				System.out.println("Postprocessing: prov -> seek");
+			}
+		}
+		
+		utterance.setSoda(act);
+		//return act;
+	}
+	
+	public void test_predict(){
+		ArrayList<UserUtterance> test_utterances=new ArrayList<UserUtterance>(Arrays.asList(
+				new UserUtterance("Could you recommend a hotel for next week"),
+				new UserUtterance("Close the window"),
+				new UserUtterance("When do you want to come back"),
+				new UserUtterance("Can you close the door"),
+				new UserUtterance("Paris is nice"),
+				new UserUtterance("Two adults please"),
+				new UserUtterance("I want to have a non smokers room"),
+				new UserUtterance("How much would that be"),
+				new UserUtterance("Can I have a double room"),
+				new UserUtterance("Three persons"),
+				new UserUtterance("London would be great"),
+				//new UserUtterance("What about London"),
+				new UserUtterance("I really prefer London"),
+				//new UserUtterance("What the hell, London it is"), //tricky
+				new UserUtterance("I want to know about hotels in London")//could also be an answer to "What accommodation may I book for you?"
+			));
+		
+		extractFeatures(test_utterances);
+		model.predict(test_utterances);
+	}
+
+	public void extractFeature(UserUtterance utterance){
+		ArrayList<UserUtterance> utterances=new ArrayList<UserUtterance>();
+		utterances.add(utterance);
+		extractFeatures(utterances);
+	}
+	
+	public void extractFeatures(ArrayList<? extends UserUtterance> utterances){
+		
+		//Context
+		DialogManagerContext context=DialogManagerContext.getInstance();
+		context.setQuestionOpen(true);
+				
+		//Select Feature Extractors
+		ArrayList<Feature> featureExtractors=new ArrayList<Feature>(Arrays.asList(
+				new DummyFeature(),
+				new ActReqVerbFeature(),
+				new ConditionalFeature(),
+				new InfSeekVerbFeature(),
+				new InterrogativeFeature(),
+				new WhWordFeature(),
+				new NoCueVerbFeature(),
+				new NoCueVerbAndNoWhFeature(),
+				new FewWordsFeature()
+		));
+		
+		
+		//Extract Features
+		for(UserUtterance utterance : utterances){
+			for(Feature extractor : featureExtractors){
+				extractor.analyze(utterance.getText().toLowerCase(), context, utterance.getFeatures());
+			}
+			System.out.println(utterance.getFeatures());	
+		}
+		
+	}
+
+}

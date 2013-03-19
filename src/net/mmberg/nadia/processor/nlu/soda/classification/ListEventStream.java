@@ -1,4 +1,4 @@
-package net.mmberg.nadia.common.classification;
+package net.mmberg.nadia.processor.nlu.soda.classification;
 
 import java.util.List;
 

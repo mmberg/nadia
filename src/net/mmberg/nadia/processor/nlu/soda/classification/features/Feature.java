@@ -1,4 +1,4 @@
-package net.mmberg.nadia.processor.nlu.soda.features;
+package net.mmberg.nadia.processor.nlu.soda.classification.features;
 
 import java.util.Set;
 

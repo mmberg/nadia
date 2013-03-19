@@ -1,16 +1,16 @@
-package net.mmberg.nadia.processor.nlu.soda.features;
+package net.mmberg.nadia.processor.nlu.soda.classification.features;
 
 import java.util.Arrays;
 import java.util.HashSet;
 
 import net.mmberg.nadia.processor.manage.DialogManagerContext;
 
-public class InfSeekVerbFeature extends Feature{
+public class ActReqVerbFeature extends Feature{
 
-	HashSet<String> verbs=new HashSet<String>(Arrays.asList("say me", "tell me", "know", "name", "recommend"));
+	HashSet<String> verbs=new HashSet<String>(Arrays.asList("switch", "turn", "close", "open"));
 	
-	public InfSeekVerbFeature() {
-		super("InfSeekVerb");
+	public ActReqVerbFeature() {
+		super("ActReqVerb");
 	}
 
 	@Override

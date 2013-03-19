@@ -1,7 +1,10 @@
-package net.mmberg.nadia.common.classification;
+package net.mmberg.nadia.processor.nlu.soda.classification;
 
 import java.io.IOException;
 import java.util.ArrayList;
+
+import net.mmberg.nadia.utterance.TrainingUtterance;
+import net.mmberg.nadia.utterance.UserUtterance;
 
 import opennlp.maxent.GIS;
 import opennlp.model.Event;
@@ -14,14 +17,14 @@ public class MaximumEntropyModel {
 	private MaxentModel model;
 	private boolean trained=false;
 	
-	public void train(ArrayList<Utterance> training_utterances){
+	public void train(ArrayList<TrainingUtterance> training_utterances){
 		
 		trained=false;
 		ArrayList<Event> events=new ArrayList<Event>();
 		
-		for(Utterance utterance:training_utterances){
+		for(TrainingUtterance utterance:training_utterances){
 			String[] features = utterance.getFeatures().toArray(new String[utterance.getFeatures().size()]);
-			Event event=new Event(utterance.getOutcome(),features);
+			Event event=new Event(utterance.getExpectedOutcome(),features);
 			events.add(event);
 		}
 		
@@ -41,19 +44,19 @@ public class MaximumEntropyModel {
 		}
 	}
 	
-	public String predict(Utterance utterance){
+	public String predict(UserUtterance utterance){
 		if(trained){
 				String[] features = utterance.getFeatures().toArray(new String[utterance.getFeatures().size()]);
 				double[] ocs = model.eval(features);
 				System.out.println("For utterance: '" +  utterance.getText() + "' and feats: " + utterance.getFeatures() + "\n" + model.getAllOutcomes(ocs) + " -> " + model.getBestOutcome(ocs) + "\n");
 				return model.getBestOutcome(ocs);
 		}
-		return "";
+		return "untrained";
 	}
 	
-	public void predict(ArrayList<Utterance> utterances){
+	public void predict(ArrayList<UserUtterance> utterances){
 		if(trained){
-			for(Utterance utterance:utterances){
+			for(UserUtterance utterance:utterances){
 				String[] features = utterance.getFeatures().toArray(new String[utterance.getFeatures().size()]);
 				double[] ocs = model.eval(features);
 				System.out.println("For utterance: '" +  utterance.getText() + "' and feats: " + utterance.getFeatures() + "\n" + model.getAllOutcomes(ocs) + " -> " + model.getBestOutcome(ocs) + "\n");
