@@ -1,0 +1,534 @@
+<?xml version="1.0"?>
+<rdf:RDF
+    xmlns="http://mmberg.net/lexicon#"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:fn="http://www.w3.org/2005/xpath-functions#"
+    xmlns:sparql="http://www.topbraidcomposer.org/owl/2006/09/sparql.owl#"
+  xml:base="http://mmberg.net/lexicon">
+  <owl:Ontology rdf:about="">
+    <owl:versionInfo rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Created with TopBraid Composer</owl:versionInfo>
+    <owl:imports rdf:resource="http://www.topbraidcomposer.org/owl/2006/09/sparql.owl"/>
+  </owl:Ontology>
+  <owl:Class rdf:ID="POS">
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+  </owl:Class>
+  <owl:Class rdf:ID="date">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="temporal"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Context">
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+  </owl:Class>
+  <owl:Class rdf:ID="Dimension">
+    <rdfs:subClassOf rdf:resource="#Context"/>
+  </owl:Class>
+  <owl:Class rdf:ID="time">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#temporal"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="quantitative">
+    <rdfs:subClassOf rdf:resource="#Dimension"/>
+  </owl:Class>
+  <owl:Class rdf:ID="Tourism">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="Domain"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:about="#temporal">
+    <rdfs:subClassOf rdf:resource="#Dimension"/>
+  </owl:Class>
+  <owl:Class rdf:ID="Referent">
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+  </owl:Class>
+  <owl:Class rdf:ID="named_entity">
+    <rdfs:subClassOf rdf:resource="#Dimension"/>
+  </owl:Class>
+  <owl:Class rdf:ID="Specification">
+    <rdfs:subClassOf rdf:resource="#Context"/>
+  </owl:Class>
+  <owl:Class rdf:about="#Domain">
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+  </owl:Class>
+  <owl:Class rdf:ID="decision">
+    <rdfs:subClassOf rdf:resource="#Dimension"/>
+  </owl:Class>
+  <owl:Class rdf:ID="General">
+    <rdfs:subClassOf rdf:resource="#Domain"/>
+  </owl:Class>
+  <owl:Class rdf:ID="location">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="non_animated"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:about="#non_animated">
+    <rdfs:subClassOf rdf:resource="#named_entity"/>
+  </owl:Class>
+  <owl:Class rdf:ID="animated">
+    <rdfs:subClassOf rdf:resource="#named_entity"/>
+  </owl:Class>
+  <owl:ObjectProperty rdf:ID="has_dimension">
+    <rdfs:range rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+    <rdfs:domain rdf:resource="#Context"/>
+    <rdfs:subPropertyOf>
+      <owl:ObjectProperty rdf:ID="has_context"/>
+    </rdfs:subPropertyOf>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="has_referent">
+    <rdfs:range rdf:resource="#Referent"/>
+    <rdfs:domain rdf:resource="#Domain"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="has_pos">
+    <rdfs:domain rdf:resource="#Domain"/>
+    <rdfs:range rdf:resource="#POS"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="has_spec">
+    <rdfs:domain rdf:resource="#Context"/>
+    <rdfs:range rdf:resource="#Specification"/>
+    <rdfs:subPropertyOf>
+      <owl:ObjectProperty rdf:about="#has_context"/>
+    </rdfs:subPropertyOf>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="#has_context">
+    <rdfs:domain rdf:resource="#Domain"/>
+    <rdfs:range rdf:resource="#Context"/>
+  </owl:ObjectProperty>
+  <owl:DatatypeProperty rdf:ID="has_formality">
+    <rdfs:domain rdf:resource="#Domain"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#int"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="has_lex">
+    <rdfs:domain rdf:resource="#Domain"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </owl:DatatypeProperty>
+  <Dimension rdf:ID="generic_local"/>
+  <Tourism rdf:ID="return_1">
+    <has_pos>
+      <POS rdf:ID="v"/>
+    </has_pos>
+    <has_context>
+      <Context>
+        <has_dimension rdf:resource="#temporal"/>
+        <has_spec>
+          <Specification rdf:ID="end"/>
+        </has_spec>
+      </Context>
+    </has_context>
+    <has_referent>
+      <Referent rdf:ID="trip"/>
+    </has_referent>
+    <has_formality rdf:datatype="http://www.w3.org/2001/XMLSchema#int"
+    >2</has_formality>
+    <sparql:query rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >SELECT ?w ?lex
+WHERE {
+?w :has_lex ?lex.
+?w rdf:type :Tourism.
+?w :has_pos :v.
+?w :has_context ?c. 
+?c :has_dimension :generic_temporal; :has_spec :end.
+?w :has_formality 2.
+FILTER(lang(?lex) = "de").
+}</sparql:query>
+    <has_lex xml:lang="en">return</has_lex>
+  </Tourism>
+  <General rdf:ID="customer_card_1">
+    <has_pos>
+      <POS rdf:ID="n"/>
+    </has_pos>
+    <has_lex xml:lang="en">customer_card</has_lex>
+    <has_formality rdf:datatype="http://www.w3.org/2001/XMLSchema#int"
+    >2</has_formality>
+    <has_context>
+      <Context>
+        <has_dimension rdf:resource="#decision"/>
+        <has_spec>
+          <Specification rdf:ID="possession"/>
+        </has_spec>
+      </Context>
+    </has_context>
+    <has_referent rdf:resource="#trip"/>
+    <has_referent>
+      <Referent rdf:ID="customer_card"/>
+    </has_referent>
+  </General>
+  <Tourism rdf:ID="departure_date_1">
+    <has_context>
+      <Context>
+        <has_dimension rdf:resource="#date"/>
+        <has_spec>
+          <Specification rdf:ID="begin"/>
+        </has_spec>
+      </Context>
+    </has_context>
+    <has_formality rdf:datatype="http://www.w3.org/2001/XMLSchema#int"
+    >2</has_formality>
+    <has_lex xml:lang="en">departure_date</has_lex>
+    <has_pos rdf:resource="#n"/>
+    <has_referent rdf:resource="#trip"/>
+  </Tourism>
+  <Context rdf:ID="any"/>
+  <Specification rdf:ID="transfer"/>
+  <Tourism rdf:ID="return_date_1">
+    <has_lex xml:lang="en">return_date</has_lex>
+    <has_referent rdf:resource="#trip"/>
+    <has_formality rdf:datatype="http://www.w3.org/2001/XMLSchema#int"
+    >2</has_formality>
+    <has_context>
+      <Context>
+        <has_dimension rdf:resource="#date"/>
+        <has_spec rdf:resource="#end"/>
+      </Context>
+    </has_context>
+    <has_pos rdf:resource="#n"/>
+  </Tourism>
+  <Referent rdf:ID="knowledge"/>
+  <General rdf:ID="on_what_date_1">
+    <has_referent>
+      <Referent rdf:ID="wildcard_referent"/>
+    </has_referent>
+    <has_context>
+      <Context>
+        <has_spec>
+          <Specification rdf:ID="wildcard_specification"/>
+        </has_spec>
+        <has_dimension rdf:resource="#date"/>
+      </Context>
+    </has_context>
+    <has_formality rdf:datatype="http://www.w3.org/2001/XMLSchema#int"
+    >3</has_formality>
+    <has_pos>
+      <POS rdf:ID="whadv"/>
+    </has_pos>
+    <has_lex xml:lang="en">on_what_date</has_lex>
+    <sparql:query rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >SELECT ?lex
+WHERE {
+?w :has_lex ?lex.
+?w :has_context ?con.
+?con :has_dimension [rdfs:subClassOf :temporal].
+?con :has_spec :begin.
+FILTER(lang(?lex)="en").
+}</sparql:query>
+  </General>
+  <Dimension rdf:ID="generic_temporal"/>
+  <Tourism rdf:ID="date_of_departure_1">
+    <has_lex rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >date_of_departure {@en}</has_lex>
+    <has_context>
+      <Context>
+        <has_spec rdf:resource="#begin"/>
+        <has_dimension rdf:resource="#date"/>
+      </Context>
+    </has_context>
+    <has_formality rdf:datatype="http://www.w3.org/2001/XMLSchema#int"
+    >3</has_formality>
+    <has_pos rdf:resource="#n"/>
+    <has_referent rdf:resource="#trip"/>
+  </Tourism>
+  <Tourism rdf:ID="destination_1">
+    <has_context>
+      <Context>
+        <has_spec rdf:resource="#end"/>
+        <has_dimension rdf:resource="#location"/>
+      </Context>
+    </has_context>
+    <has_referent rdf:resource="#trip"/>
+    <has_pos rdf:resource="#n"/>
+    <has_lex xml:lang="en">destination</has_lex>
+    <has_formality rdf:datatype="http://www.w3.org/2001/XMLSchema#int"
+    >2</has_formality>
+  </Tourism>
+  <Domain rdf:ID="where_1">
+    <has_referent rdf:resource="#wildcard_referent"/>
+    <has_pos rdf:resource="#whadv"/>
+    <has_lex xml:lang="en">where</has_lex>
+    <has_context>
+      <Context>
+        <has_spec rdf:resource="#wildcard_specification"/>
+        <has_dimension rdf:resource="#location"/>
+      </Context>
+    </has_context>
+    <has_formality rdf:datatype="http://www.w3.org/2001/XMLSchema#int"
+    >2</has_formality>
+  </Domain>
+  <Tourism rdf:ID="accompany_1">
+    <has_referent>
+      <Referent rdf:ID="person"/>
+    </has_referent>
+    <has_pos rdf:resource="#v"/>
+    <has_lex xml:lang="en">accompany</has_lex>
+    <has_formality rdf:datatype="http://www.w3.org/2001/XMLSchema#int"
+    >3</has_formality>
+    <has_context>
+      <Context>
+        <has_spec rdf:resource="#wildcard_specification"/>
+        <has_dimension rdf:resource="#quantitative"/>
+      </Context>
+    </has_context>
+  </Tourism>
+  <Tourism rdf:ID="travel_dates_1">
+    <has_formality rdf:datatype="http://www.w3.org/2001/XMLSchema#int"
+    >2</has_formality>
+    <has_pos rdf:resource="#n"/>
+    <has_referent rdf:resource="#trip"/>
+    <has_context>
+      <Context>
+        <has_dimension rdf:resource="#date"/>
+        <has_spec>
+          <Specification rdf:ID="begin_and_end"/>
+        </has_spec>
+      </Context>
+    </has_context>
+    <has_lex xml:lang="en">travel_dates</has_lex>
+  </Tourism>
+  <Tourism rdf:ID="leave_1">
+    <has_context>
+      <Context>
+        <has_spec rdf:resource="#begin"/>
+        <has_dimension rdf:resource="#temporal"/>
+      </Context>
+    </has_context>
+    <has_referent rdf:resource="#trip"/>
+    <has_pos rdf:resource="#v"/>
+    <has_lex xml:lang="en">leave</has_lex>
+    <has_formality rdf:datatype="http://www.w3.org/2001/XMLSchema#int"
+    >3</has_formality>
+  </Tourism>
+  <Tourism rdf:ID="depart_1">
+    <has_formality rdf:datatype="http://www.w3.org/2001/XMLSchema#int"
+    >4</has_formality>
+    <has_pos rdf:resource="#v"/>
+    <has_context>
+      <Context>
+        <has_dimension rdf:resource="#location"/>
+        <has_dimension rdf:resource="#temporal"/>
+        <has_spec rdf:resource="#begin"/>
+      </Context>
+    </has_context>
+    <has_referent rdf:resource="#trip"/>
+    <has_lex xml:lang="en">depart</has_lex>
+  </Tourism>
+  <General rdf:ID="where__1">
+    <has_context>
+      <Context>
+        <has_spec rdf:resource="#wildcard_specification"/>
+        <has_dimension rdf:resource="#location"/>
+      </Context>
+    </has_context>
+    <has_referent rdf:resource="#wildcard_referent"/>
+    <has_pos rdf:resource="#whadv"/>
+    <has_lex xml:lang="en">where</has_lex>
+    <has_formality rdf:datatype="http://www.w3.org/2001/XMLSchema#int"
+    >2</has_formality>
+  </General>
+  <General rdf:ID="when_1">
+    <has_referent rdf:resource="#wildcard_referent"/>
+    <has_context>
+      <Context>
+        <has_spec rdf:resource="#wildcard_specification"/>
+        <has_dimension rdf:resource="#temporal"/>
+      </Context>
+    </has_context>
+    <has_pos rdf:resource="#whadv"/>
+    <has_lex xml:lang="en">when</has_lex>
+    <sparql:query rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >SELECT ?lex
+WHERE {
+?w :has_lex ?lex.
+?w :has_context ?con.
+{{?con :has_dimension :temporal.}
+UNION
+{?con :has_dimension :date}}
+?w :has_pos :whadv.
+FILTER(lang(?lex)="en").
+}</sparql:query>
+    <has_formality rdf:datatype="http://www.w3.org/2001/XMLSchema#int"
+    >2</has_formality>
+  </General>
+  <Tourism rdf:ID="departure_city_1">
+    <has_context>
+      <Context>
+        <has_spec rdf:resource="#begin"/>
+        <has_dimension rdf:resource="#location"/>
+      </Context>
+    </has_context>
+    <has_referent rdf:resource="#trip"/>
+    <has_pos rdf:resource="#n"/>
+    <has_lex xml:lang="en">departure_city</has_lex>
+    <has_formality rdf:datatype="http://www.w3.org/2001/XMLSchema#int"
+    >2</has_formality>
+  </Tourism>
+  <Tourism rdf:ID="start_from_1">
+    <has_context>
+      <Context>
+        <has_spec rdf:resource="#begin"/>
+        <has_dimension rdf:resource="#location"/>
+      </Context>
+    </has_context>
+    <has_referent rdf:resource="#trip"/>
+    <has_pos rdf:resource="#v"/>
+    <has_lex xml:lang="en">start_from</has_lex>
+    <has_formality rdf:datatype="http://www.w3.org/2001/XMLSchema#int"
+    >1</has_formality>
+  </Tourism>
+  <Tourism rdf:ID="be_away_1">
+    <has_formality rdf:datatype="http://www.w3.org/2001/XMLSchema#int"
+    >1</has_formality>
+    <has_lex xml:lang="en">be_away</has_lex>
+    <has_pos rdf:resource="#v"/>
+    <has_referent rdf:resource="#trip"/>
+    <has_context>
+      <Context>
+        <has_spec rdf:resource="#begin_and_end"/>
+        <has_dimension rdf:resource="#temporal"/>
+      </Context>
+    </has_context>
+  </Tourism>
+  <General rdf:ID="want_1">
+    <has_referent rdf:resource="#wildcard_referent"/>
+    <sparql:query rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >SELECT ?w ?lex
+WHERE {
+?w :has_lex ?lex.
+?w rdf:type :General.
+?w :has_pos :v.
+?w :has_context ?c.
+?c :has_spec :desire.
+FILTER(lang(?lex) = "en").
+}</sparql:query>
+    <has_pos rdf:resource="#v"/>
+    <has_context>
+      <Context>
+        <has_spec>
+          <Specification rdf:ID="desire"/>
+        </has_spec>
+      </Context>
+    </has_context>
+    <has_lex xml:lang="en">want</has_lex>
+    <has_formality rdf:datatype="http://www.w3.org/2001/XMLSchema#int"
+    >2</has_formality>
+  </General>
+  <General rdf:ID="have_1">
+    <has_context>
+      <Context>
+        <has_dimension rdf:resource="#decision"/>
+        <has_spec rdf:resource="#possession"/>
+      </Context>
+    </has_context>
+    <has_lex xml:lang="en">have</has_lex>
+    <has_pos rdf:resource="#v"/>
+    <has_referent rdf:resource="#wildcard_referent"/>
+    <has_formality rdf:datatype="http://www.w3.org/2001/XMLSchema#int"
+    >2</has_formality>
+  </General>
+  <Tourism rdf:ID="set_off_1">
+    <has_lex xml:lang="en">set_off</has_lex>
+    <has_pos rdf:resource="#v"/>
+    <has_context>
+      <Context>
+        <has_spec rdf:resource="#begin"/>
+        <has_dimension rdf:resource="#temporal"/>
+      </Context>
+    </has_context>
+    <has_referent rdf:resource="#trip"/>
+    <has_formality rdf:datatype="http://www.w3.org/2001/XMLSchema#int"
+    >1</has_formality>
+  </Tourism>
+  <General rdf:ID="at_what_time_1">
+    <has_referent rdf:resource="#wildcard_referent"/>
+    <has_context>
+      <Context>
+        <has_spec rdf:resource="#wildcard_specification"/>
+        <has_dimension rdf:resource="#time"/>
+      </Context>
+    </has_context>
+    <sparql:query rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >SELECT ?subject ?r
+WHERE { ?subject rdf:type :Domain.
+?subject :has_context ?c.
+?c :has_spec :begin.
+?subject :has_pos :v.
+?subject :has_formality ?f.
+LET(?r:=?f-2)
+FILTER(?r&gt;=0)
+ }
+ORDER BY asc(?r)</sparql:query>
+    <has_pos rdf:resource="#whadv"/>
+    <has_lex xml:lang="en">at_what_time</has_lex>
+    <has_formality rdf:datatype="http://www.w3.org/2001/XMLSchema#int"
+    >2</has_formality>
+  </General>
+  <General rdf:ID="how_many_persons_1">
+    <has_formality rdf:datatype="http://www.w3.org/2001/XMLSchema#int"
+    >2</has_formality>
+    <has_context>
+      <Context>
+        <has_spec rdf:resource="#wildcard_specification"/>
+        <has_dimension rdf:resource="#quantitative"/>
+      </Context>
+    </has_context>
+    <has_pos rdf:resource="#whadv"/>
+    <has_referent rdf:resource="#wildcard_referent"/>
+    <has_lex rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >how_many_persons {@en}</has_lex>
+  </General>
+  <Tourism rdf:ID="travel_1">
+    <has_context>
+      <Context>
+        <has_spec rdf:resource="#begin_and_end"/>
+        <has_dimension rdf:resource="#temporal"/>
+      </Context>
+    </has_context>
+    <has_formality rdf:datatype="http://www.w3.org/2001/XMLSchema#int"
+    >3</has_formality>
+    <has_lex xml:lang="en">travel</has_lex>
+    <has_pos rdf:resource="#v"/>
+    <has_referent rdf:resource="#trip"/>
+    <has_context>
+      <Context>
+        <has_dimension rdf:resource="#temporal"/>
+        <has_spec rdf:resource="#begin"/>
+      </Context>
+    </has_context>
+  </Tourism>
+  <Tourism rdf:ID="go_1">
+    <sparql:query rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >SELECT ?w
+WHERE {
+?w :has_lex ?lex.
+?w rdf:type :Tourism.
+?w :has_pos :v.
+?w :has_context ?c. 
+?c :has_dimension :generic_temporal; :has_spec :begin.
+?w :has_formality 2.
+FILTER(lang(?lex) = "en").
+}</sparql:query>
+    <has_lex xml:lang="en">go</has_lex>
+    <has_pos rdf:resource="#v"/>
+    <has_formality rdf:datatype="http://www.w3.org/2001/XMLSchema#int"
+    >2</has_formality>
+    <has_context>
+      <Context>
+        <has_dimension rdf:resource="#location"/>
+        <has_spec rdf:resource="#end"/>
+      </Context>
+    </has_context>
+    <has_context>
+      <Context>
+        <has_dimension rdf:resource="#temporal"/>
+        <has_spec rdf:resource="#begin_and_end"/>
+        <has_spec rdf:resource="#begin"/>
+      </Context>
+    </has_context>
+    <has_referent rdf:resource="#trip"/>
+  </Tourism>
+</rdf:RDF>
+
+<!-- Created with TopBraid Composer -->
+

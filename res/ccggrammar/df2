@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xml>
+  <lf>
+    <node id="w0" pred="can">
+      <rel name="prop">
+        <node idref="x1"/>
+      </rel>
+    </node>
+    <node id="w2" pred="request">
+      <opt><atts pred="please"/></opt>
+      <rel name="type">
+        <node id="w3" pred="temporal"/>
+      </rel>
+      <rel name="verb">
+        <node id="w7" pred="leave"/>
+      </rel>
+    </node>
+  </lf>
+  <target>can you specify when you want to leave</target>
+</xml>

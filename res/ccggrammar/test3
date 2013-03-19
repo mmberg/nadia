@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xml>
+  <lf>
+    <satop nom="w3">
+      <prop name="request"/>
+      <diamond mode="Prop">
+        <nom name="w5"/>
+        <prop name="bla"/>
+      </diamond>
+    </satop>
+  </lf>
+  <target>could you please tell me bla</target>
+</xml>

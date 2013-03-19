@@ -1,0 +1,2 @@
+# Set root logger level to DEBUG and its only appender to A1.
+log4j.rootLogger=INFO

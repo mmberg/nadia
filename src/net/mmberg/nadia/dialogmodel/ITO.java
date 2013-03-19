@@ -41,7 +41,7 @@ public class ITO {
 	}
 	
 	public String ask(){
-		//may use AQD (LG) but don't need to
+		//may use AQD (LG) but does't need to
 		return fallback_question;
 	}
 	

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xml>
+  <lf>
+    <node id="w2" pred="departure_city" modifier="connective-opener">
+      <rel name="mod">
+        <node id="w1" pred="det" type="def"/>
+      </rel>
+    </node>
+  </lf>
+  <target>and the departure_city</target>
+</xml>

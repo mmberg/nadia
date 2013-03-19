@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xml>
+  <lf>
+    <node id="w2" pred="have" mood="interrogative">
+      <rel name="agent">
+        <node id="w1" pred="pron" num="sg" pers="2nd"/>
+      </rel>
+      <rel name="theme">
+        <node id="w4" pred="customer_card">
+          <rel name="mod">
+            <node id="w3" pred="det" type="indef"/>
+          </rel>
+        </node>
+      </rel>
+    </node>
+  </lf>
+  <target>do you have a customer_card</target>
+</xml>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xml>
+  <lf>
+    <node id="w0" pred="can">
+      <rel name="actor">
+        <node id="w1" pred="pron" num="sg" pers="2nd"/>
+      </rel>
+      <rel name="theme">
+        <node id="w2" pred="tell">
+          <rel name="patient">
+            <node id="w3" pred="pron" num="sg" pers="1st"/>
+          </rel>
+          <rel name="theme">
+            <node id="w4" pred="when">
+              <rel name="prop">
+                <node id="w6" pred="want">
+                  <rel name="agent">
+                    <node id="w5" pred="pron" num="sg" pers="2nd"/>
+                  </rel>
+                  <rel name="theme">
+                    <node id="w8" pred="leave">
+                      <rel name="agent">
+                        <node idref="x1"/>
+                      </rel>
+                    </node>
+                  </rel>
+                </node>
+              </rel>
+            </node>
+          </rel>
+        </node>
+      </rel>
+    </node>
+  </lf>
+  <target>can you tell me when you want to leave</target>
+</xml>

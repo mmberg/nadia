@@ -1,0 +1,1375 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ccg-lexicon xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="lab-1" xsi:noNamespaceSchemaLocation="lexicon.xsd">
+
+ <family name="proper-name" pos="proper-name">
+    <entry name="Primary">
+         <atomcat type="np">
+         	<fs id="2">
+         		<feat attr="index">
+         			<lf>
+            			<nomvar name="X"/>
+	            	</lf>
+            	</feat>
+	        </fs>
+         	<lf>
+		      <satop nomvar="X">
+		        <prop name="[*DEFAULT*]"/>
+		      </satop>
+			</lf>
+         </atomcat>
+    </entry>
+ </family>
+ 
+  <family name="location" pos="location">
+    <entry name="Primary">
+         <atomcat type="np">
+         	<fs>
+         		<feat attr="index">
+         			<lf>
+            			<nomvar name="X"/>
+	            	</lf>
+            	</feat>
+	        </fs>
+         	<lf>
+		      <satop nomvar="X">
+		        <prop name="[*DEFAULT*]"/>
+		      </satop>
+			</lf>
+         </atomcat>
+    </entry>
+ </family>
+
+ <family name="personal-pronoun" pos="personal-pronoun">
+    <entry name="Primary">
+         <atomcat type="np">
+         	<fs id="2">
+         		<feat attr="index">
+         			<lf>
+            			<nomvar name="X"/>
+	            	</lf>
+            	</feat>
+	        	</fs>
+	        	
+         	<lf>
+		      	<satop nomvar="X">
+		        		<prop name="[*DEFAULT*]"/>
+		      	</satop>
+				</lf>
+         </atomcat>
+    </entry>
+ </family>
+ 
+ <family name="determiner" pos="determiner">
+	<entry name="Primary">
+		<complexcat>
+			<atomcat type="np">
+				<fs id="2">
+					<feat attr="index">
+         			<lf>
+            			<nomvar name="X"/>
+	            	</lf>
+            	</feat>
+				</fs>
+			</atomcat>
+			<slash dir="/"/>
+			<atomcat type="n">
+				<fs id="2">
+					<feat attr="index">
+         				<lf>
+            				<nomvar name="X"/>
+	            		</lf>
+            	</feat>
+            </fs>
+			</atomcat>
+			
+			<lf>
+					<satop nomvar="E">
+						<prop name="[*DEFAULT*]"/>
+					</satop>
+		      	<satop nomvar="X">
+		      		<diamond mode="mod">
+		        			<nomvar name="E"/>	
+		        		</diamond>
+		      	</satop>
+		   </lf>
+		</complexcat>
+	</entry> 
+ </family>
+ 
+ <family name="noun" pos="noun">
+    <entry name="Primary">
+         <atomcat type="n">
+         	<fs id="2">
+         		<feat attr="index">
+         			<lf>
+            			<nomvar name="X"/>
+	            	</lf>
+            	</feat>
+	        	</fs>
+	        	
+         	<lf>
+		      	<satop nomvar="X">
+		        		<prop name="[*DEFAULT*]"/>
+		      	</satop>
+				</lf>
+         </atomcat>
+    </entry>
+    
+	<entry name="make_np">
+		<complexcat>
+         <atomcat type="np">
+         	<fs>
+         		<feat attr="index">
+         			<lf>
+            			<nomvar name="E"/>
+	            	</lf>
+            	</feat>
+	        	</fs>
+         </atomcat>
+         <slash dir="\"/>
+          <atomcat type="np">
+         	<fs id="2">
+         		<feat attr="index">
+         			<lf>
+            			<nomvar name="X"/>
+	            	</lf>
+            	</feat>
+            	<feat attr="case" val="gen"/>
+	        	</fs>
+         </atomcat>
+         
+            <lf>
+		      	<satop nomvar="E">
+		        		<prop name="[*DEFAULT*]"/>
+		        		<diamond mode="mod">
+		        			<nomvar name="X"/>
+		        		</diamond>
+		      	</satop>
+				</lf>
+			</complexcat>
+    </entry>    
+ </family>
+
+ 
+ <family name="to" pos="to" closed="true" indexRel="*NoSem*">
+    <entry name="make_intrans_infinitive">
+		<complexcat>
+			<!-- resulting in an infinitive verb -->
+			<atomcat type="s">
+				<fs>
+		     		<feat attr="index">
+		     			<lf>
+		        			<nomvar name="X"/>
+			        	</lf>
+		        	</feat>
+					<feat attr="stype" val="to"/>
+				</fs>
+			</atomcat>
+			<slash dir="\"/>
+			<atomcat type="np">
+			</atomcat>
+		
+			
+			<!-- if there comes a verb from the right (that is not yet infinitive but is in baseform )-->
+			<slash dir="/"/>
+			<complexcat>
+				<atomcat type="s">
+					<fs id="1">
+				 		<feat attr="index">
+				 			<lf>
+				    			<nomvar name="X"/>
+					    	</lf>
+				    	</feat>
+						<feat attr="stype" val="b"/>
+					</fs>
+				</atomcat>
+				<slash dir="\"/>
+				<atomcat type="np">
+				</atomcat>
+			</complexcat>
+		</complexcat>
+    </entry>
+     
+    <member stem="to"/> <!-- I don't know why, but indexRel needs a closed family -->
+ </family>
+ 
+ 
+  <family name="prep" pos="prep">
+    <entry name="Primary">
+    	<complexcat>
+		    <atomcat type="pp">
+		    	<fs>
+		    		<feat attr="index">
+		     			<lf>
+		        			<nomvar name="X"/>
+			        	</lf>
+		        	</feat>
+		      </fs>
+		    </atomcat>
+		    <slash dir="/"/>
+		    <atomcat type="np">
+		    	<fs>
+		     		<feat attr="index">
+		     			<lf>
+		        			<nomvar name="X"/>
+			        	</lf>
+		        	</feat>
+				</fs>
+		    </atomcat>
+		    
+		    <lf>
+		    <!--
+		      	<satop nomvar="E">
+		        		<prop name="[*DEFAULT*]"/>
+	            	<diamond mode="arg">
+   	           		<nomvar name="X"/>
+      	      	</diamond>
+          	  </satop>
+          	  --> 	 
+          	  <satop nomvar="Y">
+		        		<prop name="[*DEFAULT*]"/>
+		        </satop>
+		        <satop nomvar="X">
+	            	<diamond mode="prep">
+   	           		<nomvar name="Y"/>
+      	      	</diamond>
+          	  </satop> 
+			</lf>
+    	</complexcat>
+    </entry>
+
+ </family>
+ 
+ <!-- not yet finished -->
+ <family name="wh-n-word" pos="wh-n-word">
+	<entry name="question">
+		<complexcat>
+			<atomcat type="s">
+	 			<fs>
+	 				<feat attr="stype" val="wn-question"/>
+	 				<feat attr="index">
+			 			<lf>
+			    			<nomvar name="X"/> <!-- return results -->
+				    	</lf>
+			    	</feat>
+	 			</fs>
+			</atomcat>
+			<slash dir="/"/>
+			<atomcat type="s">
+				<fs id="1">
+	 				<feat attr="stype" val="question"/>
+			 		<feat attr="index">
+			 			<lf>
+							<nomvar name="Y"/>
+						</lf>
+					</feat>
+	 			</fs>
+			</atomcat>
+			<slash dir="/"/>
+			<atomcat type="n">
+				<fs>
+					<feat attr="index">
+			 			<lf>
+							<nomvar name="Z"/>
+						</lf>
+					</feat>
+				</fs>>
+			</atomcat>
+			
+			<lf>
+		      <satop nomvar="X">
+		        <prop name="[*DEFAULT*]"/>
+                <diamond mode="prop"> <!-- proposition -->
+              		<nomvar name="Y"/>
+                </diamond>
+                <diamond mode="theme">
+              		<nomvar name="Z"/>
+                </diamond>
+          	</satop>
+			</lf>
+			
+		</complexcat>
+	</entry>
+</family> 
+ 
+<family name="wh-word" pos="wh-word">
+	<entry name="question">
+		<complexcat>
+			<atomcat type="s">
+	 			<fs>
+	 				<feat attr="stype" val="w-question"/>
+	 				<feat attr="index">
+			 			<lf>
+			    			<nomvar name="X"/> <!-- return results -->
+				    	</lf>
+			    	</feat>
+	 			</fs>
+			</atomcat>
+			<slash dir="/"/>
+			<atomcat type="s">
+				<fs id="1">
+	 				<feat attr="stype" val="question"/>
+			 		<feat attr="index">
+			 			<lf>
+			    			<nomvar name="Y"/>
+				    	</lf>
+			    	</feat>
+	 			</fs>
+			</atomcat>
+			
+			<lf>
+		      <satop nomvar="X">
+		        <prop name="[*DEFAULT*]"/>
+              <diamond mode="prop"> <!-- proposition -->
+              		<nomvar name="Y"/>
+              </diamond>
+          	</satop>
+			</lf>
+			
+		</complexcat>
+	</entry>
+	
+	<entry name="indirect_request"> <!-- WHEN you want to go -->
+		<complexcat>
+			<atomcat type="s">
+	 			<fs>
+	 				<feat attr="index">
+		     			<lf>
+		        			<nomvar name="X"/> <!-- return resulting relations for request-forms -->
+			        	</lf>
+		        	</feat>
+	 				<feat attr="stype" val="iw-question"/> <!-- indirect w-question: "(tell me) when you want to go" -->
+	 			</fs>
+			</atomcat>
+			<slash dir="/"/>
+			<atomcat type="s">
+				<fs id="1">
+	 				<feat attr="stype" val="b"/>
+			 		<feat attr="index">
+			 			<lf>
+			    			<nomvar name="Y"/>
+				    	</lf>
+			    	</feat>
+	 			</fs>
+			</atomcat>
+			
+			<lf>
+		      <satop nomvar="X">
+		        <prop name="[*DEFAULT*]"/>
+		      </satop>
+		      <satop nomvar="X">
+            	<diamond mode="prop"> <!-- proposition -->
+              		<nomvar name="Y"/>
+            	</diamond>
+          	</satop>
+			</lf>
+			
+		</complexcat>
+	</entry>
+</family> 
+
+
+<family name="cond" pos="cond">
+	<entry name="indirect_conditional"> <!-- IF you want to go -->
+		<complexcat>
+			<atomcat type="s">
+	 			<fs>
+	 				<feat attr="index">
+		     			<lf>
+		        			<nomvar name="Y"/> <!-- return resulting relations for request-forms -->
+			        	</lf>
+		        	</feat>
+	 				<feat attr="stype" val="indirect-conditional-request"/> <!-- indirect conditional: "(tell me) if you want to go" -->
+	 			</fs>
+			</atomcat>
+			<slash dir="/"/>
+			<atomcat type="s">
+				<fs id="1">
+	 				<feat attr="stype" val="b"/>
+			 		<feat attr="index">
+			 			<lf>
+			    			<nomvar name="Y"/>
+				    	</lf>
+			    	</feat>
+	 			</fs>
+			</atomcat>
+			
+			<lf>
+		      <satop nomvar="Y">
+            	<diamond mode="mood">
+              		<prop name="conditional"/>
+            	</diamond>
+          	</satop>
+			</lf>
+			
+		</complexcat>
+	</entry>
+</family> 
+ 
+
+
+
+ 
+ <family name="do-aux" pos="do-aux" closed="true" indexRel="mood">
+ 	<entry name="interrogative"> <!-- yn-question: do you (want to have X)... -->
+ 		<complexcat> <!-- sentence if there is a sentence with a baseform on the right (former: baseform verb and an NP: do YOU SLEEP? s/(np)/(s\np)) -->
+	 		<atomcat type="s">
+	 		<fs inheritsFrom="1">
+	 			<!-- <fs id="1">-->
+	 				<feat attr="stype" val="question"/> 		 				
+	 				<feat attr="index">
+				 			<lf>
+								<nomvar name="X"/> <!-- neccessary for Wh -->
+							</lf>
+					</feat>			
+	 			</fs>
+	 		</atomcat>
+		 		
+	 		<!-- infinitive (baseform) on the right -->
+	 		<slash dir="/"/>
+	 		<complexcat>
+		 		<atomcat type="s">
+		 			<fs id="1">
+		 				<feat attr="stype" val="b"/>
+			 			<feat attr="index">
+				 			<lf>
+								<nomvar name="X"/>
+							</lf>
+						</feat>
+		 			</fs>
+		 		</atomcat>
+		 		<slash dir="\"/>
+		 		<atomcat type="np">
+		 			<fs>
+			 			<feat attr="index">
+				 			<lf>
+								<nomvar name="Y"/>
+							</lf>
+						</feat>
+					</fs>
+		 		</atomcat>
+	 		</complexcat>
+	 		
+	 		<!-- np on the right -->
+	 		<slash dir="/"/>
+	 		<atomcat type="np">
+	 			<fs id="2">
+		 			<feat attr="index">
+						 <lf>
+						 	<nomvar name="Y"/>
+						</lf>
+					</feat>
+				</fs>
+	 		</atomcat>
+	 		
+	 		<lf>
+		      <satop nomvar="X">
+            	<diamond mode="mood">
+              		<prop name="interrogative"/>
+            	</diamond>
+          	</satop>
+			</lf>
+			
+ 		</complexcat>
+ 	</entry>
+ 	
+ 	<entry name="interrogative2"> <!-- yn-question: do you (have X) -->
+ 		<complexcat>
+	 		<atomcat type="s">
+	 		<fs inheritsFrom="1">
+	 				<feat attr="stype" val="question"/> 		 				
+	 				<feat attr="index">
+				 			<lf>
+								<nomvar name="X"/> <!-- neccessary for top layer questions -->
+							</lf>
+					</feat>			
+	 			</fs>
+	 		</atomcat>
+		 		
+	 		<!-- verb on the right -->
+	 		<slash dir="/"/>
+		 		<atomcat type="s">
+		 			<fs id="1">
+		 				<feat attr="stype" val="dcl"/> <!-- decl -->
+			 			<feat attr="index">
+				 			<lf>
+								<nomvar name="X"/>
+							</lf>
+						</feat>
+		 			</fs>
+		 		</atomcat>
+	 			
+	 		<lf>
+		      <satop nomvar="X">
+            	<diamond mode="mood">
+              		<prop name="interrogative"/>
+            	</diamond>
+          	</satop>
+			</lf>
+			
+ 		</complexcat>
+ 	</entry>
+	<member stem="do"/>
+ </family>
+ 
+  <family name="emo-verb" pos="emo-verb">
+    <entry name="interrogative"> <!-- in German the word order can change: Sie möchten gehen, möchten Sie gehen -->
+	    <complexcat>
+	    	<!-- results in a (complex) verb  S\NP if forward infinitive verb: want to go, wants to go -->
+		     <atomcat type="s">
+		     	<fs id="1">
+			 		<feat attr="index">
+			 			<lf>
+			    			<nomvar name="X"/>
+				    	</lf>
+			    	</feat>
+		      </fs>
+		     </atomcat>
+		     	     
+		     <!-- subject -->
+		     <slash dir="\"/>
+		     <atomcat type="np">
+		     	<fs id="2">
+		    		<feat attr="index">
+		     			<lf>
+		        			<nomvar name="Y"/>
+			        	</lf>
+		        	</feat>
+					<feat attr="case" val="nom"/>
+           	</fs>
+   		  </atomcat>
+   		     
+   		  <!-- object (intrans verb, infinitive) -->
+		     <slash dir="/"/>
+		     <complexcat>
+				 <atomcat type="s">
+				 	<fs>
+				 		<feat attr="index">
+				 			<lf>
+								<nomvar name="Z"/>
+							</lf>
+						</feat>
+					 	<feat attr="stype" val="to"/>
+				  	</fs>
+				 </atomcat>
+				 <slash dir="\"/>
+				 <atomcat type="np">
+				 </atomcat>
+			 </complexcat>
+		     		     
+   		     <!-- when do [ you (np) WANT to go (s\np) ] -->
+   
+   		    <lf>
+		      <satop nomvar="X">
+		        <prop name="[*DEFAULT*]"/>
+		      </satop>
+		      <satop nomvar="X">            	
+            	<diamond mode="agent">
+              		<nomvar name="Y"/>
+            	</diamond>
+          	</satop>
+          	<satop nomvar="X">
+            	<diamond mode="theme">
+              		<nomvar name="Z"/>
+            	</diamond>
+          	  </satop>
+         	</lf>
+         </complexcat>
+    </entry>
+ </family>
+
+
+  <family name="intrans-verb" pos="intrans-verb">
+    <entry name="Primary">
+	    <complexcat>
+		     <atomcat type="s">
+		     	<fs id="1">
+		     		<feat attr="index">
+		     			<lf>
+		        			<nomvar name="X"/>
+			        	</lf>
+		        	</feat>
+	          </fs>
+		     </atomcat>
+		     <slash dir="\"/>
+		     <atomcat type="np">
+		     	<fs id="2">
+		     		<feat attr="index">
+		     			<lf>
+		        			<nomvar name="Y"/>
+			        	</lf>
+		        	</feat>
+		       </fs>
+		     </atomcat>
+		     
+		     <lf>
+				<satop nomvar="X">
+					<prop name="[*DEFAULT*]"/>
+					<diamond mode="agent">
+						<nomvar name="Y"/>
+					</diamond>
+				</satop>
+		     </lf>
+         </complexcat>
+    </entry>
+    
+    <!-- intransitive verbs can be followed by a prepositional phrase: Peter goes TO LONDON -->
+    <entry name="with_preposition">
+	    <complexcat>
+		     <atomcat type="s">
+		     	<fs id="1">
+		     		<feat attr="index">
+		     			<lf>
+		        			<nomvar name="E"/>
+			        	</lf>
+		        	</feat>
+		        	<feat attr="stype" val="dcl"/>
+	          </fs>
+		     </atomcat>
+		     <slash dir="\"/>
+		     <atomcat type="np">
+		     	<fs id="2">
+		    		<feat attr="index">
+		     			<lf>
+		        			<nomvar name="X"/>
+			        	</lf>
+		        	</feat>
+		      </fs>
+		     </atomcat>
+		     <slash dir="/"/>
+		     <atomcat type="pp">
+		     	<fs>
+		    		<feat attr="index">
+		     			<lf>
+		        			<nomvar name="Y"/>
+			        	</lf>
+		        	</feat>
+		      </fs>
+		     </atomcat>
+		     
+		     <lf>
+					<satop nomvar="E">
+						<prop name="[*DEFAULT*]"/>
+					</satop>
+					<!--
+			      <satop nomvar="E">
+            		<diamond mode="agent">
+              			<nomvar name="X"/>
+            		</diamond>
+          	  	</satop>
+          	  	-->
+          	  	<satop nomvar="E">
+            		<diamond mode="spec">
+              			<nomvar name="Y"/>
+            		</diamond>
+          	  </satop>
+         	</lf>
+         </complexcat>
+    </entry>
+    
+     <entry name="imperative"> <!-- specify when you want to go -->
+    <!-- how to restrict this rule to be only applied to words in infinitive form?  *tells me...-->
+	    <complexcat>
+		     <atomcat type="s">
+		     	<fs id="4">
+		     		<feat attr="index">
+		     			<lf>
+		        			<nomvar name="X"/>
+			        	</lf>
+		        	</feat>
+		     		<feat attr="stype" val="w-request" />
+		     	</fs>
+		     </atomcat>
+		     <slash dir="/"/>
+		     <atomcat type="s">
+		     	<fs id="3"> <!-- ids are only important within an entry and for macros; but no relevance between families -->
+					<feat attr="index">
+		     			<lf>
+		        			<nomvar name="Z"/>
+			        	</lf>
+		        	</feat>		     		
+		     		<feat attr="stype" val="iw-question" /> <!-- imperative needs inverted wh: (tell me) when you want to... -->
+		     	</fs>
+		     </atomcat>
+		    		     		     
+		     <lf>
+				<satop nomvar="X">
+					<prop name="[*DEFAULT*]"/>
+					<diamond mode="theme">
+						<nomvar name="Z"/>
+					</diamond>
+				</satop>
+		     </lf>
+         </complexcat>
+    </entry>
+    
+    <entry name="imperative2"> <!-- specify your destination -->
+    <!-- how to restrict this rule to be only applied to words in infinitive form? -->
+	    <complexcat>
+		     <atomcat type="s">
+		     	<fs id="4">
+		     		<feat attr="index">
+		     			<lf>
+		        			<nomvar name="X"/>
+			        	</lf>
+		        	</feat>
+		     		<feat attr="stype" val="request" />
+		     	</fs>
+		     </atomcat>
+		     <slash dir="/"/>
+		     <atomcat type="np">
+		     	<fs>
+					<feat attr="index">
+		     			<lf>
+		        			<nomvar name="Z"/>
+			        	</lf>
+		        	</feat>		     		
+		     	</fs>
+		     </atomcat>
+		    		     		     
+		     <lf>
+				<satop nomvar="X">
+					<prop name="[*DEFAULT*]"/>
+					<diamond mode="theme">
+						<nomvar name="Z"/>
+					</diamond>
+				</satop>
+		     </lf>
+         </complexcat>
+    </entry>
+    
+    <entry name="imperative3"> <!-- specify if you want to go -->
+    <!-- how to restrict this rule to be only applied to words in infinitive form?  *tells me...-->
+	    <complexcat>
+		     <atomcat type="s">
+		     	<fs id="4">
+		     		<feat attr="index">
+		     			<lf>
+		        			<nomvar name="X"/>
+			        	</lf>
+		        	</feat>
+		     		<feat attr="stype" val="yn-request" />
+		     	</fs>
+		     </atomcat>
+		     <slash dir="/"/>
+		     <atomcat type="s">
+		     	<fs id="3"> <!-- ids are only important within an entry and for macros; but no relevance between families -->
+					<feat attr="index">
+		     			<lf>
+		        			<nomvar name="Z"/>
+			        	</lf>
+		        	</feat>		     		
+		     		<feat attr="stype" val="indirect-conditional-request" />
+		     	</fs>
+		     </atomcat>
+		    		     		     
+		     <lf>
+				<satop nomvar="X">
+					<prop name="[*DEFAULT*]"/>
+					<diamond mode="theme">
+						<nomvar name="Z"/>
+					</diamond>
+				</satop>
+		     </lf>
+         </complexcat>
+    </entry>
+    
+    
+ </family>
+ 
+  <family name="monotrans-verb" pos="monotrans-verb">
+    <entry name="Primary">
+	    <complexcat>
+		     <atomcat type="s">
+		     	<fs id="1">
+		     		<feat attr="index">
+		     			<lf>
+		        			<nomvar name="X"/>
+			        	</lf>
+		        	</feat>
+		        	<feat attr="stype" val="dcl"/>
+	          	</fs>
+		     </atomcat>
+		     <slash dir="\"/>
+		     <atomcat type="np">
+		     	<fs id="2">
+		     		<feat attr="index">
+		     			<lf>
+		        			<nomvar name="Y"/>
+			        	</lf>
+		        	</feat>
+		     	</fs>
+		     </atomcat>
+		     <slash dir="/"/>
+		     <atomcat type="np">
+		     	<fs>
+		     		<feat attr="index">
+		     			<lf>
+		        			<nomvar name="Z"/>
+			        	</lf>
+		        	</feat>
+		     	</fs>
+		     </atomcat>
+		     
+		     <lf>
+				<satop nomvar="X">
+					<prop name="[*DEFAULT*]"/>
+					<diamond mode="theme">
+						<nomvar name="Z"/>
+					</diamond>
+					<diamond mode="agent">
+						<nomvar name="Y"/>
+					</diamond>
+				</satop>
+		     </lf>
+         </complexcat>
+    </entry>
+ </family>
+
+<family name="ditrans-verb" pos="ditrans-verb">
+
+	<entry name="Primary"> <!-- Peter tells me (optional: +np: the news) -->
+		<complexcat>
+			<atomcat type="s">
+				<fs id="1"/>
+			</atomcat>
+			<slash dir="\"/>
+			<atomcat type="np">
+			</atomcat>
+			<slash dir="/"/>
+			<atomcat type="np">
+			</atomcat>
+		</complexcat>
+	</entry>
+
+    <entry name="imperative"> <!-- tell me when you want to go -->
+    <!-- how to restrict this rule to be only applied to words in infinitive form?  *tells me...-->
+	    <complexcat>
+		     <atomcat type="s">
+		     	<fs id="4">
+		     		<feat attr="index">
+		     			<lf>
+		        			<nomvar name="X"/>
+			        	</lf>
+		        	</feat>
+		     		<feat attr="stype" val="w-request" />
+		     	</fs>
+		     </atomcat>
+		     <slash dir="/"/>
+		     <atomcat type="s">
+		     	<fs id="3"> <!-- ids are only important within an entry and for macros; but no relevance between families -->
+					<feat attr="index">
+		     			<lf>
+		        			<nomvar name="Z"/>
+			        	</lf>
+		        	</feat>		     		
+		     		<feat attr="stype" val="iw-question" /> <!-- imperative needs inverted wh: (tell me) when you want to... -->
+		     	</fs>
+		     </atomcat>
+		     <slash dir="/"/>
+		     <atomcat type="np">
+		     	<fs id="2">
+		     		<feat attr="index">
+		     			<lf>
+		        			<nomvar name="Y"/>
+			        	</lf>
+		        	</feat>
+		     		<feat attr="case" val="dat" />
+		     	</fs>
+		     </atomcat>
+		     		     
+		     <lf>
+				<satop nomvar="X">
+					<prop name="[*DEFAULT*]"/>
+					<diamond mode="patient">
+						<nomvar name="Y"/>
+					</diamond>
+					<diamond mode="theme">
+						<nomvar name="Z"/>
+					</diamond>
+				</satop>
+		     </lf>
+         </complexcat>
+    </entry>
+    
+    <entry name="imperative2"> <!-- tell me your destination -->
+    <!-- how to restrict this rule to be only applied to words in infinitive form? -->
+	    <complexcat>
+		     <atomcat type="s">
+		     	<fs id="4">
+		     		<feat attr="index">
+		     			<lf>
+		        			<nomvar name="X"/>
+			        	</lf>
+		        	</feat>
+		     		<feat attr="stype" val="request" />
+		     	</fs>
+		     </atomcat>
+		     <slash dir="/"/>
+		     <atomcat type="np">
+		     	<fs>
+					<feat attr="index">
+		     			<lf>
+		        			<nomvar name="Z"/>
+			        	</lf>
+		        	</feat>		     		
+		     	</fs>
+		     </atomcat>
+		     <slash dir="/"/>
+		     <atomcat type="np">
+		     	<fs id="2">
+		     		<feat attr="index">
+		     			<lf>
+		        			<nomvar name="Y"/>
+			        	</lf>
+		        	</feat>
+		     		<feat attr="case" val="dat" />
+		     	</fs>
+		     </atomcat>
+		     		     
+		     <lf>
+				<satop nomvar="X">
+					<prop name="[*DEFAULT*]"/>
+					<diamond mode="patient">
+						<nomvar name="Y"/>
+					</diamond>
+					<diamond mode="theme">
+						<nomvar name="Z"/>
+					</diamond>
+				</satop>
+		     </lf>
+         </complexcat>
+    </entry>
+</family>
+
+
+  <family name="politeness" pos="politeness" closed="true" indexRel="politeness">
+    <entry name="request">
+    	<complexcat>
+		    <atomcat type="s">
+		    	<fs inheritsFrom="1">
+			        	<feat attr="politeness" val="yes"/>
+		      </fs>
+		    </atomcat>
+		    <slash dir="|"/> <!-- forward or backward -->
+		    <atomcat type="s">
+		    	<fs id="1">
+		     		<feat attr="index">
+		     			<lf>
+		        			<nomvar name="X"/>
+			        	</lf>
+		        	</feat>
+		        	<feat attr="politeness" val="no"/>
+		        	<feat attr="stype" val="request"/>
+				</fs>
+		    </atomcat>
+		    
+		    <lf>	          	
+		      	<satop nomvar="X">
+            	<diamond mode="politeness">
+              		<prop name="yes"/>
+            	</diamond>
+          	  </satop>
+			</lf>
+    	</complexcat>
+    </entry>
+    
+    <entry name="w-request">
+    	<complexcat>
+		    <atomcat type="s">
+		    	<fs inheritsFrom="1">
+			        	<feat attr="politeness" val="yes"/>
+		      </fs>
+		    </atomcat>
+		    <slash dir="/"/>
+		    <atomcat type="s">
+		    	<fs id="1">
+		     		<feat attr="index">
+		     			<lf>
+		        			<nomvar name="X"/>
+			        	</lf>
+		        	</feat>
+		        	<feat attr="politeness" val="no"/>
+		        	<feat attr="stype" val="w-request"/>
+				</fs>
+		    </atomcat>
+		    
+		    <lf>	          	
+		      	<satop nomvar="X">
+            	<diamond mode="politeness">
+              		<prop name="yes"/>
+            	</diamond>
+          	  </satop>
+			</lf>
+    	</complexcat>
+    </entry>
+    
+    <entry name="command">
+    	<complexcat>
+		    <atomcat type="s">
+		    	<fs inheritsFrom="1">
+			        	<feat attr="politeness" val="yes"/>
+		      </fs>
+		    </atomcat>
+		    <slash dir="\"/>
+		    <atomcat type="s">
+		    	<fs id="1">
+		     		<feat attr="index">
+		     			<lf>
+		        			<nomvar name="X"/>
+			        	</lf>
+		        	</feat>
+		        	<feat attr="politeness" val="no"/>
+		        	<feat attr="stype" val="cmd"/>
+				</fs>
+		    </atomcat>
+		    
+		    <lf>	          	
+		      	<satop nomvar="X">
+            	<diamond mode="politeness">
+              		<prop name="yes"/>
+            	</diamond>
+          	  </satop>
+			</lf>
+    	</complexcat>
+    </entry>
+	<member stem="please"/>
+ </family>
+
+<family name="modal" pos="modal"> <!-- Kannst du mir sagen, wann du losfahren möchtest. Can you tell me when you want to go -->
+
+    <entry name="can-np-question">   <!-- can you tell me your destination -->
+    	<complexcat>
+		    <atomcat type="s">
+		    	<fs>
+					<feat attr="index">
+		     			<lf>
+		        			<nomvar name="E"/>
+			        	</lf>
+		        	</feat>		    	
+		      </fs>
+		    </atomcat>
+		    <slash dir="/"/>
+		    <atomcat type="s">
+		    	<fs id="1">
+		        	<feat attr="stype" val="request"/>
+		        	<feat attr="index">
+		     			<lf>
+		        			<nomvar name="X"/>
+			        	</lf>
+		        	</feat>	
+				</fs>
+		    </atomcat>
+  		    <slash dir="/"/>
+		    <atomcat type="np">
+		    	<fs id="2">
+			    	<feat attr="index">
+		     			<lf>
+		        			<nomvar name="Y"/>
+			        	</lf>
+		        	</feat>	
+		      </fs>
+		    </atomcat>
+		    
+			<lf>	          	
+		      <satop nomvar="E">
+					<prop name="[*DEFAULT*]"/>
+					<diamond mode="actor">
+              		<nomvar name="Y"/>
+            	</diamond>
+          	</satop>
+          	<satop nomvar="E">
+					<diamond mode="theme">
+              		<nomvar name="X"/>
+            	</diamond>
+          	</satop>
+			</lf>
+    	</complexcat>
+    </entry>  	
+    
+    <entry name="can-w-question">   	<!-- can you tell me where you want to go -->
+    	<complexcat>
+		    <atomcat type="s">
+		    	<fs>
+					<feat attr="index">
+		     			<lf>
+		        			<nomvar name="E"/>
+			        	</lf>
+		        	</feat>	
+		        	<feat attr="stype" val="can-q"/>	    	
+		      </fs>
+		    </atomcat>
+		    <slash dir="/"/>
+		    <atomcat type="s">
+		    	<fs id="1">
+		        	<feat attr="stype" val="w-request"/>
+		        	<feat attr="index">
+		     			<lf>
+		        			<nomvar name="X"/>
+			        	</lf>
+		        	</feat>	
+				</fs>
+		    </atomcat>
+  		    <slash dir="/"/>
+		    <atomcat type="np">
+		    	<fs id="2">
+		    		<feat attr="index">
+		     			<lf>
+		        			<nomvar name="Y"/>
+			        	</lf>
+		        	</feat>	
+		       </fs>
+		    </atomcat>
+		    
+		    <lf>	          	
+		      <satop nomvar="E">
+					<prop name="[*DEFAULT*]"/>
+					<diamond mode="actor">
+              		<nomvar name="Y"/>
+            	</diamond>
+          	</satop>
+          	<satop nomvar="E">
+					<diamond mode="theme">
+              		<nomvar name="X"/>
+            	</diamond>
+          	</satop>
+			</lf>
+    	</complexcat>
+    </entry>  	
+    
+    <entry name="can-conditional-question">   	<!-- CAN YOU tell me if you want to go -->
+    	<complexcat>
+		    <atomcat type="s">
+		    	<fs>
+					<feat attr="index">
+		     			<lf>
+		        			<nomvar name="E"/>
+			        	</lf>
+		        	</feat>	
+		        	<feat attr="stype" val="can-q"/>	    	
+		      </fs>
+		    </atomcat>
+		    <slash dir="/"/>
+		    <atomcat type="s">
+		    	<fs id="1">
+		        	<feat attr="stype" val="yn-request"/>
+		        	<feat attr="index">
+		     			<lf>
+		        			<nomvar name="X"/>
+			        	</lf>
+		        	</feat>	
+				</fs>
+		    </atomcat>
+  		    <slash dir="/"/>
+		    <atomcat type="np">
+		    	<fs id="2">
+		    		<feat attr="index">
+		     			<lf>
+		        			<nomvar name="Y"/>
+			        	</lf>
+		        	</feat>	
+		       </fs>
+		    </atomcat>
+		    
+		    <lf>	          	
+		      <satop nomvar="E">
+					<prop name="[*DEFAULT*]"/>
+					<diamond mode="actor">
+              		<nomvar name="Y"/>
+            	</diamond>
+          	</satop>
+          	<satop nomvar="E">
+					<diamond mode="theme">
+              		<nomvar name="X"/>
+            	</diamond>
+          	</satop>
+			</lf>
+    	</complexcat>
+    </entry>  	
+
+
+</family>
+
+<family name="adverb" pos="adverb" closed="true" indexRel="modifier">
+    <entry name="interrogative">
+    	<complexcat>
+		    <atomcat type="s">
+				    	<fs id="1">
+				    		<feat attr="index">
+				     			<lf>
+				        			<nomvar name="X"/>
+					        	</lf>
+				        	</feat>	
+				       </fs>		    	
+		    </atomcat>
+		    <slash dir="\"/>
+		    <atomcat type="np">
+		    			<fs>
+				    		<feat attr="index">
+				     			<lf>
+				        			<nomvar name="Y"/>
+					        	</lf>
+				        	</feat>	
+				       </fs>
+		    </atomcat>
+		    <slash dir="/"/>
+			    <complexcat>
+				    <atomcat type="s">
+				    	 <fs id="1">
+				    		<feat attr="index">
+				     			<lf>
+				        			<nomvar name="X"/>
+					        	</lf>
+				        	</feat>	
+				       </fs>
+				    </atomcat>
+				    <slash dir="\"/>
+				    <atomcat type="np">
+				    	<fs>
+				    		<feat attr="index">
+				     			<lf>
+				        			<nomvar name="Y"/>
+					        	</lf>
+				        	</feat>	
+				       </fs>
+				    </atomcat>
+			    </complexcat>
+			    
+			 <lf>	          	
+		      <satop nomvar="X">
+		      	<diamond mode="modifier">
+						<prop name="intense-confirmation"/>
+					</diamond>
+          	</satop>
+			</lf>
+		</complexcat>
+	</entry>
+	<member stem="really"/>
+</family>
+
+<family name="opener" pos="opener" closed="true" indexRel="modifier">
+	<entry name="wh-question">
+		<complexcat>
+			<atomcat type="s">
+	 			<fs inheritsFrom="1">
+	 				<feat attr="opener" val="yes"/>
+			   </fs>	
+			</atomcat>
+			<slash dir="/"/>
+			<atomcat type="s">
+				<fs id="1">
+	 				<feat attr="stype" val="w-question"/>
+			 		<feat attr="index">
+			 			<lf>
+			    			<nomvar name="X"/>
+				    	</lf>
+			    	</feat>
+			    		<feat attr="opener" val="no"/>
+	 			</fs>
+			</atomcat>
+
+			<lf>	          	
+		      <satop nomvar="X">
+		      	<diamond mode="modifier">
+						<prop name="connective-opener"/>
+					</diamond>
+          	</satop>
+			</lf>
+		</complexcat>
+	</entry>
+	
+	<entry name="command">
+    	<complexcat>
+		    <atomcat type="s">
+		    	<fs inheritsFrom="1">
+			        	<feat attr="opener" val="yes"/>
+		      </fs>
+		    </atomcat>
+		    <slash dir="/"/>
+		    <atomcat type="s">
+		    	<fs id="1">
+		     		<feat attr="index">
+		     			<lf>
+		        			<nomvar name="X"/>
+			        	</lf>
+		        	</feat>
+		        	<feat attr="opener" val="no"/>
+		        	<feat attr="stype" val="cmd"/>
+				</fs>
+		    </atomcat>
+		    
+		    <lf>	          	
+		      	<satop nomvar="X">
+            	<diamond mode="modifier">
+              		<prop name="connective-opener"/>
+            	</diamond>
+          	  </satop>
+			</lf>
+    	</complexcat>
+    </entry>
+	<member stem="and"/>
+</family>
+
+<family name="opener" pos="opener" closed="true" indexRel="modifier">
+	<entry name="wh-request">
+		<complexcat>
+			<atomcat type="s">
+	 			<fs id="1">
+			   </fs>	
+			</atomcat>
+			<slash dir="/"/>
+			<atomcat type="s">
+				<fs id="1">
+	 				<feat attr="stype" val="w-request"/>
+			 		<feat attr="index">
+			 			<lf>
+			    			<nomvar name="X"/>
+				    	</lf>
+			    	</feat>
+			    	<feat attr="politeness" val="yes"/> <!-- word order: prevent 'please now (tell me)'; instead: 'now, please (tell me)....' -->
+	 			</fs>
+			</atomcat>
+
+			<lf>	          	
+		      <satop nomvar="X">
+		      	<diamond mode="modifier">
+						<prop name="temporal-opener"/>
+					</diamond>
+          	</satop>
+			</lf>
+		</complexcat>
+	</entry>
+	
+	<entry name="np-request">
+		<complexcat>
+			<atomcat type="s">
+	 			<fs id="1">
+			   </fs>	
+			</atomcat>
+			<slash dir="/"/>
+			<atomcat type="s">
+				<fs id="1">
+	 				<feat attr="stype" val="request"/>
+			 		<feat attr="index">
+			 			<lf>
+			    			<nomvar name="X"/>
+				    	</lf>
+			    	</feat>
+			    	<feat attr="politeness" val="yes"/> <!-- word order: prevent 'please now (tell me)'; instead: 'now, please (tell me)....' -->
+	 			</fs>
+			</atomcat>
+
+			<lf>	          	
+		      <satop nomvar="X">
+		      	<diamond mode="modifier">
+						<prop name="temporal-opener"/>
+					</diamond>
+          	</satop>
+			</lf>
+		</complexcat>
+	</entry>
+	<member stem="now"/>
+</family>
+		    	
+
+</ccg-lexicon>

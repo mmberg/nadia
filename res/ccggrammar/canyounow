@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xml>
+  <lf>
+    <node id="w0" pred="can">
+      <rel name="actor">
+        <node id="w1" pred="pron" num="sg" pers="2nd"/>
+      </rel>
+      <rel name="theme">
+        <node id="w4" pred="tell" modifier="temporal-opener" politeness="yes">
+          <rel name="patient">
+            <node id="w5" pred="pron" num="sg" pers="1st"/>
+          </rel>
+          <rel name="theme">
+            <node id="w6" pred="when">
+              <rel name="prop">
+                <node id="w8" pred="want">
+                  <rel name="agent">
+                    <node id="w7" pred="pron" num="sg" pers="2nd"/>
+                  </rel>
+                  <rel name="theme">
+                    <node id="w10" pred="return">
+                      <rel name="agent">
+                        <node idref="x1"/>
+                      </rel>
+                    </node>
+                  </rel>
+                </node>
+              </rel>
+            </node>
+          </rel>
+        </node>
+      </rel>
+    </node>
+  </lf>
+  <target>can you now please tell me when you want to return</target>
+</xml>

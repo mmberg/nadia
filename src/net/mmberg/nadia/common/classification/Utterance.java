@@ -2,6 +2,7 @@ package net.mmberg.nadia.common.classification;
 
 import java.util.HashSet;
 
+//TODO merge with other Utterance Classes
 public class Utterance {
 
 	private String text;

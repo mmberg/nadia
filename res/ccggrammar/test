@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xml>
+  <lf>
+    <node id="w3" pred="request">
+      <rel name="type">
+        <node id="w4" pred="temporal"/>
+      </rel>
+      <rel name="verb">
+        <node id="w8" pred="leave"/>
+      </rel>
+    </node>
+  </lf>
+  <target>can you please specify when you want to leave</target>
+</xml>

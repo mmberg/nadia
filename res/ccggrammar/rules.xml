@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<rules name="lab-1">
+
+  <application dir="forward"/>
+  <application dir="backward"/>
+
+<!-- simple np can be commands: 'your destination (please)'-->
+  <typechanging name="command">
+    <arg>
+      <atomcat type="np">
+      	<fs id="1">
+      	<feat attr="index">
+		   	<lf>
+		   		<nomvar name="X"/>
+			  	</lf>
+		   </feat>
+      	</fs>
+      </atomcat>
+    </arg>
+    <result>
+      <atomcat type="s">
+        <fs id="1">
+         <feat attr="stype" val="cmd" />
+     		<feat attr="index">
+		   	<lf>
+		   		<nomvar name="X"/>
+			  	</lf>
+		   </feat>	        	
+        </fs>
+      </atomcat>
+    </result>
+  </typechanging>
+  
+  <!-- simple np can be commands: 'destination (please)'-->
+  <typechanging name="command2">
+    <arg>
+      <atomcat type="n">
+      	<fs id="1">
+      	<feat attr="index">
+		   	<lf>
+		   		<nomvar name="X"/>
+			  	</lf>
+		   </feat>
+      	</fs>
+      </atomcat>
+    </arg>
+    <result>
+      <atomcat type="s">
+        <fs id="1">
+         <feat attr="stype" val="cmd" />
+     		<feat attr="index">
+		   	<lf>
+		   		<nomvar name="X"/>
+			  	</lf>
+		   </feat>	        	
+        </fs>
+      </atomcat>
+    </result>
+  </typechanging>
+  
+</rules>

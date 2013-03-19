@@ -1,0 +1,37 @@
+    <regression>
+      <item numOfParses="1" string="Peter sleeps"/>
+      <item numOfParses="1" string="does Peter sleep"/>
+      <item numOfParses="1" string="does Peter want to sleep"/>
+      <item numOfParses="1" string="do you want to sleep"/>
+      <item numOfParses="1" string="do you sleep"/>
+      <item numOfParses="1" string="do you want to go"/>
+      <item numOfParses="1" string="do you really want to go"/>
+      <item numOfParses="1" string="when do you want to go"/>
+      <item numOfParses="1" string="when do you want to leave"/>
+      <item numOfParses="1" string="when do you return"/>
+      <item numOfParses="1" string="when do you want to go to London"/>
+      <item numOfParses="1" string="when do you want to leave London"/>
+      <item numOfParses="1" string="can you tell me when you want to leave London"/>
+      <item numOfParses="1" string="could you please tell me your destination"/>
+      <item numOfParses="1" string="now please tell me when you want to leave"/>
+      <item numOfParses="1" string="now tell me your destination please"/>
+      <item numOfParses="1" string="and when do you want to go"/>
+      <item numOfParses="1" string="and your destination"/>
+      
+      <item numOfParses="0" string="Peter sleep"/>
+      <item numOfParses="0" string="Peter to sleep"/>
+      <item numOfParses="0" string="do Peter sleep"/>
+      <item numOfParses="0" string="do Peter sleeps"/>
+      <item numOfParses="0" string="does Peter sleeps"/>
+      <item numOfParses="0" string="does Peter want to sleeps"/>
+      <item numOfParses="0" string="does Peter wants to sleep"/>
+      <item numOfParses="0" string="do Peter want to sleep"/>
+      <item numOfParses="0" string="does you want to go"/>
+      <item numOfParses="0" string="do you wants to go"/>
+      <item numOfParses="0" string="do you want to goes"/>
+      <item numOfParses="0" string="when do you want to leave to London"/>
+      <item numOfParses="0" string="when do you want to go London"/>
+      <item numOfParses="0" string="can you tell me when your want to leave London"/>
+      <item numOfParses="0" string="please now tell me when you want to leave"/>
+      <item numOfParses="0" string="and and your destination"/>
+    </regression>

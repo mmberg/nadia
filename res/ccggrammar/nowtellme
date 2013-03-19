@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xml>
+  <lf>
+    <node id="w1" pred="tell" modifier="temporal-opener" politeness="yes">
+      <rel name="patient">
+        <node id="w2" pred="pron" num="sg" pers="1st"/>
+      </rel>
+      <rel name="theme">
+        <node id="w4" pred="destination">
+          <rel name="mod">
+            <node id="w3" pred="pron" num="sg" pers="2nd"/>
+          </rel>
+        </node>
+      </rel>
+    </node>
+  </lf>
+  <target>now tell me your destination please</target>
+</xml>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xml>
+  <lf>
+    <node id="w0" pred="when"/>
+    <node id="w2" pred="want" mood="interrogative">
+      <rel name="agent">
+        <node id="w1" pred="you"/>
+      </rel>
+      <rel name="obj">
+        <node id="w4" pred="go"/>
+      </rel>
+    </node>
+  </lf>
+  <target>when you want to go</target>
+</xml>

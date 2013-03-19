@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xml>
+  <lf>
+    <node id="w0" pred="temporal">
+      <rel name="prop">
+        <node idref="x1"/>
+      </rel>
+    </node>
+    <node id="w1" pred="yn">
+      <rel name="prop">
+	<node id="w5">
+        <one-of>
+		<atts pred="begin"/>
+		<atts pred="leave"/>
+	</one-of>
+	</node>
+      </rel>
+    </node>
+  </lf>
+  <target>when do you want to begin_your_journey</target>
+</xml>

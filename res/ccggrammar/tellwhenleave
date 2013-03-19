@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xml>
+  <lf>
+    <node id="w0" pred="tell"/>
+    <node id="w2" pred="when"/>
+    <node id="w4" pred="leave"/>
+  </lf>
+  <target>tell me when you leave</target>
+</xml>

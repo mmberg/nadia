@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<morph name="lab-1">
+
+  <entry word="when" pos="wh-word"/>
+  <entry word="where" pos="wh-word"/>
+  <entry word="what" pos="wh-word"/>
+  <entry word="at_what_time" pos="wh-word"/>
+  <entry word="on_what_date" pos="wh-word"/>
+  <entry word="for_how_many" pos="wh-n-word"/> <!-- how many DO YOU accompany you? instead: how many PERSONS accompany you?-->
+  
+  <entry word="if" pos="cond"/> <!-- Can you tell me IF you want to go? -->
+  
+  <entry word="does" pos="do-aux" macros="@sg @3rd @nom" stem="do"/>
+  <entry word="do" pos="do-aux" macros="@sg @2nd @nom" />
+  
+  <entry word="can" pos="modal" macros="@sg @2nd @nom" />
+  <entry word="could" stem="can" pos="modal" macros="@sg @2nd @nom @subj" />
+  <entry word="would" stem="will" pos="modal" macros="@sg @2nd @nom @subj" />
+
+  <entry word="want" pos="emo-verb" macros="@baseform"/>
+  <entry word="like" pos="emo-verb" macros="@baseform"/>
+  <entry word="want" pos="emo-verb" macros="@not_baseform @sg @2nd"/>
+  <entry word="wants" stem="want" pos="emo-verb" macros="@not_baseform @sg @3rd"/>
+  <entry word="like" pos="emo-verb" macros="@not_baseform @sg @2nd"/>
+  
+  <entry word="to" pos="to"/> <!-- infinitive marker, do not confuse with preposition -->
+   
+  <entry word="to" pos="prep"/>
+  <entry word="from" pos="prep"/>
+  <entry word="at" pos="prep"/>
+  <entry word="in" pos="prep"/>
+
+  <entry word="sleep" pos="intrans-verb" macros="@baseform"/>
+  <entry word="go" pos="intrans-verb" macros="@baseform"/>
+  <entry word="return" pos="intrans-verb" macros="@baseform"/>
+  <entry word="start" pos="intrans-verb" macros="@baseform"/>
+  <entry word="arrive" pos="intrans-verb" macros="@baseform"/>
+  <entry word="depart" pos="intrans-verb" macros="@baseform"/>
+  <entry word="do" pos="intrans-verb" macros="@baseform"/>
+    
+  <entry word="sleep" pos="intrans-verb" macros="@not_baseform @sg @2nd"/>  
+  <entry word="sleeps" stem="sleep" pos="intrans-verb" macros="@not_baseform @sg @3rd"/>
+  <entry word="go" pos="intrans-verb" macros="@not_baseform @sg @2nd"/>
+  <entry word="goes" stem="go" pos="intrans-verb" macros="@not_baseform @sg @3rd"/>
+  <entry word="return" pos="intrans-verb" macros="@not_baseform @sg @2nd"/>
+  <entry word="start" pos="intrans-verb" macros="@not_baseform @sg @2nd"/>
+  <entry word="leave" pos="intrans-verb" macros="@baseform"/>
+  <entry word="leave" pos="intrans-verb" macros="@not_baseform @sg @2nd"/>  
+  <entry word="specify" pos="intrans-verb" macros="@baseform"/>
+  <entry word="set_off" pos="intrans-verb" macros="@baseform"/>
+  <entry word="start_from" pos="intrans-verb" macros="@baseform"/>
+  <entry word="travel" pos="intrans-verb" macros="@baseform"/>
+  <entry word="be_away" pos="intrans-verb" macros="@baseform"/>
+  <entry word="book" pos="intrans-verb" macros="@baseform"/>  
+
+  <entry word="leave" pos="monotrans-verb" macros="@baseform"/>
+  <entry word="accompany" pos="monotrans-verb" macros="@baseform"/>
+  <entry word="leave" pos="monotrans-verb" macros="@not_baseform @sg @2nd"/>
+  <entry word="have" pos="monotrans-verb" macros="@baseform"/>
+  <entry word="have" pos="monotrans-verb" macros="@not_baseform @sg @2nd"/>
+  
+  <entry word="tell" pos="ditrans-verb" macros="@baseform"/> <!-- is it monotransitive? -->
+  <entry word="tells" stem="tell" pos="ditrans-verb" macros="@not_baseform @sg @3rd"/>  
+  
+  <entry word="you" pos="personal-pronoun" stem="pron" macros="@sg-lf @2nd-lf @nom"/>
+  <entry word="me" pos="personal-pronoun" stem="pron" macros="@sg-lf @1st-lf @dat"/>
+  <entry word="him" pos="personal-pronoun" stem="pron" macros="@sg-lf @3rd-lf @dat"/>
+  <entry word="your" pos="personal-pronoun" stem="pron"  macros="@sg-lf @2nd-lf @gen"/>
+  
+  <entry word="the" pos="determiner" stem="det" macros="@def-lf"/>
+  <entry word="a" pos="determiner" stem="det" macros="@sg @indef-lf"/>  
+  <entry word="your" pos="determiner" stem="det" macros="@pers-lf"/>  
+  
+  <entry word="Peter" pos="proper-name" macros="@sg @3rd @nom"/>  
+  <entry word="London" pos="location"/>
+  <entry word="persons" pos="noun" macros="@pl"/>
+  <entry word="destination" pos="noun" macros="@sg"/>
+  <entry word="departure_city" pos="noun" macros="@sg"/>
+  <entry word="departure_date" pos="noun" macros="@sg"/>  
+  <entry word="date_of_departure" pos="noun" macros="@sg"/>  
+  <entry word="return_date" pos="noun" macros="@sg"/>  
+  <entry word="customer_card" pos="noun" macros="@sg"/> 
+
+  <entry word="travel_dates" pos="noun" macros="@pl"/>  
+
+  <entry word="please" pos="politeness"/>
+  
+  <entry word="really" pos="adverb"/>
+  
+  <entry word="and" pos="opener"/> <!-- And when do you want to start? -->
+  <entry word="now" pos="opener"/> <!-- Now tell me when you want to start. -->
+  <!-- <entry word="so" pos="opener"/>--> <!-- So you really want to go to London? -->
+
+
+<!-- fs:1 -->
+  <macro name="@baseform">
+  	<fs id="1"> 
+  		<feat attr="stype" val="b"/>   <!-- bare infinitive -->
+  	</fs>
+  </macro>
+  
+  <macro name="@not_baseform">
+  	<fs id="1">
+  		<feat attr="stype" val="dcl"/>
+  	</fs>
+  </macro>
+  
+  
+  <!-- fs: 2--> 
+  
+  <macro name="@def-lf">
+  	<fs id="2">
+  		<feat attr="det" val="def"/>
+  	</fs>
+  	<lf>
+		<satop nomvar="E">
+			<diamond mode="type">
+				<prop name="def"/>
+			</diamond>
+		</satop>
+	</lf>
+  </macro>
+  
+  <macro name="@indef-lf">
+  	<fs id="2">
+  		<feat attr="det" val="indef"/>
+  	</fs>
+  	<lf>
+		<satop nomvar="E">
+			<diamond mode="type">
+				<prop name="indef"/>
+			</diamond>
+		</satop>
+	</lf>
+  </macro>
+  
+    <macro name="@pers-lf">
+  	<fs id="2">
+  		<feat attr="det" val="pers"/>
+  	</fs>
+  	<lf>
+		<satop nomvar="E">
+			<diamond mode="type">
+				<prop name="pers"/>
+			</diamond>
+		</satop>
+	</lf>
+  </macro>
+   
+  <macro name="@dat">
+  	<fs id="2">
+  		<feat attr="case" val="dat"/>
+  	</fs>
+  </macro>
+  
+  <macro name="@nom">
+  	<fs id="2">
+  		<feat attr="case" val="nom"/>
+  	</fs>
+  </macro>
+  
+  <macro name="@gen">
+  	<fs id="2">
+  		<feat attr="case" val="gen"/>
+  	</fs>
+  </macro>
+  
+  <macro name="@1st-lf">
+  	<fs id="2">
+  		<feat attr="pers" val="1st"/>
+  	</fs>
+  	<lf>
+		<satop nomvar="X">
+			<diamond mode="pers">
+				<prop name="1st"/>
+			</diamond>
+		</satop>
+	</lf>
+  </macro>
+  
+  <macro name="@2nd-lf">
+  	<fs id="2">
+  		<feat attr="pers" val="2nd"/>
+  	</fs>
+  	<lf>
+		<satop nomvar="X">
+			<diamond mode="pers">
+				<prop name="2nd"/>
+			</diamond>
+		</satop>
+	</lf>
+  </macro>
+  
+  <macro name="@3rd-lf">
+  	<fs id="2">
+  		<feat attr="pers" val="3rd"/>
+  	</fs>
+  	<lf>
+		<satop nomvar="X">
+			<diamond mode="pers">
+				<prop name="3rd"/>
+			</diamond>
+		</satop>
+	</lf>
+  </macro> 
+  
+  <macro name="@sg-lf">
+  	<fs id="2">
+  		<feat attr="num" val="sg"/>
+  	</fs>
+  	<lf>
+		<satop nomvar="X">
+			<diamond mode="num">
+				<prop name="sg"/>
+			</diamond>
+		</satop>
+	</lf>
+  </macro> 
+
+  <macro name="@pl-lf">
+  	<fs id="2">
+  		<feat attr="num" val="pl"/>
+  	</fs>
+ 	<lf>
+		<satop nomvar="X">
+			<diamond mode="num">
+				<prop name="pl"/>
+			</diamond>
+		</satop>
+	</lf>
+  </macro> 
+  
+  <macro name="@1st">
+  	<fs id="2">
+  		<feat attr="pers" val="1st"/>
+  	</fs>
+  </macro>
+  
+  <macro name="@2nd">
+  	<fs id="2">
+  		<feat attr="pers" val="2nd"/>
+  	</fs>
+  </macro>
+  
+  <macro name="@3rd">
+  	<fs id="2">
+  		<feat attr="pers" val="3rd"/>
+  	</fs>
+  </macro> 
+  
+  <macro name="@sg">
+  	<fs id="2">
+  		<feat attr="num" val="sg"/>
+  	</fs>
+  </macro> 
+
+  <macro name="@pl">
+  	<fs id="2">
+  		<feat attr="num" val="pl"/>
+  	</fs>
+  </macro> 
+
+  <macro name="@subj">
+  	<fs id="2">
+  		<feat attr="mood" val="subj"/>
+  	</fs>
+	<lf>
+		<satop nomvar="E">
+			<diamond mode="mood">
+				<prop name="subj"/>
+			</diamond>
+		</satop>
+	</lf>
+  </macro>  
+</morph>
+
+

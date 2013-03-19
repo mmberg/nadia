@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xml>
+  <lf>
+    <satop nom="w1">
+      <prop name="request"/>
+      <diamond mode="Prop">
+        <nom name="w2"/>
+        <prop name="bla"/>
+      </diamond>
+    </satop>
+    <satop nom="x1">
+      <diamond mode="Pol">
+        <nom name="w0"/>
+        <prop name="plz"/>
+      </diamond>
+    </satop>
+  </lf>
+  <target>plz specify bla</target>
+</xml>
