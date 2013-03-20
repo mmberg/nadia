@@ -4,7 +4,7 @@ package net.mmberg.nadia.processor.nlu.aqdparser;
 public class YNParser extends Parser{
 
 	public YNParser() {
-		super("decision.yn");
+		super("decision");
 	}
 
 	@Override

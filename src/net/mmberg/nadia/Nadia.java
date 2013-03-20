@@ -30,15 +30,11 @@ public class Nadia {
 	
 	private void init(){
 		//format logging
-//		 for(Handler h:logger.getHandlers()){
-//			 logger.removeHandler(h);
-//		 }
-		 logger.setUseParentHandlers(false);
-		 
-		 CustomFormatter fmt = new CustomFormatter();
-		 Handler ch = new ConsoleHandler();
-		 ch.setFormatter(fmt);
-		 logger.addHandler(ch);
+		logger.setUseParentHandlers(false);	 
+		CustomFormatter fmt = new CustomFormatter();
+		Handler ch = new ConsoleHandler();
+		ch.setFormatter(fmt);
+		logger.addHandler(ch);
 		
 		logger.setLevel(Level.INFO);
 	}
@@ -47,6 +43,7 @@ public class Nadia {
 		return logger;
 	}
 
+	
 	public class CustomFormatter extends Formatter {
 
 		public String format(LogRecord record) {

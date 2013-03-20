@@ -6,7 +6,7 @@ import java.util.Arrays;
 public class CityParser extends Parser{
 
 	public CityParser() {
-		super("fact.location.city");
+		super("fact.named_entity.non_animated.location.city");
 	}
 
 	@Override

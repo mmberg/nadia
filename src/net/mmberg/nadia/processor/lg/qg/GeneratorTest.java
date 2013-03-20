@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.logging.Logger;
 
 import net.mmberg.nadia.Nadia;
+import net.mmberg.nadia.NadiaConfig;
 import net.mmberg.nadia.dialogmodel.aqd.AQD;
 import net.mmberg.nadia.dialogmodel.aqd.AQDContext;
 import net.mmberg.nadia.dialogmodel.aqd.AQDForm;
@@ -26,7 +27,8 @@ public class GeneratorTest {
 	
 	public GeneratorTest(){
 		try{
-			gen = new Generator(new URL("file:///"+System.getProperty("user.dir")+"/res/ccggrammar/grammar.xml"), new URL("file:///"+System.getProperty("user.dir")+"/res/ontology/lexicon.owl"));
+			NadiaConfig config=NadiaConfig.getInstance();
+			gen = new Generator(new URL(config.getProperty(NadiaConfig.CCGGRAMMARPATH)), new URL(config.getProperty(NadiaConfig.ONTOLOGYPATH)));
 		}
 		catch(MalformedURLException ex){
 			ex.printStackTrace();

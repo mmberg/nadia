@@ -20,15 +20,11 @@ public class DialogManager {
 		init();
 	}
 	
-	
 	private void init(){
-
-		//Train Dialog Act Classifier
 		sodarec=new SodaRecognizer();
-		sodarec.train();
+		sodarec.train(); //train Dialog Act Classifier
 		
-		//init Parsers
-		Parsers.init();
+		Parsers.init(); //init (i.e. activate) Parsers
 	}
 		
 	public void run(Dialog dialog){
@@ -42,7 +38,6 @@ public class DialogManager {
 		
 		//ask every ITO
 		for(ITO ito : itos){
-			
 			context.setCurrentQuestion(ito); //point current question to this ITO
 			
 			String question=ito.ask(); //get question
@@ -52,7 +47,6 @@ public class DialogManager {
 			//process user answer:
 			sodarec.predict(answer,context); //identify dialog act (sets features and soda by reference), access result: answer.getSoda()
 			ParseResults results=interpret(ito,answer.getText()); //Parsing
-					
 		}
 		
 	}

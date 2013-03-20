@@ -48,7 +48,7 @@ public class DialogStore {
 		task1.addITO(ito);
 		//an ITO is associated with AQDs
 		aqd=new AQD();
-		aqd.setAQDType(new AQDType("decision.yn"));
+		aqd.setAQDType(new AQDType("decision"));
 		ito.setAQD(aqd);	
 		
 		//2
@@ -56,16 +56,15 @@ public class DialogStore {
 		task1.addITO(ito);
 		//an ITO is associated with AQDs
 		aqd=new AQD();
-		aqd.setAQDType(new AQDType("fact.location.city"));
+		aqd.setAQDType(new AQDType("fact.named_entity.non_animated.location.city"));
 		ito.setAQD(aqd);	
-		
-		//new AQD(new AQDType("fact.temporal.date"), new AQDContext("begin","trip"), new AQDForm(politeness, formality));
-		
+				
 		//3
 		ito=new ITO("getDate", "When do you want to leave?");	
 		task1.addITO(ito);
-		aqd=new AQD();
-		aqd.setAQDType(new AQDType("fact.temporal.date"));
+		//aqd=new AQD();
+		//aqd.setAQDType(new AQDType("fact.temporal.date"));
+		aqd=new AQD(new AQDType("fact.temporal.date"), new AQDContext("begin","trip"), new AQDForm()); //TODO politeness and formality set on dialogue level
 		ito.setAQD(aqd);	
 		
 		return dialog;
