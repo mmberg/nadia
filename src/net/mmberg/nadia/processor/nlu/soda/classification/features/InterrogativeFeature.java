@@ -3,7 +3,7 @@ package net.mmberg.nadia.processor.nlu.soda.classification.features;
 import java.util.Arrays;
 import java.util.HashSet;
 
-import net.mmberg.nadia.processor.manage.DialogManagerContext;
+import net.mmberg.nadia.processor.manager.DialogManagerContext;
 
 public class InterrogativeFeature extends Feature{
 	

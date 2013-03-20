@@ -1,4 +1,4 @@
-package net.mmberg.nadia.processor.manage;
+package net.mmberg.nadia.processor.manager;
 
 import net.mmberg.nadia.dialogmodel.*;
 

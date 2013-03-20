@@ -1,6 +1,6 @@
 package net.mmberg.nadia.processor.nlu.soda.classification.features;
 
-import net.mmberg.nadia.processor.manage.DialogManagerContext;
+import net.mmberg.nadia.processor.manager.DialogManagerContext;
 
 public class DummyFeature extends Feature{
 	

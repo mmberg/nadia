@@ -1,4 +1,4 @@
-package net.mmberg.nadia.processor.lg.interrogatives;
+package net.mmberg.nadia.processor.lg.qg.interrogatives;
 
 import java.util.ArrayList;
 import java.util.Arrays;

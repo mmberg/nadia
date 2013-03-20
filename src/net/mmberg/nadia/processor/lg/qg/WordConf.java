@@ -1,4 +1,4 @@
-package net.mmberg.nadia.processor.lg;
+package net.mmberg.nadia.processor.lg.qg;
 
 public class WordConf {
 

@@ -1,4 +1,4 @@
-package net.mmberg.nadia.processor.lg;
+package net.mmberg.nadia.processor.lg.qg;
 
 /**
  * Language Generation Configuration Package (Meaning and Style) 

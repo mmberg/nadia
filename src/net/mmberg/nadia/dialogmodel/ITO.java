@@ -26,12 +26,15 @@ public class ITO {
 		this.aqd=aqd;
 	}
 	
-	public ParseResults parse(String utterance){
+	public ParseResults parse(String utterance, boolean exact){
 		//may use AQD but don't need to
 		String answer_type=aqd.getAQDType().getAnswerType();
-		ParseResults results = new ParseResults(utterance);
+		ParseResults results = null;
 		try{
-			results=Parsers.parse(utterance, answer_type);
+			if(exact)
+				results=Parsers.parseExact(utterance, answer_type);
+			else
+				results=Parsers.parseWithAllParsers(utterance);
 		}
 		catch(Exception ex){
 			ex.printStackTrace();

@@ -1,8 +1,10 @@
-package net.mmberg.nadia.processor.lg.jena;
+package net.mmberg.nadia.processor.lg.qg;
 
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.logging.Logger;
+
+import net.mmberg.nadia.Nadia;
 
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.OntModelSpec;
@@ -22,7 +24,7 @@ public class Lexicon {
 			  "PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>"+
 			  "PREFIX owl:  <http://www.w3.org/2002/07/owl#>"+
 			  "PREFIX fn: <http://www.w3.org/2005/xpath-functions#>";
-    private static Logger logger=Logger.getLogger("net.mmberg.qg");
+    private static Logger logger=Nadia.getLogger();
 	
 	public Lexicon(URL ontologyURL){
 		this.load(ontologyURL);
@@ -99,7 +101,7 @@ public class Lexicon {
 					"}"+n+
 					"ORDER BY asc(?r)";
 		  
-		  logger.info(querystring);
+		  logger.fine(querystring);
 		  return query(querystring);
 	}
 }

@@ -2,7 +2,7 @@ package net.mmberg.nadia.processor.nlu.soda.classification.features;
 
 import java.util.Set;
 
-import net.mmberg.nadia.processor.manage.DialogManagerContext;
+import net.mmberg.nadia.processor.manager.DialogManagerContext;
 
 public abstract class Feature {
 

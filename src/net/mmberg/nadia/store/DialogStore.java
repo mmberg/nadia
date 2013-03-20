@@ -6,6 +6,8 @@ import net.mmberg.nadia.dialogmodel.Dialog;
 import net.mmberg.nadia.dialogmodel.ITO;
 import net.mmberg.nadia.dialogmodel.Task;
 import net.mmberg.nadia.dialogmodel.aqd.AQD;
+import net.mmberg.nadia.dialogmodel.aqd.AQDContext;
+import net.mmberg.nadia.dialogmodel.aqd.AQDForm;
 import net.mmberg.nadia.dialogmodel.aqd.AQDType;
 
 public class DialogStore {
@@ -56,6 +58,8 @@ public class DialogStore {
 		aqd=new AQD();
 		aqd.setAQDType(new AQDType("fact.location.city"));
 		ito.setAQD(aqd);	
+		
+		//new AQD(new AQDType("fact.temporal.date"), new AQDContext("begin","trip"), new AQDForm(politeness, formality));
 		
 		//3
 		ito=new ITO("getDate", "When do you want to leave?");	

@@ -1,13 +1,11 @@
-package net.mmberg.nadia.processor.lg.ccg;
+package net.mmberg.nadia.processor.lg.qg;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 
-import net.mmberg.nadia.processor.lg.*;
-import net.mmberg.nadia.processor.lg.dialog.*;
-import net.mmberg.nadia.processor.lg.interrogatives.*;
-import net.mmberg.nadia.processor.lg.jena.*;
+import net.mmberg.nadia.dialogmodel.aqd.AQD;
+import net.mmberg.nadia.processor.lg.qg.interrogatives.*;
 
 import org.jdom.Document;
 import org.jdom.Element;
@@ -40,19 +38,13 @@ public class Generator {
 		}
 	}
 
-	/*
-	public Generator(){
-		//this.init();
-	}
-	*/
-	
+
 	public Generator(URL grammarURL, URL ontologyURL){
 		this.init(grammarURL, ontologyURL);
 	}
 	
 	private void init(URL grammarURL, URL ontologyURL) {
 		try {
-			//URL grammarURL = new URL("file:///"+System.getProperty("user.dir")+"/res/7/grammar.xml");
 			grammar = new Grammar(grammarURL);
 			realizer = new Realizer(grammar);
 			lex = new Lexicon(ontologyURL);
@@ -262,16 +254,16 @@ public class Generator {
 		}
 	}
 	
-	public String generateQuestion(Meaning meaning, int politeness, int formality, boolean opener){
-		WordConf wconf = chooseWords(meaning.getType(), meaning.getSpecification(), meaning.getReference(), formality);
-		GenConf gconf=new GenConf(meaning.getType(), wconf.getWhWord(), wconf.getVerb(), wconf.getNoun(), formality, politeness, opener);
+	public String generateQuestion(AQD aqd){
+		WordConf wconf = chooseWords(aqd.getAQDType().getAnswerType(), aqd.getContext().getSpecification(), aqd.getContext().getReference(), aqd.getForm().getFormality());
+		GenConf gconf=new GenConf(aqd.getAQDType().getAnswerType(), wconf.getWhWord(), wconf.getVerb(), wconf.getNoun(), aqd.getForm().getFormality(), aqd.getForm().getPoliteness(), aqd.getForm().getTemporalOpener());
 		return makeBeautifully(generateParaphrase(gconf));
 	}
+	
 	
 	private String makeBeautifully(String phrase){
 		phrase=phrase.replaceAll("_", " ");
 		phrase=phrase.substring(0, 1).toUpperCase()+phrase.substring(1);
-		
 		return phrase;
 	}
 	

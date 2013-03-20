@@ -1,4 +1,4 @@
-package net.mmberg.nadia.processor.manage;
+package net.mmberg.nadia.processor.manager;
 
 import java.util.logging.Logger;
 
@@ -62,7 +62,7 @@ public class DialogManager {
 	}
 	
 	private ParseResults process(ITO ito, String user_answer){
-		return ito.parse(user_answer);
+		return ito.parse(user_answer, true);
 	}
 
 }
