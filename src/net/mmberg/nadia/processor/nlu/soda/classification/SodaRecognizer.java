@@ -6,7 +6,7 @@ import java.util.Arrays;
 import net.mmberg.nadia.processor.nlu.aqdparser.ParseResults;
 import net.mmberg.nadia.processor.nlu.soda.Soda;
 import net.mmberg.nadia.processor.nlu.soda.classification.features.*;
-import net.mmberg.nadia.processor.manage.DialogManagerContext;
+import net.mmberg.nadia.processor.manager.DialogManagerContext;
 import net.mmberg.nadia.utterance.TrainingUtterance;
 import net.mmberg.nadia.utterance.UserUtterance;
 
@@ -64,10 +64,11 @@ public class SodaRecognizer {
 		//Post-Processing
 		if(act.equals(Soda.INFORMATION_PROVIDING)){
 			//if no question is open or if the answer cannot be parsed with the current question, make it a seeking act
-			if(!context.isQuestionOpen() || 
-					(context.getCurrentQuestion().parse(utterance.getText()).getState()==ParseResults.NOMATCH)){
-				act=Soda.INFORMATION_SEEKING;
-				System.out.println("Postprocessing: prov -> seek");
+			if( !context.isQuestionOpen() || 
+				(context.getCurrentQuestion().parse(utterance.getText(),true).getState()==ParseResults.NOMATCH))
+			{
+					act=Soda.INFORMATION_SEEKING;
+					System.out.println("Postprocessing: prov -> seek");
 			}
 		}
 		

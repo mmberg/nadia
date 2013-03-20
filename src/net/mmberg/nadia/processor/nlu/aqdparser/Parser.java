@@ -6,12 +6,16 @@ import java.util.regex.Pattern;
 
 public abstract class Parser {
 	
-	protected String name;
-	protected String klass;
+	protected String name; //the java class name
+	protected String type; //the type (i.e. class) that the parser parses, e.g. fact.temporal.date
 
-	public Parser(String klass){
+	public Parser(String type){
 		this.name=this.getClass().getName();
-		this.klass=klass;
+		this.type=type;
+	}
+	
+	public String getType(){
+		return this.type;
 	}
 
 	protected void match_regex(ParseResults results, String regex, String className, String classValue){
@@ -20,7 +24,7 @@ public abstract class Parser {
 		Matcher m = p.matcher(results.getUtterance());
 		
 		 while(m.find()){
-			 results.add(new ParseResult(this.name, m.start(), m.end(), klass, classValue));
+			 results.add(new ParseResult(this.name, m.start(), m.end(), m.group(0), type, classValue));
 		 }
 		}
 	

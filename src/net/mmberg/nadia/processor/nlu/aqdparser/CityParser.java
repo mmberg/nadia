@@ -6,7 +6,7 @@ import java.util.Arrays;
 public class CityParser extends Parser{
 
 	public CityParser() {
-		super("CITY");
+		super("fact.location.city");
 	}
 
 	@Override
@@ -20,7 +20,7 @@ public class CityParser extends Parser{
 				
 		if(tokens.size()>0){
 			for(String city : tokens){
-				results.add(new ParseResult(this.name,0,0,this.klass,city));
+				results.add(new ParseResult(this.name,0,0,city,this.type,city));
 			}
 		}
 

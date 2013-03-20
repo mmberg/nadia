@@ -1,9 +1,11 @@
 package net.mmberg.nadia.processor.nlu.aqdparser;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 public class ParseResults extends ArrayList<ParseResult>{
 
+	private static final long serialVersionUID = 1L;
 	public static final int NOMATCH=0;
 	public static final int MATCH=1;
 	
@@ -18,6 +20,12 @@ public class ParseResults extends ArrayList<ParseResult>{
 	public boolean add(ParseResult result){
 		state=MATCH;
 		return super.add(result);
+	}
+	
+	@Override
+	public boolean addAll(Collection<? extends ParseResult> results){
+		state=MATCH;
+		return super.addAll(results);
 	}
 	
 	public int getState(){
