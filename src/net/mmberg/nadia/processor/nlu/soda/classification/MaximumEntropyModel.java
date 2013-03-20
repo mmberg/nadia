@@ -2,7 +2,9 @@ package net.mmberg.nadia.processor.nlu.soda.classification;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
+import net.mmberg.nadia.Nadia;
 import net.mmberg.nadia.utterance.TrainingUtterance;
 import net.mmberg.nadia.utterance.UserUtterance;
 
@@ -16,6 +18,7 @@ public class MaximumEntropyModel {
 	public static double SMOOTHING_OBSERVATION = 0.1;
 	private MaxentModel model;
 	private boolean trained=false;
+	private final static Logger logger = Nadia.getLogger();
 	
 	public void train(ArrayList<TrainingUtterance> training_utterances){
 		
@@ -48,7 +51,7 @@ public class MaximumEntropyModel {
 		if(trained){
 				String[] features = utterance.getFeatures().toArray(new String[utterance.getFeatures().size()]);
 				double[] ocs = model.eval(features);
-				System.out.println("For utterance: '" +  utterance.getText() + "' and feats: " + utterance.getFeatures() + "\n" + model.getAllOutcomes(ocs) + " -> " + model.getBestOutcome(ocs) + "\n");
+				logger.info("Utterance: '" +  utterance.getText() + "' and feats " + utterance.getFeatures() + "\n   resulted in: " + model.getAllOutcomes(ocs) + " -> " + model.getBestOutcome(ocs));
 				return model.getBestOutcome(ocs);
 		}
 		return "untrained";
@@ -59,7 +62,7 @@ public class MaximumEntropyModel {
 			for(UserUtterance utterance:utterances){
 				String[] features = utterance.getFeatures().toArray(new String[utterance.getFeatures().size()]);
 				double[] ocs = model.eval(features);
-				System.out.println("For utterance: '" +  utterance.getText() + "' and feats: " + utterance.getFeatures() + "\n" + model.getAllOutcomes(ocs) + " -> " + model.getBestOutcome(ocs) + "\n");
+				logger.info("Utterance: '" +  utterance.getText() + "' and feats " + utterance.getFeatures() + "\n   resulted in: " + model.getAllOutcomes(ocs) + " -> " + model.getBestOutcome(ocs));
 			}
 		}
 	}

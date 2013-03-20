@@ -1,6 +1,10 @@
 package net.mmberg.nadia;
 
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Formatter;
+import java.util.logging.Handler;
 import java.util.logging.Level;
+import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 import net.mmberg.nadia.dialogmodel.Dialog;
@@ -25,13 +29,16 @@ public class Nadia {
 	}
 	
 	private void init(){
-//		//log to system.out instead system.err
-//		SimpleFormatter fmt = new SimpleFormatter();
-//		 StreamHandler sh = new StreamHandler(System.out, fmt);
+		//format logging
 //		 for(Handler h:logger.getHandlers()){
 //			 logger.removeHandler(h);
 //		 }
-//		 logger.addHandler(sh);
+		 logger.setUseParentHandlers(false);
+		 
+		 CustomFormatter fmt = new CustomFormatter();
+		 Handler ch = new ConsoleHandler();
+		 ch.setFormatter(fmt);
+		 logger.addHandler(ch);
 		
 		logger.setLevel(Level.INFO);
 	}
@@ -40,4 +47,20 @@ public class Nadia {
 		return logger;
 	}
 
+	public class CustomFormatter extends Formatter {
+
+		public String format(LogRecord record) {
+			
+			StringBuffer sb = new StringBuffer();
+			sb.append(record.getLevel().getName());
+			sb.append(" (");
+			sb.append(record.getSourceClassName().substring(record.getSourceClassName().lastIndexOf('.')+1));
+			sb.append("): ");
+			sb.append(formatMessage(record));
+			sb.append("\n");
+
+			return sb.toString();
+		}
+	}
+	
 }

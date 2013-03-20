@@ -2,7 +2,9 @@ package net.mmberg.nadia.processor.nlu.soda.classification;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.logging.Logger;
 
+import net.mmberg.nadia.Nadia;
 import net.mmberg.nadia.processor.nlu.aqdparser.ParseResults;
 import net.mmberg.nadia.processor.nlu.soda.Soda;
 import net.mmberg.nadia.processor.nlu.soda.classification.features.*;
@@ -13,6 +15,7 @@ import net.mmberg.nadia.utterance.UserUtterance;
 public class SodaRecognizer {
 
 	private MaximumEntropyModel model;
+	private final static Logger logger = Nadia.getLogger();
 	
 	public SodaRecognizer(){
 		
@@ -64,11 +67,11 @@ public class SodaRecognizer {
 		//Post-Processing
 		if(act.equals(Soda.INFORMATION_PROVIDING)){
 			//if no question is open or if the answer cannot be parsed with the current question, make it a seeking act
-			if( !context.isQuestionOpen() || 
-				(context.getCurrentQuestion().parse(utterance.getText(),true).getState()==ParseResults.NOMATCH))
+			ParseResults res = context.getCurrentQuestion().parse(utterance.getText(),true);
+			if( !context.isQuestionOpen() || (res.getState()==ParseResults.NOMATCH))
 			{
 					act=Soda.INFORMATION_SEEKING;
-					System.out.println("Postprocessing: prov -> seek");
+					logger.info("Postprocessing (open:"+context.isQuestionOpen()+", parseState:"+res.getState()+"): prov -> seek");
 			}
 		}
 		
@@ -129,7 +132,6 @@ public class SodaRecognizer {
 			for(Feature extractor : featureExtractors){
 				extractor.analyze(utterance.getText().toLowerCase(), context, utterance.getFeatures());
 			}
-			System.out.println(utterance.getFeatures());	
 		}
 		
 	}

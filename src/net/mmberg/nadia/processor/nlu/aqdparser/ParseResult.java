@@ -23,6 +23,10 @@ public class ParseResult {
 		return this.matched_sequence;
 	}
 	
+	public String getParserName(){
+		return this.parser_name;
+	}
+	
 	public Object getResultObject(){
 		return result_object;
 	}
@@ -33,6 +37,6 @@ public class ParseResult {
 	
 	@Override
 	public String toString(){
-		return parser_name+" matched sequence "+begin_match+"-"+end_match+" as "+result_classname+":"+result_object.toString();
+		return parser_name+" matched sequence "+begin_match+"-"+end_match+" ("+ matched_sequence +") as "+result_classname+":"+result_object.toString();
 	}
 }

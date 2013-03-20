@@ -10,7 +10,7 @@ public abstract class Parser {
 	protected String type; //the type (i.e. class) that the parser parses, e.g. fact.temporal.date
 
 	public Parser(String type){
-		this.name=this.getClass().getName();
+		this.name=this.getClass().getSimpleName();
 		this.type=type;
 	}
 	

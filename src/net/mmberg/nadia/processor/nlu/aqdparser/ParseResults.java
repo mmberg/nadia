@@ -24,7 +24,9 @@ public class ParseResults extends ArrayList<ParseResult>{
 	
 	@Override
 	public boolean addAll(Collection<? extends ParseResult> results){
-		state=MATCH;
+		if(results.size()>0){
+			state=MATCH;
+		}
 		return super.addAll(results);
 	}
 	

@@ -2,6 +2,7 @@ package net.mmberg.nadia.processor.manager;
 
 import java.util.logging.Logger;
 
+import net.mmberg.nadia.Nadia;
 import net.mmberg.nadia.processor.nlu.aqdparser.ParseResults;
 import net.mmberg.nadia.processor.nlu.aqdparser.Parsers;
 import net.mmberg.nadia.processor.nlu.soda.classification.SodaRecognizer;
@@ -13,7 +14,7 @@ import net.mmberg.nadia.dialogmodel.*;
 public class DialogManager {
 
 	private SodaRecognizer sodarec;
-	private final static Logger logger = Logger.getLogger(DialogManager.class.getName()); 
+	private final static Logger logger = Nadia.getLogger(); 
 	
 	public DialogManager(){
 		init();
@@ -46,23 +47,20 @@ public class DialogManager {
 			
 			String question=ito.ask(); //get question
 			String user_answer=ui.exchange(question); //send question to user and receive answer
-			
 			UserUtterance answer=new UserUtterance(user_answer);
 			
 			//process user answer:
-			//1. Soda
-			sodarec.predict(answer,context); //identify dialog act (sets features and soda by reference)
-			System.out.println("result: "+answer.getSoda());
-			
-			//2. Parsing
-			ParseResults results=process(ito,answer.getText());
-			logger.info(results.toString());
+			sodarec.predict(answer,context); //identify dialog act (sets features and soda by reference), access result: answer.getSoda()
+			ParseResults results=interpret(ito,answer.getText()); //Parsing
+					
 		}
 		
 	}
 	
-	private ParseResults process(ITO ito, String user_answer){
-		return ito.parse(user_answer, true);
+	private ParseResults interpret(ITO ito, String user_answer){
+		ParseResults results=ito.parse(user_answer, true);
+		if(results.size()>0) logger.info(results.toString()); else logger.warning("no parser matched");
+		return results;
 	}
 
 }
