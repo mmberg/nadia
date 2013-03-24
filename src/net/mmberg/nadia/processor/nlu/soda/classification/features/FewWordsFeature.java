@@ -1,7 +1,5 @@
 package net.mmberg.nadia.processor.nlu.soda.classification.features;
 
-import net.mmberg.nadia.processor.manager.DialogManagerContext;
-
 public class FewWordsFeature extends Feature {
 
 	public FewWordsFeature(){
@@ -9,7 +7,7 @@ public class FewWordsFeature extends Feature {
 	}
 
 	@Override
-	protected boolean hasFeature(String utterance, DialogManagerContext context){
+	protected boolean hasFeature(String utterance){
 		return (utterance.split(" ").length<=2);
 	}
 

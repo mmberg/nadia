@@ -4,16 +4,16 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import net.mmberg.nadia.ui.UIConsumer.UIConsumerMessage;
+import net.mmberg.nadia.ui.UIConsumer.UIConsumerMessage.Meta;
+
 public class ConsoleInterface extends UserInterface{
 
-	@Override
-	public void send(String text) {
+	private void send(String text) {
 		System.out.println(text);
-		
 	}
 
-	@Override
-	public String receive() {
+	private String receive() {
 		String user_answer="";
 		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 		try {
@@ -25,4 +25,25 @@ public class ConsoleInterface extends UserInterface{
 		return user_answer;
 	}
 
+
+	@Override
+	public void start() {
+		UIConsumerMessage message=consumer.processUtterance(null);
+		String systemUtterance=message.getSystemUtterance();
+		send(systemUtterance);
+		
+		String userUtterance;		
+		while(!(userUtterance = receive()).equals("\r\n")){
+			message=consumer.processUtterance(userUtterance);
+			systemUtterance=message.getSystemUtterance();
+			if(message.getMeta()==Meta.END_OF_DIALOG) break;
+			send(systemUtterance);
+		}
+	}
+
+	@Override
+	public void stop() {
+		// TODO Auto-generated method stub
+		
+	}
 }

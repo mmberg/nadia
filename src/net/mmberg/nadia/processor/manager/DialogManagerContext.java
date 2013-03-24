@@ -4,12 +4,11 @@ import net.mmberg.nadia.dialogmodel.*;
 
 public class DialogManagerContext {
 
-	private static DialogManagerContext context=null;
-	
 	//Features
 	private Boolean question_open=false;
 	private ITO current_question;
-
+	private Boolean started=false;
+	
 	//Accessors
 	public void setQuestionOpen(Boolean question_open) {
 		this.question_open = question_open;
@@ -26,17 +25,13 @@ public class DialogManagerContext {
 	public ITO getCurrentQuestion(){
 		return this.current_question;
 	}
-	
-	//Singleton
-	private DialogManagerContext(){
-		
+
+	public Boolean getStarted() {
+		return started;
 	}
-	
-	public static DialogManagerContext getInstance(){
-		if(context==null){
-			context=new DialogManagerContext();
-		}
-		return context;
+
+	public void setStarted(Boolean started) {
+		this.started = started;
 	}
 	
 	

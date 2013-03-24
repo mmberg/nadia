@@ -44,7 +44,7 @@ public class DialogStore {
 		AQD aqd;
 		
 		//1
-		ito=new ITO("getDrinkDecision", "Would you like a drink?");	
+		ito=new ITO("getDrinkDecision", "Would you like a drink?", false);	
 		task1.addITO(ito);
 		//an ITO is associated with AQDs
 		aqd=new AQD();
@@ -52,7 +52,7 @@ public class DialogStore {
 		ito.setAQD(aqd);	
 		
 		//2
-		ito=new ITO("getCity", "Where do you want to go?");	
+		ito=new ITO("getCity", "Where do you want to go?", false);	
 		task1.addITO(ito);
 		//an ITO is associated with AQDs
 		aqd=new AQD();

@@ -26,13 +26,15 @@ public class GeneratorTest {
 	}
 	
 	public GeneratorTest(){
-		try{
-			NadiaConfig config=NadiaConfig.getInstance();
-			gen = new Generator(new URL(config.getProperty(NadiaConfig.CCGGRAMMARPATH)), new URL(config.getProperty(NadiaConfig.ONTOLOGYPATH)));
-		}
-		catch(MalformedURLException ex){
-			ex.printStackTrace();
-		}
+		gen = Generator.getInstance();
+
+//		try{
+//			NadiaConfig config=NadiaConfig.getInstance();
+//			gen = new Generator(new URL(config.getProperty(NadiaConfig.CCGGRAMMARPATH)), new URL(config.getProperty(NadiaConfig.ONTOLOGYPATH)));
+//		}
+//		catch(MalformedURLException ex){
+//			ex.printStackTrace();
+//		}
 	}
 	
 	public void test(){

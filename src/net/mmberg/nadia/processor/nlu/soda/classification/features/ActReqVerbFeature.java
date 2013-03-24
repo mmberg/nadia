@@ -3,8 +3,6 @@ package net.mmberg.nadia.processor.nlu.soda.classification.features;
 import java.util.Arrays;
 import java.util.HashSet;
 
-import net.mmberg.nadia.processor.manager.DialogManagerContext;
-
 public class ActReqVerbFeature extends Feature{
 
 	HashSet<String> verbs=new HashSet<String>(Arrays.asList("switch", "turn", "close", "open"));
@@ -14,7 +12,7 @@ public class ActReqVerbFeature extends Feature{
 	}
 
 	@Override
-	protected boolean hasFeature(String utterance, DialogManagerContext context) {
+	protected boolean hasFeature(String utterance) {
 		for(String verb : verbs){
 			if (utterance.contains(verb)) return true;
 		}

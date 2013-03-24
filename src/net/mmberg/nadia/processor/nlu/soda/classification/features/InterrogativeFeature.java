@@ -3,8 +3,6 @@ package net.mmberg.nadia.processor.nlu.soda.classification.features;
 import java.util.Arrays;
 import java.util.HashSet;
 
-import net.mmberg.nadia.processor.manager.DialogManagerContext;
-
 public class InterrogativeFeature extends Feature{
 	
 	HashSet<String> condWords=new HashSet<String>(Arrays.asList("could", "should"));
@@ -14,7 +12,7 @@ public class InterrogativeFeature extends Feature{
 	}
 
 	@Override
-	protected boolean hasFeature(String utterance, DialogManagerContext context) {
+	protected boolean hasFeature(String utterance) {
 		
 		//if second word is you or is or I
 		//can YOU tell me ...?

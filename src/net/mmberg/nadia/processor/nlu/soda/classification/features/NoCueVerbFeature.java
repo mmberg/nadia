@@ -1,7 +1,5 @@
 package net.mmberg.nadia.processor.nlu.soda.classification.features;
 
-import net.mmberg.nadia.processor.manager.DialogManagerContext;
-
 public class NoCueVerbFeature extends Feature{
 	
 	public NoCueVerbFeature() {
@@ -9,9 +7,9 @@ public class NoCueVerbFeature extends Feature{
 	}
 
 	@Override
-	protected boolean hasFeature(String utterance, DialogManagerContext context) {
-		boolean noActVerb=new ActReqVerbFeature().hasFeature(utterance,context);
-		boolean noSeekVerb=new InfSeekVerbFeature().hasFeature(utterance,context);
+	protected boolean hasFeature(String utterance) {
+		boolean noActVerb=new ActReqVerbFeature().hasFeature(utterance);
+		boolean noSeekVerb=new InfSeekVerbFeature().hasFeature(utterance);
 		return (!noActVerb && !noSeekVerb);
 	}
 	

@@ -7,13 +7,15 @@ import net.mmberg.nadia.exceptions.NoParserFoundException;
 
 public class Parsers {
 
-	private static Set<Parser> active_parsers=new HashSet<Parser>();  
+	private static Set<Parser> active_parsers=new HashSet<Parser>();;  
 	
 	public static void init(){
 		//enabled parsers
-		active_parsers.add(new YNParser());
-		active_parsers.add(new CityParser());
-		active_parsers.add(new DateParser());
+		if(active_parsers.isEmpty()){
+			active_parsers.add(new YNParser());
+			active_parsers.add(new CityParser());
+			active_parsers.add(new DateParser());
+		}
 	}
 	
 	public static Set<Parser> getParserForType(String type){

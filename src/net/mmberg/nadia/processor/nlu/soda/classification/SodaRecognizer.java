@@ -14,14 +14,9 @@ import net.mmberg.nadia.utterance.UserUtterance;
 
 public class SodaRecognizer {
 
-	private MaximumEntropyModel model;
+	private static MaximumEntropyModel model;
 	private final static Logger logger = Nadia.getLogger();
 	
-	public SodaRecognizer(){
-		
-	}
-		
-
 	/**
 	 * @param args
 	 */
@@ -70,8 +65,8 @@ public class SodaRecognizer {
 			ParseResults res = context.getCurrentQuestion().parse(utterance.getText(),true);
 			if( !context.isQuestionOpen() || (res.getState()==ParseResults.NOMATCH))
 			{
-					act=Soda.INFORMATION_SEEKING;
-					logger.info("Postprocessing (open:"+context.isQuestionOpen()+", parseState:"+res.getState()+"): prov -> seek");
+				act=Soda.INFORMATION_SEEKING;
+				logger.info("Postprocessing (open:"+context.isQuestionOpen()+", parseState:"+res.getState()+"): prov -> seek");
 			}
 		}
 		
@@ -108,11 +103,7 @@ public class SodaRecognizer {
 	}
 	
 	public void extractFeatures(ArrayList<? extends UserUtterance> utterances){
-		
-		//Context
-		DialogManagerContext context=DialogManagerContext.getInstance();
-		context.setQuestionOpen(true);
-				
+					
 		//Select Feature Extractors
 		ArrayList<Feature> featureExtractors=new ArrayList<Feature>(Arrays.asList(
 				new DummyFeature(),
@@ -130,7 +121,7 @@ public class SodaRecognizer {
 		//Extract Features
 		for(UserUtterance utterance : utterances){
 			for(Feature extractor : featureExtractors){
-				extractor.analyze(utterance.getText().toLowerCase(), context, utterance.getFeatures());
+				extractor.analyze(utterance.getText().toLowerCase(), utterance.getFeatures());
 			}
 		}
 		

@@ -2,11 +2,15 @@ package net.mmberg.nadia.ui;
 
 public abstract class UserInterface {
 
-	public abstract void send(String text);
-	public abstract String receive();
+	protected UIConsumer consumer=null; 
 	
-	public String exchange(String text){
-		send(text);
-		return receive();
+	public void register(UIConsumer consumer){
+		this.consumer=consumer;
 	}
+	
+	public abstract void start();
+	public abstract void stop();
+	
+
+	
 }

@@ -31,5 +31,17 @@
 	<classpathentry kind="lib" path="lib/ccg/jena/slf4j-log4j12-1.6.4.jar"/>
 	<classpathentry kind="lib" path="lib/ccg/jena/xercesImpl-2.10.0.jar"/>
 	<classpathentry kind="lib" path="lib/ccg/jena/xml-apis-1.4.01.jar"/>
+	<classpathentry kind="lib" path="lib/jersey/asm-3.1.jar"/>
+	<classpathentry kind="lib" path="lib/jersey/jackson-core-asl-1.9.2.jar"/>
+	<classpathentry kind="lib" path="lib/jersey/jackson-jaxrs-1.9.2.jar"/>
+	<classpathentry kind="lib" path="lib/jersey/jackson-mapper-asl-1.9.2.jar"/>
+	<classpathentry kind="lib" path="lib/jersey/jackson-xc-1.9.2.jar"/>
+	<classpathentry kind="lib" path="lib/jersey/jersey-client-1.17.jar"/>
+	<classpathentry kind="lib" path="lib/jersey/jersey-core-1.17.jar"/>
+	<classpathentry kind="lib" path="lib/jersey/jersey-json-1.17.jar"/>
+	<classpathentry kind="lib" path="lib/jersey/jersey-server-1.17.jar"/>
+	<classpathentry kind="lib" path="lib/jersey/jersey-servlet-1.17.jar"/>
+	<classpathentry kind="lib" path="lib/jersey/jettison-1.1.jar"/>
+	<classpathentry kind="lib" path="lib/jersey/jsr311-api-1.1.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

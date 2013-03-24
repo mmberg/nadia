@@ -1,9 +1,11 @@
 package net.mmberg.nadia.processor.lg.qg;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 
+import net.mmberg.nadia.NadiaConfig;
 import net.mmberg.nadia.dialogmodel.aqd.AQD;
 import net.mmberg.nadia.processor.lg.qg.interrogatives.*;
 
@@ -18,6 +20,7 @@ import opennlp.ccg.grammar.*;
 
 public class Generator {
 
+	private static Generator instance;
 	private Grammar grammar;
 	private Realizer realizer;
 	private boolean print=false;
@@ -38,8 +41,20 @@ public class Generator {
 		}
 	}
 
+	public static Generator getInstance(){
+		if(instance==null){
+			try{
+				NadiaConfig config=NadiaConfig.getInstance();
+				instance=new Generator(new URL(config.getProperty(NadiaConfig.CCGGRAMMARPATH)), new URL(config.getProperty(NadiaConfig.ONTOLOGYPATH)));
+			}
+			catch(MalformedURLException ex){
+				ex.printStackTrace();
+			}
+		}
+		return instance;
+	}
 
-	public Generator(URL grammarURL, URL ontologyURL){
+	private Generator(URL grammarURL, URL ontologyURL){
 		this.init(grammarURL, ontologyURL);
 	}
 	

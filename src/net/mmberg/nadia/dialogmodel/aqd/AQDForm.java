@@ -3,11 +3,11 @@ package net.mmberg.nadia.dialogmodel.aqd;
 public class AQDForm {
 
 	//TODO old Style.java -> adapt to AQD2
-	private int politeness;
-	private int formality;
+	private Integer politeness;
+	private Integer formality;
 	private boolean temporal_opener=false;
 	
-	public AQDForm(int politeness, int formality){
+	public AQDForm(Integer politeness, Integer formality){
 		this.politeness=politeness;
 		this.formality=formality;
 	}
@@ -17,16 +17,16 @@ public class AQDForm {
 	}
 	
 	
-	public int getPoliteness() {
+	public Integer getPoliteness() {
 		return politeness;
 	}
-	public void setPoliteness(int politeness) {
+	public void setPoliteness(Integer politeness) {
 		this.politeness = politeness;
 	}
-	public int getFormality() {
+	public Integer getFormality() {
 		return formality;
 	}
-	public void setFormality(int formality) {
+	public void setFormality(Integer formality) {
 		this.formality = formality;
 	}
 	
