@@ -20,6 +20,10 @@ public class MaximumEntropyModel {
 	private boolean trained=false;
 	private final static Logger logger = Nadia.getLogger();
 	
+	public boolean isTrained(){
+		return trained;
+	}
+	
 	public void train(ArrayList<TrainingUtterance> training_utterances){
 		
 		trained=false;

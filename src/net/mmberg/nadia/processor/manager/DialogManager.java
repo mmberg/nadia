@@ -14,7 +14,7 @@ import net.mmberg.nadia.dialogmodel.*;
 
 public class DialogManager {
 
-	private static SodaRecognizer sodarec=null;
+	private SodaRecognizer sodarec=null;
 	private static boolean init=false;
 	private final static Logger logger = Nadia.getLogger();
 	
@@ -40,13 +40,13 @@ public class DialogManager {
 	}
 	
 	private void init(){
-		if(!init){
-			sodarec=new SodaRecognizer();
-			sodarec.train(); //train Dialog Act Classifier
-			
-			Parsers.init(); //init (i.e. activate) Parsers
-			
-			init=true;
+			sodarec=SodaRecognizer.getInstance();
+			if(!init){
+				if(!sodarec.isTrained()) sodarec.train(); //train Dialog Act Classifier
+				
+				Parsers.init(); //init (i.e. activate) Parsers
+				
+				init=true;
 		}
 	}
 		

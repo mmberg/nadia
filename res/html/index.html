@@ -1,0 +1,35 @@
+<html>
+<head>
+<title>NAtural DIAlog</title>
+<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+<script>
+$(document).ready(function(){
+	
+	var location="http://localhost:8080/nadia/engine/dialog"
+	
+	//init
+	$.get(location, function(data, textStatus, jqXHR) {
+		$("#systemUtterance").text(data);
+		console.log(jqXHR.getAllResponseHeaders());
+		location=jqXHR.getResponseHeader("Location");
+		$("#url").text(location);
+	});
+	
+	//click
+  	$("#submitbtn").click(function(){
+    	$.get(location, {userUtterance: $("#userUtterance").val()}, function(data) {
+			$("#systemUtterance").text(data);
+		});
+  	});
+});
+</script>
+</head>
+<body>
+
+<h1 id="systemUtterance">Text</h1>
+<input id="userUtterance" type="text"></input>
+<button id="submitbtn">Los</button>
+
+<h3 id="url">Text</h3>
+</body>
+</html>

@@ -43,5 +43,25 @@
 	<classpathentry kind="lib" path="lib/jersey/jersey-servlet-1.17.jar"/>
 	<classpathentry kind="lib" path="lib/jersey/jettison-1.1.jar"/>
 	<classpathentry kind="lib" path="lib/jersey/jsr311-api-1.1.1.jar"/>
+	<classpathentry kind="lib" path="lib/jetty/jetty-server-9.0.0.v20130308.jar"/>
+	<classpathentry kind="lib" path="lib/jetty/jetty-util-9.0.0.v20130308.jar"/>
+	<classpathentry kind="lib" path="lib/jetty/jetty-webapp-9.0.0.v20130308.jar"/>
+	<classpathentry kind="lib" path="lib/jetty/servlet-api-3.0.jar"/>
+	<classpathentry kind="lib" path="lib/jetty/jetty-http-9.0.0.v20130308.jar"/>
+	<classpathentry kind="lib" path="lib/jetty/jetty-servlet-9.0.0.v20130308.jar"/>
+	<classpathentry kind="lib" path="lib/jetty/jetty-servlets-9.0.0.v20130308.jar"/>
+	<classpathentry kind="lib" path="lib/jetty/jetty-io-9.0.0.v20130308.jar"/>
+	<classpathentry kind="lib" path="lib/jetty/jetty-security-9.0.0.v20130308.jar"/>
+	<classpathentry kind="lib" path="lib/jetty/jetty-annotations-9.0.0.v20130308.jar"/>
+	<classpathentry kind="lib" path="lib/jetty/jetty-client-9.0.0.v20130308.jar"/>
+	<classpathentry kind="lib" path="lib/jetty/jetty-continuation-9.0.0.v20130308.jar"/>
+	<classpathentry kind="lib" path="lib/jetty/jetty-deploy-9.0.0.v20130308.jar"/>
+	<classpathentry kind="lib" path="lib/jetty/jetty-jaas-9.0.0.v20130308.jar"/>
+	<classpathentry kind="lib" path="lib/jetty/jetty-jmx-9.0.0.v20130308.jar"/>
+	<classpathentry kind="lib" path="lib/jetty/jetty-jndi-9.0.0.v20130308.jar"/>
+	<classpathentry kind="lib" path="lib/jetty/jetty-plus-9.0.0.v20130308.jar"/>
+	<classpathentry kind="lib" path="lib/jetty/jetty-proxy-9.0.0.v20130308.jar"/>
+	<classpathentry kind="lib" path="lib/jetty/jetty-rewrite-9.0.0.v20130308.jar"/>
+	<classpathentry kind="lib" path="lib/jetty/jetty-xml-9.0.0.v20130308.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

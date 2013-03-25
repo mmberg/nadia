@@ -26,6 +26,7 @@ public class Nadia implements UIConsumer {
 	public static void main(String[] args) {
 		Nadia nadia = new Nadia();
 		
+		//set UI based on command line args
 		HashMap<String,Class<? extends UserInterface>> interfaces=new HashMap<String, Class<? extends UserInterface>>();
 		interfaces.put("console",ConsoleInterface.class);
 		interfaces.put("rest",RESTInterface.class);
@@ -42,6 +43,7 @@ public class Nadia implements UIConsumer {
 			e.printStackTrace();
 		}
 		
+		//start Nadia with selected UI
 		nadia.start(nadia.ui);
 	}
 	
@@ -51,7 +53,7 @@ public class Nadia implements UIConsumer {
 		manager.loadDialog(DialogStore.getInstance().getDialog("dummy1"));
 	}
 	
-	public void start(UserInterface ui){
+	private void start(UserInterface ui){
 		ui.register(this);
 		ui.start();
 	}

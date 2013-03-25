@@ -14,7 +14,8 @@ import net.mmberg.nadia.utterance.UserUtterance;
 
 public class SodaRecognizer {
 
-	private static MaximumEntropyModel model;
+	private static SodaRecognizer instance;
+	private MaximumEntropyModel model;
 	private final static Logger logger = Nadia.getLogger();
 	
 	/**
@@ -26,6 +27,21 @@ public class SodaRecognizer {
 		sr.test_predict();
 	}
 	
+	private SodaRecognizer(){
+		
+	}
+	
+	public static SodaRecognizer getInstance(){
+		if(instance==null){
+			instance=new SodaRecognizer();
+		}
+		return instance;
+	}
+	
+	
+	public boolean isTrained(){
+		return(model!=null);
+	}
 	
 	public void train(){
 
