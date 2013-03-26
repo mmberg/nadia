@@ -1,35 +1,198 @@
 <html>
 <head>
-<title>NAtural DIAlog</title>
+<title>Nadia - NAtural DIAlog System</title>
 <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
 <script>
 $(document).ready(function(){
-	
-	var location="http://localhost:8080/nadia/engine/dialog"
+
+ var debug = true;
+ var wants_speech = false;
+ var location="http://localhost:8080/nadia/engine/dialog"
+ 
+ $("#userUtterance").focus();
 	
 	//init
 	$.get(location, function(data, textStatus, jqXHR) {
 		$("#systemUtterance").text(data);
 		console.log(jqXHR.getAllResponseHeaders());
 		location=jqXHR.getResponseHeader("Location");
-		$("#url").text(location);
+		if(debug) $("#debug").html(location);
 	});
 	
 	//click
   	$("#submitbtn").click(function(){
-    	$.get(location, {userUtterance: $("#userUtterance").val()}, function(data) {
-			$("#systemUtterance").text(data);
-		});
+    	submit();
   	});
+  	
+  	//enter
+  	$('#userUtterance').keydown(function (e){
+    if(e.keyCode == 13){
+        submit();
+        
+    }
+})
+  	
+  	function submit(){
+  		$.get(location, {userUtterance: $("#userUtterance").val()}, function(data) {
+			$("#systemUtterance").text(data);
+			//is user has used ASR before, automatically start recognition
+			if(wants_speech){
+				start_stop_recognition();
+			}
+		});
+		$('#userUtterance').select();
+  	}
+  	
+
+  if (!('webkitSpeechRecognition' in window)) {
+  	alert("works only in Chrome");
+  }
+  else{
+    var auto_submit = true;
+    var recognizing = false;
+  	var final_transcript = '';
+ 	var ignore_onend=false;
+  	var start_timestamp;
+  	var recognition = new webkitSpeechRecognition();
+  	recognition.continuous = false;
+  	recognition.interimResults = false;
+
+ 	recognition.onstart = function() {
+    	recognizing = true;
+        $("#btn").html("Listening...");
+ 	};
+ 
+ 	recognition.onerror = function(event) {
+ 		ignore_onend = true;
+ 		alert(event.error);
+ 	}; 
+ 
+ 	recognition.onend = function() {
+ 		$("#btn").html("Start recognition");
+     	recognizing = false;
+    	if (ignore_onend) {
+      		return;
+    	}
+ 	};
+  
+ 	recognition.onresult = function(event) {
+    	var interim_transcript = '';
+
+		if (typeof(event.results) == 'undefined') {
+      		recognition.onend = null;
+      		recognition.stop();
+      		alert("fehler");
+		    return;
+    	}
+    
+    	for (var i = event.resultIndex; i < event.results.length; ++i) {
+      		if (event.results[i].isFinal) {
+        		final_transcript += event.results[i][0].transcript;
+      		} else {
+        		interim_transcript += event.results[i][0].transcript;
+      		}
+    	}
+    	$("#userUtterance").val(final_transcript);
+    	if(!recognition.continuous){
+    	  recognition.stop();
+    	}
+    	if(auto_submit) submit();
+  	};
+  
+   function start_stop_recognition(){
+   		if (recognizing) {
+    		recognition.stop();
+    		wants_speech=false;
+    		return;
+  		}
+  		wants_speech=true;
+  		final_transcript = '';
+  		recognition.lang = 'en-GB';
+  		recognition.start();
+  		ignore_onend = false;
+   }
+  
+ 	$("#btn").click(function(event){ 
+  		start_stop_recognition();
+	});
+}
+
 });
 </script>
+<style>
+body {
+	background:#666666;
+	font-family:Verdana;
+	color:#222222;
+	margin:auto;
+	padding-top:100px;
+}
+
+#container{
+	width: 500px;
+	margin:auto;
+}
+
+div .box{
+	background:#AAAAAA;
+	padding: 15px;
+	margin-top:7px;
+
+	border-color:#222222;
+	border-width: 1px;
+	border-style: solid;
+}
+
+#main{
+	background:#CCCCCC;
+	min-height:150px;
+	padding: 25px;
+}
+
+#footer{
+	font-size:10pt;
+}
+
+#debug{
+	font-size:10pt;
+	font-family:courier;
+}
+
+#systemUtterance{
+	font-weight:bold;
+}
+
+#userUtterance{
+	width:350px;
+}
+</style>
 </head>
+
 <body>
+<div id="container">
 
-<h1 id="systemUtterance">Text</h1>
-<input id="userUtterance" type="text"></input>
-<button id="submitbtn">Los</button>
-
-<h3 id="url">Text</h3>
+	<div class="box">
+	<h1>NAtural DIAlogue System</h1>
+	</div>
+	
+	<div id="main" class="box">
+		<div><p><i>System:</i>&nbsp;<span id="systemUtterance"></span></p></div>
+		<div><p><i>You:</i>&nbsp;<input id="userUtterance" type="text"></input></p></div>
+		<div>
+			<button id="btn">Start recognition</button>
+			<button id="submitbtn">Submit</button>
+		</div>
+	</div>
+	
+	<div id="debug" class="box">
+		
+	</div>
+	
+	<div id="footer" class="box">
+	&copy; 2013 by Markus M. Berg<br>
+	University of Wismar, University of Kiel, University of Edinburgh
+	</div>
+</div>
 </body>
 </html>
+ 
