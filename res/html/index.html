@@ -1,13 +1,13 @@
 <html>
 <head>
 <title>Nadia - NAtural DIAlog System</title>
-<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js""></script>
 <script>
 $(document).ready(function(){
 
  var debug = true;
  var wants_speech = false;
- var location="http://localhost:8080/nadia/engine/dialog"
+ var location="//localhost/nadia/engine/dialog"
  
  $("#userUtterance").focus();
 	
@@ -64,7 +64,7 @@ $(document).ready(function(){
  
  	recognition.onerror = function(event) {
  		ignore_onend = true;
- 		alert(event.error);
+ 		alert("An error occured: "+event.error);
  	}; 
  
  	recognition.onend = function() {
@@ -81,7 +81,7 @@ $(document).ready(function(){
 		if (typeof(event.results) == 'undefined') {
       		recognition.onend = null;
       		recognition.stop();
-      		alert("fehler");
+      		alert("Result undefined");
 		    return;
     	}
     

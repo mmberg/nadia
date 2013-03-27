@@ -8,15 +8,18 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.eclipse.jetty.io.Connection;
+import org.eclipse.jetty.io.EndPoint;
+import org.eclipse.jetty.jmx.ConnectorServer;
+import org.eclipse.jetty.server.ConnectionFactory;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.webapp.WebAppContext;
-
-import com.sun.jersey.api.container.httpserver.HttpServerFactory;
-
-//import com.sun.jersey.api.container.httpserver.HttpServerFactory;
-//import com.sun.net.httpserver.HttpServer;
+import org.eclipse.jetty.server.Connector;
+import org.eclipse.jetty.util.ssl.SslContextFactory;
+import org.eclipse.jetty.server.ServerConnector;
 
 import net.mmberg.nadia.Nadia;
+import net.mmberg.nadia.NadiaConfig;
 import net.mmberg.nadia.ui.UIConsumer.UIConsumerMessage;
 import net.mmberg.nadia.ui.UIConsumer.UIConsumerMessage.Meta;
 
@@ -27,15 +30,6 @@ public class RESTInterface extends UserInterface{
 	private Server server;
 	private static int instance=-1;
 	protected static HashMap<Integer, UIConsumer> context = new HashMap<Integer, UIConsumer>();
-	
-	
-	@GET
-	@Path("ui")
-	@Produces( MediaType.TEXT_HTML )
-	public String getWebpage(){
-		String html="<html><head><script src='http://code.jquery.com/jquery-1.9.1.min.js'></script> <script> $(document).ready(function(){   $('#submitbtn').click(function(){     $.get('http://localhost:8080/nadia/run/dialog/0', {userUtterance: $('#utterance').val()}, function(data) { 		$('#systemUtterance').text(data); 		alert('Load was performed.'); 	});   }); }); </script> </head> <body>  <h1 id='systemUtterance'>Text</h1><input id='utterance' type='text'/><button id='submitbtn'>Los</button></body> </html>";
-		return html;
-	}
 	
 	@GET
 	@Path("dialog")
@@ -96,35 +90,46 @@ public class RESTInterface extends UserInterface{
 	public void start(){
 		try{
 			context.put(0, consumer);
-			
-			//Embedded Server:
-			//server = HttpServerFactory.create("http://localhost:8080/nadia");
-			//server.start();
+			NadiaConfig config = NadiaConfig.getInstance();
 			
 			//Jetty:
-			server = new Server(8080);
-
+			server = new Server();
+			
+			//main config
 	        WebAppContext context = new WebAppContext();
-	        context.setDescriptor("./WEB-INF/web.xml");
-	        context.setResourceBase("./res/html");
-	        context.setContextPath("/nadia");
+	        context.setDescriptor(config.getProperty(NadiaConfig.JETTYWEBXMLPATH));
+	        context.setResourceBase(config.getProperty(NadiaConfig.JETTYRESOURCEBASE));
+	        context.setContextPath(config.getProperty(NadiaConfig.JETTYCONTEXTPATH));
 	        context.setParentLoaderPriority(true);
-
 	        server.setHandler(context);
-
+	        
+	        //ssl (https)
+	        SslContextFactory sslContextFactory = new SslContextFactory(config.getProperty(NadiaConfig.JETTYKEYSTOREPATH));
+	        sslContextFactory.setKeyStorePassword(config.getProperty(NadiaConfig.JETTYKEYSTOREPASS));
+	
+	        ServerConnector serverconn = new ServerConnector(server, sslContextFactory);
+	        serverconn.setPort(443);
+	        server.setConnectors(new Connector[] {serverconn});
+	        
+	        //start	        
 	        server.start();
 	        server.join();
 			
 		}
 		catch(Exception ex){
 			ex.printStackTrace();
-			//server.stop();
+			server.destroy();
 		}
 	}
 
 	@Override
 	public void stop() {
-		//server.stop(0);
+		try {
+			server.stop();
+		} catch (Exception e) {
+			e.printStackTrace();
+			server.destroy();
+		}
 	}
 
 }

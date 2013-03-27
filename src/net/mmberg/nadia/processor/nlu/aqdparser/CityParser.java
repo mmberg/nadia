@@ -13,9 +13,10 @@ public class CityParser extends Parser{
 	public ParseResults parse(String utterance) {
 
 		ParseResults results=new ParseResults(utterance);
-		ArrayList<String> gazetteer = new ArrayList<String>(Arrays.asList("Aberdeen","Edinburgh", "Glasgow","Inverness", "Portree", "Uig", "Malaig", "Balloch"));
+		String decap_utterance=utterance.toLowerCase();
+		ArrayList<String> gazetteer = new ArrayList<String>(Arrays.asList("aberdeen","edinburgh", "glasgow","inverness", "portree", "uig", "malaig", "balloch"));
 
-		ArrayList<String> tokens=new ArrayList<String>(Arrays.asList(utterance.split(" ")));//tokenize
+		ArrayList<String> tokens=new ArrayList<String>(Arrays.asList(decap_utterance.split(" ")));//tokenize
 		tokens.retainAll(gazetteer);
 				
 		if(tokens.size()>0){
