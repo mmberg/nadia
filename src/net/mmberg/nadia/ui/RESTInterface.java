@@ -45,8 +45,7 @@ public class RESTInterface extends UserInterface{
 		if (instance>0){
 			UIConsumer new_consumer=context.get(0).getClass().newInstance();
 			context.put(instance, new_consumer);
-			Nadia.getLogger().info("created new instance "+new_consumer.getClass().getName());
-			//TODO Bug: too many instantiations
+			Nadia.getLogger().fine("created new instance "+new_consumer.getClass().getName());
 		}
 		return Response.seeOther(new URI("/dialog/"+instance)).build();
 	}
@@ -74,7 +73,6 @@ public class RESTInterface extends UserInterface{
 			try {
 				uri = new URI("engine/dialog/"+instance_id).toString();
 			} catch (URISyntaxException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			return Response.ok(systemUtterance).header("Location", uri).build();

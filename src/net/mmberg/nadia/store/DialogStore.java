@@ -27,7 +27,7 @@ public class DialogStore {
 		return dialogstore;
 	}
 	
-	public Dialog getDialog(String key){
+	public Dialog getDialogFromStore(String key){
 		return store.get(key);
 	}
 	
@@ -62,13 +62,10 @@ public class DialogStore {
 		//3
 		ito=new ITO("getDate", "When do you want to leave?");	
 		task1.addITO(ito);
-		//aqd=new AQD();
-		//aqd.setAQDType(new AQDType("fact.temporal.date"));
 		aqd=new AQD(new AQDType("fact.temporal.date"), new AQDContext("begin","trip"), new AQDForm()); //TODO politeness and formality set on dialogue level
 		ito.setAQD(aqd);	
 		
-		return dialog;
-				
-	}
+		return dialog;			
+	}	
 
 }

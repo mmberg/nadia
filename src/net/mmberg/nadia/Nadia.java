@@ -10,7 +10,6 @@ import java.util.logging.Logger;
 
 import net.mmberg.nadia.dialogmodel.Dialog;
 import net.mmberg.nadia.processor.manager.DialogManager;
-import net.mmberg.nadia.store.DialogStore;
 import net.mmberg.nadia.ui.*;
 
 
@@ -20,15 +19,12 @@ public class Nadia implements UIConsumer {
 	private final static Logger logger = Logger.getLogger("nina"); 
 	private DialogManager manager=null;
 	private UserInterface ui=null;
+	private static boolean init=false;
 	
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		
-		//Dialog d = DialogStore.getInstance().getDialog("dummy1");
-		//d.save();
-		Dialog d = Dialog.load("dummy1");
 		
 		Nadia nadia = new Nadia();
 		
@@ -36,7 +32,7 @@ public class Nadia implements UIConsumer {
 		HashMap<String,Class<? extends UserInterface>> interfaces=new HashMap<String, Class<? extends UserInterface>>();
 		interfaces.put("console",ConsoleInterface.class);
 		interfaces.put("rest",RESTInterface.class);
-		interfaces.put("default",ConsoleInterface.class);
+		interfaces.put("default",RESTInterface.class);
 		
 		try {
 			if(args.length>0 && interfaces.containsKey(args[0])) nadia.ui=interfaces.get(args[0]).newInstance();
@@ -54,11 +50,13 @@ public class Nadia implements UIConsumer {
 	}
 	
 	public Nadia(){
-		init();
+		if (!init) init();
 		manager = new DialogManager();
-		manager.loadDialog(DialogStore.getInstance().getDialog("dummy1"));
+		//Dialog d = DialogStore.getInstance().getDialog("dummy1");
+		//d.save();
+		Dialog d = Dialog.loadFromFile("dummy1");
 		
-		DialogStore.getInstance().getDialog("dummy1").save();
+		manager.loadDialog(d);
 	}
 	
 	private void start(UserInterface ui){
@@ -72,6 +70,7 @@ public class Nadia implements UIConsumer {
 	}
 		
 	private void init(){
+		init=true;
 		//format logging
 		logger.setUseParentHandlers(false);	 
 		CustomFormatter fmt = new CustomFormatter();

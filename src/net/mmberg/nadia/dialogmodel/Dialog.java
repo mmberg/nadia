@@ -2,7 +2,6 @@ package net.mmberg.nadia.dialogmodel;
 
 import java.io.FileOutputStream;
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
@@ -59,8 +58,9 @@ public class Dialog {
 		return null;
 	}
 	
+	
 	public void save(){
-		String filename = this.name!=null?this.name+".xml":"result.xml";
+		String filename = this.getName()!=null?this.getName()+".xml":"result.xml";
 		saveAs(filename);
 	}
 	
@@ -79,7 +79,7 @@ public class Dialog {
 		}
 	}
 	
-	public static Dialog load(String filename){
+	public static Dialog loadFromFile(String filename){
 		JAXBContext context;
 		Dialog d=null;
 		try {

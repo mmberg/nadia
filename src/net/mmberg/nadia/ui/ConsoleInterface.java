@@ -43,7 +43,6 @@ public class ConsoleInterface extends UserInterface{
 
 	@Override
 	public void stop() {
-		// TODO Auto-generated method stub
 		
 	}
 }
