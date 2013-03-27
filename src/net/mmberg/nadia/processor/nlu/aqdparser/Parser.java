@@ -26,7 +26,7 @@ public abstract class Parser {
 		 while(m.find()){
 			 results.add(new ParseResult(this.name, m.start(), m.end(), m.group(0), type, classValue));
 		 }
-		}
+	}
 	
 	public abstract ParseResults parse(String utterance);
 }

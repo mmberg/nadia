@@ -270,8 +270,8 @@ public class Generator {
 	}
 	
 	public String generateQuestion(AQD aqd){
-		WordConf wconf = chooseWords(aqd.getAQDType().getAnswerType(), aqd.getContext().getSpecification(), aqd.getContext().getReference(), aqd.getForm().getFormality());
-		GenConf gconf=new GenConf(aqd.getAQDType().getAnswerType(), wconf.getWhWord(), wconf.getVerb(), wconf.getNoun(), aqd.getForm().getFormality(), aqd.getForm().getPoliteness(), aqd.getForm().getTemporalOpener());
+		WordConf wconf = chooseWords(aqd.getType().getAnswerType(), aqd.getContext().getSpecification(), aqd.getContext().getReference(), aqd.getForm().getFormality());
+		GenConf gconf=new GenConf(aqd.getType().getAnswerType(), wconf.getWhWord(), wconf.getVerb(), wconf.getNoun(), aqd.getForm().getFormality(), aqd.getForm().getPoliteness(), aqd.getForm().getTemporalOpener());
 		return makeBeautifully(generateParaphrase(gconf));
 	}
 	

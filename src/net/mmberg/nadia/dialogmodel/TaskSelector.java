@@ -1,6 +1,9 @@
 package net.mmberg.nadia.dialogmodel;
 
-public interface TaskSelector {
+public abstract class TaskSelector {
 
-	public boolean isResponsible(String utterance);
+	public TaskSelector(){
+		
+	}
+	public abstract boolean isResponsible(String utterance);
 }

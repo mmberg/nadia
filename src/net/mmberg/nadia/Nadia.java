@@ -8,6 +8,7 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
+import net.mmberg.nadia.dialogmodel.Dialog;
 import net.mmberg.nadia.processor.manager.DialogManager;
 import net.mmberg.nadia.store.DialogStore;
 import net.mmberg.nadia.ui.*;
@@ -24,13 +25,18 @@ public class Nadia implements UIConsumer {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		
+		//Dialog d = DialogStore.getInstance().getDialog("dummy1");
+		//d.save();
+		Dialog d = Dialog.load("dummy1");
+		
 		Nadia nadia = new Nadia();
 		
 		//set UI based on command line args
 		HashMap<String,Class<? extends UserInterface>> interfaces=new HashMap<String, Class<? extends UserInterface>>();
 		interfaces.put("console",ConsoleInterface.class);
 		interfaces.put("rest",RESTInterface.class);
-		interfaces.put("default",RESTInterface.class);
+		interfaces.put("default",ConsoleInterface.class);
 		
 		try {
 			if(args.length>0 && interfaces.containsKey(args[0])) nadia.ui=interfaces.get(args[0]).newInstance();
@@ -51,6 +57,8 @@ public class Nadia implements UIConsumer {
 		init();
 		manager = new DialogManager();
 		manager.loadDialog(DialogStore.getInstance().getDialog("dummy1"));
+		
+		DialogStore.getInstance().getDialog("dummy1").save();
 	}
 	
 	private void start(UserInterface ui){

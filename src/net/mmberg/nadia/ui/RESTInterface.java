@@ -16,6 +16,7 @@ import com.sun.jersey.api.container.httpserver.HttpServerFactory;
 //import com.sun.jersey.api.container.httpserver.HttpServerFactory;
 //import com.sun.net.httpserver.HttpServer;
 
+import net.mmberg.nadia.Nadia;
 import net.mmberg.nadia.ui.UIConsumer.UIConsumerMessage;
 import net.mmberg.nadia.ui.UIConsumer.UIConsumerMessage.Meta;
 
@@ -41,7 +42,12 @@ public class RESTInterface extends UserInterface{
 	public Response createDialog() throws URISyntaxException, InstantiationException, IllegalAccessException
 	{	 
 		instance++;
-		if (instance>0) context.put(instance, context.get(0).getClass().newInstance());
+		if (instance>0){
+			UIConsumer new_consumer=context.get(0).getClass().newInstance();
+			context.put(instance, new_consumer);
+			Nadia.getLogger().info("created new instance "+new_consumer.getClass().getName());
+			//TODO Bug: too many instantiations
+		}
 		return Response.seeOther(new URI("/dialog/"+instance)).build();
 	}
 	

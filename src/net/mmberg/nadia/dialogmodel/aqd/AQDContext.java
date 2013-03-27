@@ -2,10 +2,17 @@ package net.mmberg.nadia.dialogmodel.aqd;
 
 public class AQDContext {
 
-	//TODO old Meaning.java -> adapt to AQD2
+		//TODO old Meaning.java -> adapt to AQD2
+	
+		//serializable members
 		private String specification;
 		private String reference;
 
+		//Serialization getter/setter
+		public AQDContext(){
+			
+		}
+		
 		public String getSpecification() {
 			return specification;
 		}
@@ -19,6 +26,8 @@ public class AQDContext {
 			this.reference = reference;
 		}
 		
+		
+		//Content
 		public AQDContext(String specification, String reference){
 			this.specification=specification;
 			this.reference=reference;

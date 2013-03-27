@@ -1,6 +1,6 @@
 package net.mmberg.nadia.dialogmodel;
 
-public interface Action {
+public abstract class Action {
 
-	public Object execute(Frame frame);
+	public abstract Object execute(Frame frame);
 }

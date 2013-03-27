@@ -33,7 +33,7 @@ public class DialogStore {
 	
 	private Dialog createDummyDialog(){
 		
-		Dialog dialog = new Dialog();
+		Dialog dialog = new Dialog("dummy1");
 				
 		//a dialog consists of tasks
 		Task task1=new Task("bsp");
@@ -48,7 +48,7 @@ public class DialogStore {
 		task1.addITO(ito);
 		//an ITO is associated with AQDs
 		aqd=new AQD();
-		aqd.setAQDType(new AQDType("decision"));
+		aqd.setType(new AQDType("decision"));
 		ito.setAQD(aqd);	
 		
 		//2
@@ -56,7 +56,7 @@ public class DialogStore {
 		task1.addITO(ito);
 		//an ITO is associated with AQDs
 		aqd=new AQD();
-		aqd.setAQDType(new AQDType("fact.named_entity.non_animated.location.city"));
+		aqd.setType(new AQDType("fact.named_entity.non_animated.location.city"));
 		ito.setAQD(aqd);	
 				
 		//3

@@ -3,20 +3,17 @@ package net.mmberg.nadia.dialogmodel.aqd;
 public class AQDForm {
 
 	//TODO old Style.java -> adapt to AQD2
+	
+	//serializable members
 	private Integer politeness;
 	private Integer formality;
 	private boolean temporal_opener=false;
 	
-	public AQDForm(Integer politeness, Integer formality){
-		this.politeness=politeness;
-		this.formality=formality;
-	}
-	
+	//Serialization getter/setter
 	public AQDForm(){
 		
 	}
-	
-	
+		
 	public Integer getPoliteness() {
 		return politeness;
 	}
@@ -38,5 +35,10 @@ public class AQDForm {
 		return this.temporal_opener;
 	}
 
+	//Content
+	public AQDForm(Integer politeness, Integer formality){
+		this.politeness=politeness;
+		this.formality=formality;
+	}
 
 }
