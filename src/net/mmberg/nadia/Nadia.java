@@ -52,9 +52,9 @@ public class Nadia implements UIConsumer {
 	public Nadia(){
 		if (!init) init();
 		manager = new DialogManager();
-		//Dialog d = DialogStore.getInstance().getDialog("dummy1");
+		//Dialog d = DialogStore.getInstance().getDialogFromStore("dummy1");
 		//d.save();
-		Dialog d = Dialog.loadFromFile("dummy1");
+		Dialog d = Dialog.loadFromResourcesDir("dummy1");
 		
 		manager.loadDialog(d);
 	}

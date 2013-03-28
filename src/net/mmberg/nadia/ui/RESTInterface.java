@@ -8,10 +8,6 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.eclipse.jetty.io.Connection;
-import org.eclipse.jetty.io.EndPoint;
-import org.eclipse.jetty.jmx.ConnectorServer;
-import org.eclipse.jetty.server.ConnectionFactory;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.eclipse.jetty.server.Connector;
@@ -108,7 +104,7 @@ public class RESTInterface extends UserInterface{
 	        sslContextFactory.setKeyStorePassword(config.getProperty(NadiaConfig.JETTYKEYSTOREPASS));
 	
 	        ServerConnector serverconn = new ServerConnector(server, sslContextFactory);
-	        serverconn.setPort(443);
+	        serverconn.setPort(8080); //443 (or 80) not allowed on Linux unless run as root
 	        server.setConnectors(new Connector[] {serverconn});
 	        
 	        //start	        

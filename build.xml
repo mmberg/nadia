@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="nadia" basedir="." default="main">
+
+	<property name="src.dir"     value="src"/>
+    <property name="lib.dir"     value="lib"/>
+	<property name="res.dir"     value="res"/>
+	<property name="webinf.dir"  value="WEB-INF"/>
+	
+	<property name="build.dir"   value="build"/>
+	<property name="temp.dir"   value="${build.dir}/temp"/>
+
+ 	<path id="javac.classpath">
+    	<fileset dir="${lib.dir}" includes="**/*.jar"/>
+    </path>
+        	
+    <target name="compile" description="Compiles the Task">
+        <mkdir dir="${temp.dir}/"/>
+    	    		
+        <javac srcdir="${src.dir}" destdir="${temp.dir}" classpathref="javac.classpath"/>
+
+    	<copy todir="${build.dir}/${lib.dir}" flatten="false">
+    		<fileset dir="${lib.dir}">
+    		        <include name="**/*"/>
+    		</fileset>
+    	</copy>
+    	
+    	<copy todir="${build.dir}/${res.dir}" flatten="false">
+    		<fileset dir="${res.dir}">
+    		        <include name="**/*"/>
+    		</fileset>
+    	</copy>
+    	
+    	<copy todir="${build.dir}/${webinf.dir}" flatten="false">
+    		<fileset dir="${webinf.dir}">
+    		        <include name="**/*"/>
+    		</fileset>
+    	</copy>
+
+    </target>
+
+		
+    <target name="jar" description="JARs the Task" depends="compile">
+    	<delete file="${build.dir}/${ant.project.name}.jar" failonerror="false"/>
+
+    	<manifestclasspath property="manifest.classpath" jarfile="${build.dir}/${ant.project.name}.jar">
+    	      <classpath refid="javac.classpath"/>
+    	</manifestclasspath>
+    		
+    	<jar destfile="${build.dir}/${ant.project.name}.jar" basedir="${temp.dir}">
+    		<manifest>
+    			<attribute name="Main-Class" value="net.mmberg.nadia.Nadia"/>
+    			<attribute name="Class-Path" value="./ ${manifest.classpath}"/>
+    	    </manifest>
+    	</jar>
+    </target>
+	
+    <target name="clean" description="Delete temp files">
+        <delete dir="${temp.dir}" failonerror="false"/>
+    </target>
+
+	<target name="main" depends="jar, clean"/>
+
+</project>
