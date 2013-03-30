@@ -1,7 +1,13 @@
 package net.mmberg.nadia.store;
 
+import java.io.FileOutputStream;
 import java.util.HashMap;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+
+import net.mmberg.nadia.NadiaConfig;
 import net.mmberg.nadia.dialogmodel.Dialog;
 import net.mmberg.nadia.dialogmodel.ITO;
 import net.mmberg.nadia.dialogmodel.Task;
@@ -14,6 +20,7 @@ public class DialogStore {
 
 	private static DialogStore dialogstore= null;
 	private HashMap<String, Dialog> store = new HashMap<String, Dialog>();
+	private static NadiaConfig config = NadiaConfig.getInstance();
 	
 	private DialogStore(){
 		store.put("dummy1", createDummyDialog());
@@ -67,5 +74,49 @@ public class DialogStore {
 		
 		return dialog;			
 	}	
+	
+	//load/save dialogues
+
+	public void save(Dialog d){
+		String filename = d.getName()!=null?d.getName()+".xml":"dialogue.xml";
+		saveAs(d, filename);
+	}
+	
+	public void saveAs(Dialog d, String filename){
+		JAXBContext context;
+		try {
+			context = JAXBContext.newInstance(Dialog.class);
+		    Marshaller m = context.createMarshaller();
+		    m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+
+		    //m.marshal(d, System.out);
+		    m.marshal(d, new FileOutputStream(config.getProperty(NadiaConfig.DIALOGUEDIR)+filename));
+		} 
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static Dialog loadFromPath(String path){
+		JAXBContext context;
+		Dialog d=null;
+		try {
+			context = JAXBContext.newInstance(Dialog.class);
+			Unmarshaller um = context.createUnmarshaller();
+			d = (Dialog) um.unmarshal(new java.io.FileInputStream(path));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return d;
+	}
+	
+	public static Dialog loadFromResourcesDir(String filename){
+		return loadFromPath(toResourcesDirPath(filename));
+	}
+	
+	public static String toResourcesDirPath(String filename){
+		return config.getProperty(NadiaConfig.DIALOGUEDIR)+filename+".xml";
+	}
 
 }

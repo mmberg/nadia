@@ -1,14 +1,7 @@
 package net.mmberg.nadia.dialogmodel;
 
-import java.io.FileOutputStream;
 import java.util.ArrayList;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.*;
-
-import net.mmberg.nadia.NadiaConfig;
 
 @XmlRootElement
 public class Dialog {
@@ -18,7 +11,7 @@ public class Dialog {
 	private ArrayList<Task> tasks;
 	
 	//non serializable members
-	private static NadiaConfig config = NadiaConfig.getInstance();
+
 	
 	//Serialization getter/setter
 	public Dialog(){
@@ -63,42 +56,4 @@ public class Dialog {
 	}
 	
 	
-	public void save(){
-		String filename = this.getName()!=null?this.getName()+".xml":"dialogue.xml";
-		saveAs(filename);
-	}
-	
-	public void saveAs(String filename){
-		JAXBContext context;
-		try {
-			context = JAXBContext.newInstance(Dialog.class);
-		    Marshaller m = context.createMarshaller();
-		    m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-
-		    //m.marshal(this, System.out);
-		    m.marshal(this, new FileOutputStream(config.getProperty(NadiaConfig.DIALOGUEDIR)+filename));
-		} 
-		catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public static Dialog loadFromPath(String path){
-		JAXBContext context;
-		Dialog d=null;
-		try {
-			context = JAXBContext.newInstance(Dialog.class);
-			Unmarshaller um = context.createUnmarshaller();
-			d = (Dialog) um.unmarshal(new java.io.FileInputStream(path));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		return d;
-	}
-	
-	public static Dialog loadFromResourcesDir(String filename){
-		String path=config.getProperty(NadiaConfig.DIALOGUEDIR)+filename+".xml";
-		return loadFromPath(path);
-	}
 }

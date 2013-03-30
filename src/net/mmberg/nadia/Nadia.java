@@ -1,6 +1,5 @@
 package net.mmberg.nadia;
 
-import java.util.HashMap;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Formatter;
 import java.util.logging.Handler;
@@ -8,8 +7,16 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.OptionBuilder;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
+
 import net.mmberg.nadia.dialogmodel.Dialog;
 import net.mmberg.nadia.processor.manager.DialogManager;
+import net.mmberg.nadia.store.DialogStore;
 import net.mmberg.nadia.ui.*;
 
 
@@ -18,48 +25,79 @@ public class Nadia implements UIConsumer {
 	
 	private final static Logger logger = Logger.getLogger("nina"); 
 	private DialogManager manager=null;
-	private UserInterface ui=null;
 	private static boolean init=false;
 	
 	/**
 	 * @param args
 	 */
+	@SuppressWarnings("static-access")
 	public static void main(String[] args) {
+			
+		Class<? extends UserInterface> ui_class=ConsoleInterface.class; //default UI
+		String dialog_file=DialogStore.toResourcesDirPath("dummy1"); //default dialogue
 		
-		Nadia nadia = new Nadia();
+		//process command line args
+		Options cli_options = new Options();
+		cli_options.addOption("h", "help", false, "print this message");
+		cli_options.addOption(OptionBuilder.withLongOpt( "interface" )
+                .withDescription( "select user interface" )
+                .hasArg(true)
+                .withArgName("console, rest")
+                .create("i"));
+		cli_options.addOption("f", "file", true, "specify dialogue path and file, e.g. -f /res/dialogue1.xml");
+		cli_options.addOption("r", "resource", true, "load dialogue (by name) from resources, e.g. -r dialogue1");
 		
-		//set UI based on command line args
-		HashMap<String,Class<? extends UserInterface>> interfaces=new HashMap<String, Class<? extends UserInterface>>();
-		interfaces.put("console",ConsoleInterface.class);
-		interfaces.put("rest",RESTInterface.class);
-		interfaces.put("default",RESTInterface.class);
-		
+		CommandLineParser parser = new org.apache.commons.cli.BasicParser();
 		try {
-			if(args.length>0 && interfaces.containsKey(args[0])) nadia.ui=interfaces.get(args[0]).newInstance();
-			else nadia.ui=interfaces.get("default").newInstance();
-		} 
-		catch (InstantiationException e){
-			e.printStackTrace();
-		}
-		catch (IllegalAccessException e) {
-			e.printStackTrace();
+			CommandLine cmd = parser.parse(cli_options, args);
+			
+			//Help
+			if(cmd.hasOption("h")){
+				HelpFormatter formatter = new HelpFormatter();
+				formatter.printHelp("nadia", cli_options, true);
+				return;
+			}
+			
+			//UI
+			if(cmd.hasOption("i")){
+				String interf=cmd.getOptionValue("i");
+				if(interf.equals("console")) ui_class=ConsoleInterface.class;
+				else if (interf.equals("rest")) ui_class=RESTInterface.class;
+			}
+			
+			//load dialogue from path file
+			if(cmd.hasOption("f")){
+				dialog_file=cmd.getOptionValue("f");
+			}
+			//load dialogue from resources
+			if(cmd.hasOption("r")){
+				dialog_file=DialogStore.toResourcesDirPath(cmd.getOptionValue("r"));
+			}
+		
+		} catch (ParseException e1) {
+			e1.printStackTrace();
 		}
 		
+			
 		//start Nadia with selected UI
-		nadia.start(nadia.ui);
+		Nadia nadia = new Nadia();
+		UserInterface ui;
+		try {
+			ui = ui_class.newInstance();
+			Dialog d = DialogStore.loadFromPath(dialog_file);
+			nadia.start(d,ui);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public Nadia(){
 		if (!init) init();
 		manager = new DialogManager();
-		//Dialog d = DialogStore.getInstance().getDialogFromStore("dummy1");
-		//d.save();
-		Dialog d = Dialog.loadFromResourcesDir("dummy1");
-		
-		manager.loadDialog(d);
 	}
 	
-	private void start(UserInterface ui){
+	private void start(Dialog d, UserInterface ui){
+		manager.loadDialog(d);	
 		ui.register(this);
 		ui.start();
 	}
