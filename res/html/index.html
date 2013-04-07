@@ -14,7 +14,6 @@ $(document).ready(function(){
 	//init
 	$.post(location, function(data, textStatus, jqXHR) {
 		$("#systemUtterance").text(data);
-		console.log(jqXHR.getAllResponseHeaders());
 		location=jqXHR.getResponseHeader("Location");
 		if(debug) $("#debug").html(location);
 	});

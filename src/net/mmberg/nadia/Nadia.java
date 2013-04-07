@@ -26,6 +26,7 @@ public class Nadia implements UIConsumer {
 	private final static Logger logger = Logger.getLogger("nina"); 
 	private DialogManager manager=null;
 	private static boolean init=false;
+	private static String default_dialog=DialogStore.toResourcesDirPath("dummy1"); //default dialogue
 	
 	/**
 	 * @param args
@@ -34,7 +35,7 @@ public class Nadia implements UIConsumer {
 	public static void main(String[] args) {
 			
 		Class<? extends UserInterface> ui_class=ConsoleInterface.class; //default UI
-		String dialog_file=DialogStore.toResourcesDirPath("dummy1"); //default dialogue
+		String dialog_file=default_dialog; //default dialogue
 		
 		//process command line args
 		Options cli_options = new Options();
@@ -80,12 +81,12 @@ public class Nadia implements UIConsumer {
 		
 			
 		//start Nadia with selected UI
-		Nadia nadia = new Nadia();
+		default_dialog=dialog_file;
+		Nadia nadia = new Nadia(DialogStore.loadFromPath(dialog_file));
 		UserInterface ui;
 		try {
 			ui = ui_class.newInstance();
-			Dialog d = DialogStore.loadFromPath(dialog_file);
-			nadia.start(d,ui);
+			nadia.startUI(ui);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -94,12 +95,22 @@ public class Nadia implements UIConsumer {
 	public Nadia(){
 		if (!init) init();
 		manager = new DialogManager();
+		manager.loadDialog(DialogStore.loadFromPath(default_dialog)); //load default dialogue
 	}
 	
-	private void start(Dialog d, UserInterface ui){
+	public Nadia(Dialog d){
+		manager = new DialogManager();
 		manager.loadDialog(d);	
+	}
+	
+	private void startUI(UserInterface ui){
 		ui.register(this);
 		ui.start();
+	}
+	
+	@Override
+	public void loadDialog(Dialog d){
+		manager.loadDialog(d);
 	}
 	
 	@Override
@@ -139,7 +150,5 @@ public class Nadia implements UIConsumer {
 			return sb.toString();
 		}
 	}
-
-
 
 }

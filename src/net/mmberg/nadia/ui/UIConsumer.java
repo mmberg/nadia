@@ -1,11 +1,14 @@
 package net.mmberg.nadia.ui;
 
+import net.mmberg.nadia.dialogmodel.Dialog;
+
 public interface UIConsumer {
 
+	
+	
 	public class UIConsumerMessage{
 		private String systemUtterance;
 		private Meta meta;
-		
 		public enum Meta{QUESTION, ANSWER, UNCHANGED, END_OF_DIALOG};
 		
 		public UIConsumerMessage(String systemUtterance, Meta meta){
@@ -22,5 +25,7 @@ public interface UIConsumer {
 		}
 	}
 	
-	public UIConsumerMessage processUtterance(String userUtterance);
+	public abstract void loadDialog (Dialog dialog);
+	public abstract UIConsumerMessage processUtterance(String userUtterance);
+	
 }

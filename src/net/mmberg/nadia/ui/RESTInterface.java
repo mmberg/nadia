@@ -44,12 +44,7 @@ public class RESTInterface extends UserInterface{
 	public Response createDefaultDialog() throws URISyntaxException, InstantiationException, IllegalAccessException
 	{	 
 		instance++;
-		if (instance>0){
-			UIConsumer new_consumer=context.get(0).getClass().newInstance(); //implicitly loads default dialogue
-			context.put(instance, new_consumer);
-			Nadia.getLogger().fine("created new instance "+new_consumer.getClass().getName());
-		}
-
+		if (instance>0) create_dialog(instance);
 		return init_dialog(instance); //init dialogue, i.e. get first question
 	}
 	
@@ -61,15 +56,8 @@ public class RESTInterface extends UserInterface{
 	public Response createDialogFromXML(
 			@FormDataParam("dialogxml") String dialogxml) throws URISyntaxException, InstantiationException, IllegalAccessException
 	{
-		Dialog d=DialogStore.loadFromXml(dialogxml);
-		
 		instance++;
-	    Nadia new_consumer = new Nadia();
-	    new_consumer.loadDialog(d);
-			
-		context.put(instance, new_consumer);
-		Nadia.getLogger().fine("created new instance "+new_consumer.getClass().getName());
-		
+		create_dialog(instance, dialogxml);		
 		return init_dialog(instance); //init dialogue, i.e. get first question
 	}
 	
@@ -98,9 +86,26 @@ public class RESTInterface extends UserInterface{
 		return message;
 	}
 	
+	private void create_dialog(int instance, String dialogxml){
+		UIConsumer new_consumer;
+		if(dialogxml!=null){
+			Dialog d=DialogStore.loadFromXml(dialogxml);
+			new_consumer = new Nadia(d);
+		}
+		else{
+			new_consumer = new Nadia();
+		}
+		context.put(instance, new_consumer);
+		Nadia.getLogger().fine("created new instance "+new_consumer.getClass().getName());
+	}
+	
+	private void create_dialog(int instance){
+		create_dialog(instance, null);
+	}
+	
 	//init dialogue, i.e. get first question
 	private Response init_dialog(int instance) throws URISyntaxException{
-		UIConsumerMessage message = process(String.valueOf(instance), "");
+		UIConsumerMessage message = process(String.valueOf(instance), ""); //empty utterance => init
 		String systemUtterance = message.getSystemUtterance();
 		
 		if (message.getMeta()==Meta.UNCHANGED) return Response.created(new URI("/"+instance)).build();
