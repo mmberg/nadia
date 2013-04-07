@@ -1,12 +1,8 @@
 package net.mmberg.nadia.processor.lg.qg.interrogatives;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 
 import org.jdom.Attribute;
-import org.jdom.Document;
 import org.jdom.Element;
 
 public abstract class Interrogative {
@@ -29,16 +25,6 @@ public abstract class Interrogative {
 	protected String getNextW(){
 		return "w"+(++w_counter);
 	}
-	
-//	protected Document createDoc(Element lf){
-//		Document lfxml=new Document();
-//		Element xml=new Element("xml");
-//		Element lfnode=new Element("lf");
-//		lfnode.addContent(lf);
-//		xml.addContent(lfnode);
-//		lfxml.setRootElement(xml);
-//		return lfxml;
-//	}
 	
 	protected void addPronoun(Element parent_node, String rel_name, String num, String pers){
 		Element node=new Element("node");

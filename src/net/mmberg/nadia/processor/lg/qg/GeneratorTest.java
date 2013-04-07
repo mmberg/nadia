@@ -1,12 +1,7 @@
 package net.mmberg.nadia.processor.lg.qg;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.logging.Logger;
 
-import net.mmberg.nadia.Nadia;
-import net.mmberg.nadia.NadiaConfig;
 import net.mmberg.nadia.dialogmodel.aqd.AQD;
 import net.mmberg.nadia.dialogmodel.aqd.AQDContext;
 import net.mmberg.nadia.dialogmodel.aqd.AQDForm;
@@ -15,7 +10,6 @@ import net.mmberg.nadia.dialogmodel.aqd.AQDType;
 public class GeneratorTest {
 
 	private Generator gen;
-	private final static Logger logger = Nadia.getLogger();
 	
 	/**
 	 * @param args
@@ -27,14 +21,6 @@ public class GeneratorTest {
 	
 	public GeneratorTest(){
 		gen = Generator.getInstance();
-
-//		try{
-//			NadiaConfig config=NadiaConfig.getInstance();
-//			gen = new Generator(new URL(config.getProperty(NadiaConfig.CCGGRAMMARPATH)), new URL(config.getProperty(NadiaConfig.ONTOLOGYPATH)));
-//		}
-//		catch(MalformedURLException ex){
-//			ex.printStackTrace();
-//		}
 	}
 	
 	public void test(){

@@ -1,12 +1,6 @@
 package net.mmberg.nadia.dialogmodel;
 
 import java.util.ArrayList;
-import java.util.List;
-
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlSeeAlso;
 
 public class ITOs extends ArrayList<ITO> {
 
@@ -24,7 +18,4 @@ public class ITOs extends ArrayList<ITO> {
 		return this;
 	}
 	
-//	public void setITOs(ArrayList<ITO> itos){
-//		super.addAll(itos);
-//	}
 }
