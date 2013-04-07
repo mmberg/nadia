@@ -1,6 +1,7 @@
 package net.mmberg.nadia.store;
 
 import java.io.FileOutputStream;
+import java.io.StringReader;
 import java.util.HashMap;
 
 import javax.xml.bind.JAXBContext;
@@ -119,4 +120,17 @@ public class DialogStore {
 		return config.getProperty(NadiaConfig.DIALOGUEDIR)+filename+".xml";
 	}
 
+	public static Dialog loadFromXml(String xml){
+		JAXBContext context;
+		Dialog d=null;
+		try {
+			context = JAXBContext.newInstance(Dialog.class);
+			Unmarshaller um = context.createUnmarshaller();
+			d = (Dialog) um.unmarshal(new StringReader(xml));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return d;
+	}
 }

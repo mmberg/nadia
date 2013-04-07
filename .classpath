@@ -64,5 +64,7 @@
 	<classpathentry kind="lib" path="lib/jetty/jetty-rewrite-9.0.0.v20130308.jar"/>
 	<classpathentry kind="lib" path="lib/jetty/jetty-xml-9.0.0.v20130308.jar"/>
 	<classpathentry kind="lib" path="lib/commons-cli-1.2.jar"/>
+	<classpathentry kind="lib" path="lib/jersey/jersey-multipart-1.17.jar"/>
+	<classpathentry kind="lib" path="lib/jersey/mimepull-1.3.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

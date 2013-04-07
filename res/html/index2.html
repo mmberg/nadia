@@ -1,36 +1,62 @@
+<!DOCTYPE html>
 <html>
 <head>
 <title>Nadia - NAtural DIAlog System</title>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 <script>
 $(document).ready(function(){
 
- var debug = true;
- var wants_speech = false;
- var location="//localhost:8080/nadia/engine/dialog"
+ 	var debug = true;
+ 	var wants_speech = false;
+ 	var location="//localhost:8080/nadia/engine/dialog"
  
- $("#userUtterance").focus();
+ 	$("#userUtterance").focus();
 	
-	//init
-	$.post(location, function(data, textStatus, jqXHR) {
-		$("#systemUtterance").text(data);
-		console.log(jqXHR.getAllResponseHeaders());
-		location=jqXHR.getResponseHeader("Location");
-		if(debug) $("#debug").html(location);
-	});
+	//init, i.e. create resource, get its location and get the first question
+	//$.post(location, function(data, textStatus, jqXHR) {
+	//	$("#systemUtterance").text(data);
+	//	location=jqXHR.getResponseHeader("Location");
+	//	if(debug) $("#debug").html(location);
+	//});
+
 	
-	//click
+	//click (send utterance)
   	$("#submitbtn").click(function(){
     	submit();
   	});
   	
   	//enter
   	$('#userUtterance').keydown(function (e){
-    if(e.keyCode == 13){
-        submit();
-        
-    }
-})
+    	if(e.keyCode == 13){
+        	submit();
+   		 }
+    });
+      	
+    //load dialogue
+  	$('#load_dialog_btn').click(function(){
+  		load();
+    });
+    		
+	function load(){
+		var formData = new FormData($('#fileform')[0]);
+  		$.ajax({
+  		 	processData: false,
+    		contentType: false,
+	        url: location+"/load",
+	        type: 'POST',
+	        data: formData
+    	}).done(function(data, textStatus, jqXHR){
+			$("#systemUtterance").text(data);
+			$("#load_dialog").hide();
+	    	$("#dialog").show();
+	    	$("#debug").show();
+	    	location=jqXHR.getResponseHeader("Location");
+			if(debug) $("#debug").html(location);
+			$("#userUtterance").focus();
+		});    	
+	}
+
   	
   	function submit(){
   		$.post(location, {userUtterance: $("#userUtterance").val()}, function(data) {
@@ -43,6 +69,9 @@ $(document).ready(function(){
 		$('#userUtterance').select();
   	}
   	
+ 
+ //Speech
+ //------
 
   if (!('webkitSpeechRecognition' in window)) {
   	alert("works only in Chrome");
@@ -154,6 +183,7 @@ div .box{
 }
 
 #debug{
+	display:none;
 	font-size:10pt;
 	font-family:courier;
 }
@@ -164,6 +194,10 @@ div .box{
 
 #userUtterance{
 	width:350px;
+}
+
+#dialog{
+	display:none;
 }
 </style>
 </head>
@@ -176,11 +210,21 @@ div .box{
 	</div>
 	
 	<div id="main" class="box">
+	
+		<div id="load_dialog">
+		<form id="fileform" enctype="multipart/form-data" method="post">
+			<input type="file" name="dialogxml" accept="text/*" maxlength="2097152">
+			<input type="button" id="load_dialog_btn" value="Load Dialogue">
+		</form>
+		</div>
+	
+		<div id="dialog">
 		<div><p><i>System:</i>&nbsp;<span id="systemUtterance"></span></p></div>
 		<div><p><i>You:</i>&nbsp;<input id="userUtterance" type="text"></input></p></div>
 		<div>
 			<button id="btn">Start recognition</button>
 			<button id="submitbtn">Submit</button>
+		</div>
 		</div>
 	</div>
 	
