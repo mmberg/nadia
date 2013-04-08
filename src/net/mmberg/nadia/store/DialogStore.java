@@ -2,6 +2,8 @@ package net.mmberg.nadia.store;
 
 import java.io.FileOutputStream;
 import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 import javax.xml.bind.JAXBContext;
@@ -16,6 +18,7 @@ import net.mmberg.nadia.dialogmodel.aqd.AQD;
 import net.mmberg.nadia.dialogmodel.aqd.AQDContext;
 import net.mmberg.nadia.dialogmodel.aqd.AQDForm;
 import net.mmberg.nadia.dialogmodel.aqd.AQDType;
+import net.mmberg.nadia.processor.nlu.taskselector.BagOfWordsTaskSelector;
 
 public class DialogStore {
 
@@ -25,6 +28,7 @@ public class DialogStore {
 	
 	private DialogStore(){
 		store.put("dummy1", createDummyDialog());
+		store.put("dummy2", createDummyDialog2());
 	}
 	
 	public static DialogStore getInstance(){
@@ -33,6 +37,15 @@ public class DialogStore {
 		}
 		
 		return dialogstore;
+	}
+	
+	public static void main(String[] args){
+		String test_dialog_name="dummy2";
+		//test save
+		DialogStore ds=DialogStore.getInstance();
+		DialogStore.save(ds.getDialogFromStore(test_dialog_name));
+		//test load
+		DialogStore.loadFromResourcesDir(test_dialog_name);
 	}
 	
 	public Dialog getDialogFromStore(String key){
@@ -76,14 +89,74 @@ public class DialogStore {
 		return dialog;			
 	}	
 	
+private Dialog createDummyDialog2(){
+		
+		Dialog dialog = new Dialog("dummy2");
+		ITO ito;
+		AQD aqd;
+		
+		//Task 0
+		Task task0=new Task("start");
+		dialog.addTask(task0);
+	
+		//ITO 1
+		ito=new ITO("welcome", "Hello! How may I help you?", false);	
+		task0.addITO(ito);
+		//an ITO is associated with AQDs
+		//aqd=new AQD();
+		//aqd.setType(new AQDType("fact.named_entity.non_animated.location.city"));
+		//ito.setAQD(aqd);
+		
+		
+		//Task 1
+		Task task1=new Task("getTripInformation");
+		ArrayList<String> bagOfWords = new ArrayList<String>(Arrays.asList("travel","book", "journey","trip"));
+		task1.setSelector(new BagOfWordsTaskSelector(bagOfWords));
+		dialog.addTask(task1);
+		
+		//ITO 1
+		ito=new ITO("getDepartureCity", "Where do you want to start?", false);	
+		task1.addITO(ito);
+		//an ITO is associated with AQDs
+		aqd=new AQD();
+		aqd.setType(new AQDType("fact.named_entity.non_animated.location.city"));
+		ito.setAQD(aqd);		
+		
+		//ITO 2
+		ito=new ITO("getDestinationCity", "Where do you want to go?", false);	
+		task1.addITO(ito);
+		//an ITO is associated with AQDs
+		aqd=new AQD();
+		aqd.setType(new AQDType("fact.named_entity.non_animated.location.city"));
+		ito.setAQD(aqd);	
+		
+		
+		//Task2
+		Task task2=new Task("getWeatherInformation");
+		bagOfWords = new ArrayList<String>(Arrays.asList("weather","forecast", "temperature","trip"));
+		task2.setSelector(new BagOfWordsTaskSelector(bagOfWords));
+		dialog.addTask(task2);
+		
+		//ITO 1
+		ito=new ITO("getWeatherCity", "For which city do you want to know the weather?", false);	
+		task2.addITO(ito);
+		//an ITO is associated with AQDs
+		aqd=new AQD();
+		aqd.setType(new AQDType("fact.named_entity.non_animated.location.city"));
+		ito.setAQD(aqd);		
+		
+		return dialog;			
+	}	
+
+	
 	//load/save dialogues
 
-	public void save(Dialog d){
+	public static void save(Dialog d){
 		String filename = d.getName()!=null?d.getName()+".xml":"dialogue.xml";
 		saveAs(d, filename);
 	}
 	
-	public void saveAs(Dialog d, String filename){
+	public static void saveAs(Dialog d, String filename){
 		JAXBContext context;
 		try {
 			context = JAXBContext.newInstance(Dialog.class);

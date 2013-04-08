@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<dialog name="dummy2">
+    <tasks>
+        <task name="start">
+            <itos>
+                <ito name="welcome">
+                    <fallback_question>Hello! How may I help you?</fallback_question>
+                    <group>0</group>
+                    <index>0</index>
+                    <required>false</required>
+                    <useLG>false</useLG>
+                </ito>
+            </itos>
+        </task>
+        <task name="getTripInformation">
+            <itos>
+                <ito name="getDepartureCity">
+                    <AQD>
+                        <type>
+                            <answerType>fact.named_entity.non_animated.location.city</answerType>
+                        </type>
+                    </AQD>
+                    <fallback_question>Where do you want to start?</fallback_question>
+                    <group>0</group>
+                    <index>0</index>
+                    <required>false</required>
+                    <useLG>false</useLG>
+                </ito>
+                <ito name="getDestinationCity">
+                    <AQD>
+                        <type>
+                            <answerType>fact.named_entity.non_animated.location.city</answerType>
+                        </type>
+                    </AQD>
+                    <fallback_question>Where do you want to go?</fallback_question>
+                    <group>0</group>
+                    <index>0</index>
+                    <required>false</required>
+                    <useLG>false</useLG>
+                </ito>
+            </itos>
+            <selector xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="bagOfWordsTaskSelector">
+                <bagOfWords>
+                    <word>travel</word>
+                    <word>book</word>
+                    <word>journey</word>
+                    <word>trip</word>
+                </bagOfWords>
+            </selector>
+        </task>
+        <task name="getWeatherInformation">
+            <itos>
+                <ito name="getWeatherCity">
+                    <AQD>
+                        <type>
+                            <answerType>fact.named_entity.non_animated.location.city</answerType>
+                        </type>
+                    </AQD>
+                    <fallback_question>For which city do you want to know the weather?</fallback_question>
+                    <group>0</group>
+                    <index>0</index>
+                    <required>false</required>
+                    <useLG>false</useLG>
+                </ito>
+            </itos>
+            <selector xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="bagOfWordsTaskSelector">
+                <bagOfWords>
+                    <word>weather</word>
+                    <word>forecast</word>
+                    <word>temperature</word>
+                    <word>trip</word>
+                </bagOfWords>
+            </selector>
+        </task>
+    </tasks>
+</dialog>
