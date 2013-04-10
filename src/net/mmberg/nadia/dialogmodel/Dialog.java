@@ -55,5 +55,9 @@ public class Dialog {
 		return null;
 	}
 	
+	public Task getFirstTask(){
+		return tasks.get(0);
+	}
+	
 	
 }

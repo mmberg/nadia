@@ -47,6 +47,7 @@ public class Nadia implements UIConsumer {
                 .create("i"));
 		cli_options.addOption("f", "file", true, "specify dialogue path and file, e.g. -f /res/dialogue1.xml");
 		cli_options.addOption("r", "resource", true, "load dialogue (by name) from resources, e.g. -r dialogue1");
+		cli_options.addOption("s", "store", true, "load dialogue (by name) from internal store, e.g. -s dialogue1");
 		
 		CommandLineParser parser = new org.apache.commons.cli.BasicParser();
 		try {
@@ -73,6 +74,12 @@ public class Nadia implements UIConsumer {
 			//load dialogue from resources
 			if(cmd.hasOption("r")){
 				dialog_file=DialogStore.toResourcesDirPath(cmd.getOptionValue("r"));
+			}
+			//load dialogue from internal store
+			if(cmd.hasOption("s")){
+				Dialog store_dialog=DialogStore.getInstance().getDialogFromStore((cmd.getOptionValue("s")));
+				DialogStore.save(store_dialog);
+				dialog_file=DialogStore.toResourcesDirPath(cmd.getOptionValue("s"));
 			}
 		
 		} catch (ParseException e1) {
@@ -118,6 +125,16 @@ public class Nadia implements UIConsumer {
 		return manager.processUtterance(userUtterance);
 	}
 		
+	@Override
+	public String getDebugInfo() {
+		String context="no debug info";
+		if(manager!=null){
+			context = manager.getContext().serialize();
+		}
+		context += "\r\n\r\n"+DialogStore.toXML(manager.getDialog());
+		return context;
+	}
+	
 	private void init(){
 		init=true;
 		//format logging
@@ -150,5 +167,6 @@ public class Nadia implements UIConsumer {
 			return sb.toString();
 		}
 	}
+
 
 }

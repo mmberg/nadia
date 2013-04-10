@@ -27,5 +27,6 @@ public interface UIConsumer {
 	
 	public abstract void loadDialog (Dialog dialog);
 	public abstract UIConsumerMessage processUtterance(String userUtterance);
+	public abstract String getDebugInfo();
 	
 }

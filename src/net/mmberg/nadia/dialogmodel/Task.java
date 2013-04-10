@@ -13,6 +13,8 @@ public class Task {
 	private ITOs itos; //must not be null; otherwise unmarshalling fails
 	private Action action;
 		
+	//non-serializable members
+	//...
 	
 	//Serialization getter/setter
 	public Task(){
@@ -76,4 +78,24 @@ public class Task {
 	public void addITO(ITO ito){
 		this.itos.add(ito);
 	}
+	
+	public Boolean isFilled(){
+		for(ITO ito : itos){
+			if (!ito.isFilled()) return false;
+		}
+		return true;
+	}
+	
+	public String execute(){
+		return action.executeAndGetAnswer(this);
+	}
+	
+	public Frame toFrame(){
+		Frame frame=new Frame();
+		for(ITO ito : itos){
+			frame.put(ito.getName(),ito.getValue());
+		}
+		return frame;
+	}
+	
 }

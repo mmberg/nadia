@@ -1,6 +1,9 @@
 package net.mmberg.nadia.store;
 
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,6 +14,7 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
 import net.mmberg.nadia.NadiaConfig;
+import net.mmberg.nadia.dialogmodel.Action;
 import net.mmberg.nadia.dialogmodel.Dialog;
 import net.mmberg.nadia.dialogmodel.ITO;
 import net.mmberg.nadia.dialogmodel.Task;
@@ -18,6 +22,7 @@ import net.mmberg.nadia.dialogmodel.aqd.AQD;
 import net.mmberg.nadia.dialogmodel.aqd.AQDContext;
 import net.mmberg.nadia.dialogmodel.aqd.AQDForm;
 import net.mmberg.nadia.dialogmodel.aqd.AQDType;
+import net.mmberg.nadia.processor.nlu.actions.DummyAction;
 import net.mmberg.nadia.processor.nlu.taskselector.BagOfWordsTaskSelector;
 
 public class DialogStore {
@@ -94,24 +99,31 @@ private Dialog createDummyDialog2(){
 		Dialog dialog = new Dialog("dummy2");
 		ITO ito;
 		AQD aqd;
+		Action action;
 		
 		//Task 0
+		//----------------------------------------------
 		Task task0=new Task("start");
+		ArrayList<String> bagOfWords = new ArrayList<String>(Arrays.asList("hello"));
+		task0.setSelector(new BagOfWordsTaskSelector(bagOfWords));
 		dialog.addTask(task0);
 	
 		//ITO 1
 		ito=new ITO("welcome", "Hello! How may I help you?", false);	
 		task0.addITO(ito);
 		//an ITO is associated with AQDs
-		//aqd=new AQD();
-		//aqd.setType(new AQDType("fact.named_entity.non_animated.location.city"));
-		//ito.setAQD(aqd);
+		aqd=new AQD();
+		aqd.setType(new AQDType("open_ended"));
+		ito.setAQD(aqd);
 		
 		
 		//Task 1
+		//----------------------------------------------
 		Task task1=new Task("getTripInformation");
-		ArrayList<String> bagOfWords = new ArrayList<String>(Arrays.asList("travel","book", "journey","trip"));
+		bagOfWords = new ArrayList<String>(Arrays.asList("travel","book", "journey","trip"));
 		task1.setSelector(new BagOfWordsTaskSelector(bagOfWords));
+		action=new DummyAction("This trip from %getDepartureCity to %getDestinationCity costs #temperature Euros.");
+		task1.setAction(action);
 		dialog.addTask(task1);
 		
 		//ITO 1
@@ -132,9 +144,12 @@ private Dialog createDummyDialog2(){
 		
 		
 		//Task2
+		//----------------------------------------------
 		Task task2=new Task("getWeatherInformation");
 		bagOfWords = new ArrayList<String>(Arrays.asList("weather","forecast", "temperature","trip"));
 		task2.setSelector(new BagOfWordsTaskSelector(bagOfWords));
+		action=new DummyAction("The temperature in %getWeatherCity is #temperature degrees.");
+		task2.setAction(action);
 		dialog.addTask(task2);
 		
 		//ITO 1
@@ -156,19 +171,31 @@ private Dialog createDummyDialog2(){
 		saveAs(d, filename);
 	}
 	
-	public static void saveAs(Dialog d, String filename){
+	private static void save(Dialog d, OutputStream stream){
 		JAXBContext context;
 		try {
 			context = JAXBContext.newInstance(Dialog.class);
 		    Marshaller m = context.createMarshaller();
 		    m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-
-		    //m.marshal(d, System.out);
-		    m.marshal(d, new FileOutputStream(config.getProperty(NadiaConfig.DIALOGUEDIR)+filename));
+		    m.marshal(d, stream);
 		} 
 		catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public static void saveAs(Dialog d, String filename){
+		try {
+			save(d, new FileOutputStream(config.getProperty(NadiaConfig.DIALOGUEDIR)+filename));
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static String toXML(Dialog d){
+		OutputStream stream = new ByteArrayOutputStream();
+		save(d, stream);
+		return stream.toString();
 	}
 	
 	public static Dialog loadFromPath(String path){

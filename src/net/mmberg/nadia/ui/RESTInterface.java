@@ -31,7 +31,7 @@ public class RESTInterface extends UserInterface{
 
 	private Server server;
 	private static int instance=-1;
-	protected static HashMap<Integer, UIConsumer> context = new HashMap<Integer, UIConsumer>();
+	protected static HashMap<Integer, UIConsumer> instances = new HashMap<Integer, UIConsumer>();
 	
 	@Context
 	UriInfo uri;
@@ -75,13 +75,22 @@ public class RESTInterface extends UserInterface{
 		else return Response.ok(systemUtterance).build();
 	}
 	
+	@GET
+	@Path("dialog/{instance_id}/context")
+	@Produces( MediaType.TEXT_PLAIN )
+	public Response getDebugInfo(
+			@PathParam("instance_id") String instance_id)
+	{
+		String context=instances.get(Integer.parseInt(instance_id)).getDebugInfo();
+		return Response.ok(context).build();
+	}
 
 	//Convenience functions
 	//=====================
 	
 	//process user utterance
 	private UIConsumerMessage process(String instance_id, String userUtterance){
-		consumer=context.get(Integer.parseInt(instance_id));
+		consumer=instances.get(Integer.parseInt(instance_id));
 		UIConsumerMessage message = consumer.processUtterance(userUtterance);
 		return message;
 	}
@@ -95,7 +104,7 @@ public class RESTInterface extends UserInterface{
 		else{
 			new_consumer = new Nadia();
 		}
-		context.put(instance, new_consumer);
+		instances.put(instance, new_consumer);
 		Nadia.getLogger().fine("created new instance "+new_consumer.getClass().getName());
 	}
 	
@@ -118,7 +127,7 @@ public class RESTInterface extends UserInterface{
 	@Override
 	public void start(){
 		try{
-			context.put(0, consumer);
+			instances.put(0, consumer);
 			NadiaConfig config = NadiaConfig.getInstance();
 			
 			//Jetty:

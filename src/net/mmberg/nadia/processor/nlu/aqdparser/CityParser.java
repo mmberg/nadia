@@ -18,10 +18,12 @@ public class CityParser extends Parser{
 
 		ArrayList<String> tokens=new ArrayList<String>(Arrays.asList(decap_utterance.split(" ")));//tokenize
 		tokens.retainAll(gazetteer);
-				
+		
+		String capitalizedCity="";
 		if(tokens.size()>0){
 			for(String city : tokens){
-				results.add(new ParseResult(this.name,0,0,city,this.type,city));
+				capitalizedCity = Character.toString(city.charAt(0)).toUpperCase()+city.substring(1);
+				results.add(new ParseResult(this.name,0,0,capitalizedCity,this.type,capitalizedCity));
 			}
 		}
 

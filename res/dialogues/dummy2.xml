@@ -4,6 +4,11 @@
         <task name="start">
             <itos>
                 <ito name="welcome">
+                    <AQD>
+                        <type>
+                            <answerType>open_ended</answerType>
+                        </type>
+                    </AQD>
                     <fallback_question>Hello! How may I help you?</fallback_question>
                     <group>0</group>
                     <index>0</index>
@@ -11,8 +16,17 @@
                     <useLG>false</useLG>
                 </ito>
             </itos>
+            <selector xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="bagOfWordsTaskSelector">
+                <bagOfWords>
+                    <word>hello</word>
+                </bagOfWords>
+            </selector>
         </task>
         <task name="getTripInformation">
+            <action xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="dummyAction">
+                <returnAnswer>true</returnAnswer>
+                <utteranceTemplate>This trip from %getDepartureCity to %getDestinationCity costs #temperature Euros.</utteranceTemplate>
+            </action>
             <itos>
                 <ito name="getDepartureCity">
                     <AQD>
@@ -49,6 +63,10 @@
             </selector>
         </task>
         <task name="getWeatherInformation">
+            <action xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="dummyAction">
+                <returnAnswer>true</returnAnswer>
+                <utteranceTemplate>The temperature in %getWeatherCity is #temperature degrees.</utteranceTemplate>
+            </action>
             <itos>
                 <ito name="getWeatherCity">
                     <AQD>

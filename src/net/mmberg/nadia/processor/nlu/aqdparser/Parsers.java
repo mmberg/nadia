@@ -15,6 +15,7 @@ public class Parsers {
 			active_parsers.add(new YNParser());
 			active_parsers.add(new CityParser());
 			active_parsers.add(new DateParser());
+			active_parsers.add(new OpenEndedParser());
 		}
 	}
 	

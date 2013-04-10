@@ -1,6 +1,7 @@
 package net.mmberg.nadia.dialogmodel;
 
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlTransient;
 
 import net.mmberg.nadia.processor.lg.qg.Generator;
 import net.mmberg.nadia.processor.nlu.aqdparser.*;
@@ -97,6 +98,21 @@ public class ITO {
 		this.name=name;
 		this.fallback_question=fallback_question;
 		this.useLG=useLG;
+	}
+	
+	@XmlTransient
+	public Boolean isFilled(){
+		return this.filled;
+	}
+	
+	@XmlTransient
+	public Object getValue(){
+		return this.value;
+	}
+	
+	public void setValue(Object value){
+		this.value=value;
+		this.filled=true;
 	}
 	
 	
