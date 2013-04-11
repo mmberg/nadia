@@ -23,6 +23,8 @@ import net.mmberg.nadia.dialogmodel.aqd.AQDContext;
 import net.mmberg.nadia.dialogmodel.aqd.AQDForm;
 import net.mmberg.nadia.dialogmodel.aqd.AQDType;
 import net.mmberg.nadia.processor.nlu.actions.DummyAction;
+import net.mmberg.nadia.processor.nlu.actions.GroovyAction;
+import net.mmberg.nadia.processor.nlu.actions.JavaAction;
 import net.mmberg.nadia.processor.nlu.taskselector.BagOfWordsTaskSelector;
 
 public class DialogStore {
@@ -122,8 +124,25 @@ private Dialog createDummyDialog2(){
 		Task task1=new Task("getTripInformation");
 		bagOfWords = new ArrayList<String>(Arrays.asList("travel","book", "journey","trip"));
 		task1.setSelector(new BagOfWordsTaskSelector(bagOfWords));
-		action=new DummyAction("This trip from %getDepartureCity to %getDestinationCity costs #temperature Euros.");
-		task1.setAction(action);
+		
+//		action=new DummyAction("This trip from %getDepartureCity to %getDestinationCity costs #temperature Euros.");
+//		task1.setAction(action);
+
+//		JavaAction jaction=new JavaAction("This trip from %getDepartureCity to %getDestinationCity costs #temperature Euros.");
+//		try{
+//			jaction.setPath("/Users/markus/");
+//			jaction.setClassName("net.mmberg.nadia.processor.nlu.actions.TestExtJavaAction");
+//		}
+//		catch(Exception ex){
+//			ex.printStackTrace();
+//		}
+//		task1.setAction(jaction);
+		
+		GroovyAction gaction = new GroovyAction("This trip from %getDepartureCity to %getDestinationCity costs #temperature Euros.");
+		gaction.setCode("executionResults.put(\"temperature\",\"7\")");
+		//gaction.setReturnAnswer(false);
+		task1.setAction(gaction);
+		
 		dialog.addTask(task1);
 		
 		//ITO 1

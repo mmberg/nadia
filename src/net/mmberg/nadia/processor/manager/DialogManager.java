@@ -96,7 +96,7 @@ public class DialogManager {
 				if(t.isFilled()){
 					//execute action:
 					String sysAns=t.execute();
-					return new UIConsumerMessage(sysAns, Meta.ANSWER);	
+					if (t.getAction().isReturnAnswer()) return new UIConsumerMessage(sysAns, Meta.ANSWER);
 				}
 				
 			}

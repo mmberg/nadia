@@ -3,7 +3,7 @@ package net.mmberg.nadia.processor.nlu.actions;
 import java.util.HashMap;
 
 import net.mmberg.nadia.dialogmodel.Action;
-import net.mmberg.nadia.dialogmodel.Task;
+import net.mmberg.nadia.dialogmodel.Frame;
 
 
 public class DummyAction extends Action{
@@ -17,12 +17,11 @@ public class DummyAction extends Action{
 	}
 	
 	@Override
-	public HashMap<String, String> execute(Task t) {
+	public HashMap<String, String> execute(Frame frame) {
 		
 		//do something
 		
 		//save results		
-		HashMap<String, String> executionResults = new HashMap<String, String>();	
 		executionResults.put("temperature", "3");
 		return executionResults;
 	}

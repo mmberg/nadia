@@ -23,9 +23,10 @@
             </selector>
         </task>
         <task name="getTripInformation">
-            <action xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="dummyAction">
+            <action xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="groovyAction">
                 <returnAnswer>true</returnAnswer>
                 <utteranceTemplate>This trip from %getDepartureCity to %getDestinationCity costs #temperature Euros.</utteranceTemplate>
+                <code>executionResults.put(&quot;temperature&quot;,&quot;7&quot;)</code>
             </action>
             <itos>
                 <ito name="getDepartureCity">

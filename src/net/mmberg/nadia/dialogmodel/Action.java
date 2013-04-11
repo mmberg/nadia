@@ -7,13 +7,18 @@ import java.util.regex.Pattern;
 import javax.xml.bind.annotation.XmlSeeAlso;
 
 import net.mmberg.nadia.processor.nlu.actions.DummyAction;
+import net.mmberg.nadia.processor.nlu.actions.GroovyAction;
+import net.mmberg.nadia.processor.nlu.actions.JavaAction;
 
-@XmlSeeAlso ({DummyAction.class})
+@XmlSeeAlso ({DummyAction.class, JavaAction.class, GroovyAction.class})
 public abstract class Action {
 
 	//serializable features
 	private boolean returnAnswer=true;
-	private String utteranceTemplate; //e.g. "The temperature in %getWeatherCity is #temperature!"
+	private String utteranceTemplate=""; //e.g. "The temperature in %getWeatherCity is #temperature!"
+	
+	//non-serializable features
+	protected HashMap<String, String> executionResults = new HashMap<String, String>();
 	
 	//Serialization getters/setters
 	public boolean isReturnAnswer() {
@@ -42,14 +47,19 @@ public abstract class Action {
 	}
 	
 	//content
-	protected abstract HashMap<String, String> execute(Task t);
+	public abstract HashMap<String, String> execute(Frame frame);
+	
+	
 	
 	//fills template with values from frame
 	public String executeAndGetAnswer(Task t){
+		String answer="";
 		Frame frame=t.toFrame();
-		String answer= replaceSlotMarkers(utteranceTemplate, frame);
-		HashMap<String, String> executionResults=execute(t);
-		answer=replaceExecutionResultMarkers(answer, executionResults);
+		HashMap<String, String> executionResults=execute(frame);
+		if(isReturnAnswer()){
+			answer= replaceSlotMarkers(utteranceTemplate, frame);
+			answer= replaceExecutionResultMarkers(answer, executionResults);
+		}
 		return answer;
 	}
 	
