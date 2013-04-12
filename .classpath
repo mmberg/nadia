@@ -67,5 +67,29 @@
 	<classpathentry kind="lib" path="lib/jersey/jersey-multipart-1.17.jar"/>
 	<classpathentry kind="lib" path="lib/jersey/mimepull-1.3.jar"/>
 	<classpathentry kind="lib" path="lib/groovy-all-2.1.2.jar"/>
+	<classpathentry kind="lib" path="lib/groovy/httpbuilder/antlr-2.7.7.jar"/>
+	<classpathentry kind="lib" path="lib/groovy/httpbuilder/appengine-api-1.0-sdk-1.3.8.jar"/>
+	<classpathentry kind="lib" path="lib/groovy/httpbuilder/asm-3.2.jar"/>
+	<classpathentry kind="lib" path="lib/groovy/httpbuilder/asm-analysis-3.2.jar"/>
+	<classpathentry kind="lib" path="lib/groovy/httpbuilder/asm-commons-3.2.jar"/>
+	<classpathentry kind="lib" path="lib/groovy/httpbuilder/asm-tree-3.2.jar"/>
+	<classpathentry kind="lib" path="lib/groovy/httpbuilder/asm-util-3.2.jar"/>
+	<classpathentry kind="lib" path="lib/groovy/httpbuilder/commons-beanutils-1.8.0.jar"/>
+	<classpathentry kind="lib" path="lib/groovy/httpbuilder/commons-codec-1.3.jar"/>
+	<classpathentry kind="lib" path="lib/groovy/httpbuilder/commons-collections-3.2.1.jar"/>
+	<classpathentry kind="lib" path="lib/groovy/httpbuilder/commons-lang-2.4.jar"/>
+	<classpathentry kind="lib" path="lib/groovy/httpbuilder/commons-logging-1.1.1.jar"/>
+	<classpathentry kind="lib" path="lib/groovy/httpbuilder/ezmorph-1.0.6.jar"/>
+	<classpathentry kind="lib" path="lib/groovy/httpbuilder/http-builder-0.5.2-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/groovy/httpbuilder/httpclient-4.0.3.jar"/>
+	<classpathentry kind="lib" path="lib/groovy/httpbuilder/httpcore-4.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/groovy/httpbuilder/json-lib-2.3-jdk15.jar"/>
+	<classpathentry kind="lib" path="lib/groovy/httpbuilder/nekohtml-1.9.9.jar"/>
+	<classpathentry kind="lib" path="lib/groovy/httpbuilder/signpost-commonshttp4-1.2.1.1.jar"/>
+	<classpathentry kind="lib" path="lib/groovy/httpbuilder/signpost-core-1.2.1.1.jar"/>
+	<classpathentry kind="lib" path="lib/groovy/httpbuilder/xercesImpl-2.8.1.jar"/>
+	<classpathentry kind="lib" path="lib/groovy/httpbuilder/xml-apis-1.3.04.jar"/>
+	<classpathentry kind="lib" path="lib/groovy/httpbuilder/xml-resolver-1.2.jar"/>
+	<classpathentry kind="lib" path="lib/groovy/groovy-all-2.1.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

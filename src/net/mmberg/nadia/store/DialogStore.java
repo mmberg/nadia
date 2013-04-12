@@ -138,8 +138,8 @@ private Dialog createDummyDialog2(){
 //		}
 //		task1.setAction(jaction);
 		
-		GroovyAction gaction = new GroovyAction("This trip from %getDepartureCity to %getDestinationCity costs #temperature Euros.");
-		gaction.setCode("executionResults.put(\"temperature\",\"7\")");
+		GroovyAction gaction = new GroovyAction("This trip from %getDepartureCity to %getDestinationCity costs #price Euros.");
+		gaction.setCode("executionResults.put(\"price\",\"257\")");
 		//gaction.setReturnAnswer(false);
 		task1.setAction(gaction);
 		
@@ -167,8 +167,19 @@ private Dialog createDummyDialog2(){
 		Task task2=new Task("getWeatherInformation");
 		bagOfWords = new ArrayList<String>(Arrays.asList("weather","forecast", "temperature","trip"));
 		task2.setSelector(new BagOfWordsTaskSelector(bagOfWords));
-		action=new DummyAction("The temperature in %getWeatherCity is #temperature degrees.");
-		task2.setAction(action);
+//		action=new DummyAction("The temperature in %getWeatherCity is #temperature degrees.");
+//		task2.setAction(action);
+		gaction = new GroovyAction("The temperature in %getWeatherCity is #temperature degrees.");
+		gaction.setCode("" +
+				"import groovyx.net.http.*\r\n"+
+				"import javax.xml.xpath.*\r\n"+
+				"def http = new HTTPBuilder('http://weather.yahooapis.com')\r\n"+
+				"http.get( path: '/forecastrss', query:[w:'2502265',u:'c'],  contentType: ContentType.XML) { resp, xml -> \r\n"+
+				"   def temp = xml.channel.item.condition[0].@temp\r\n"+
+				"	executionResults.put(\"temperature\",temp.toString())\r\n"+
+				"}"
+		);
+		task2.setAction(gaction);
 		dialog.addTask(task2);
 		
 		//ITO 1

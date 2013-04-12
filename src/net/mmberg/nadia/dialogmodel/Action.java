@@ -75,7 +75,9 @@ public abstract class Action {
 			String exec_res_name;
 			while (matcher.find()) {
 				exec_res_name=matcher.group(1);
-				answer=answer.replaceFirst("#(\\w+)",executionResults.get(exec_res_name).toString());
+				if(executionResults.containsKey(exec_res_name)){
+					answer=answer.replaceFirst("#(\\w+)",executionResults.get(exec_res_name).toString());
+				}
 			}
 		}
 		

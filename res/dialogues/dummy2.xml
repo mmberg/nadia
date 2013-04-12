@@ -25,8 +25,8 @@
         <task name="getTripInformation">
             <action xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="groovyAction">
                 <returnAnswer>true</returnAnswer>
-                <utteranceTemplate>This trip from %getDepartureCity to %getDestinationCity costs #temperature Euros.</utteranceTemplate>
-                <code>executionResults.put(&quot;temperature&quot;,&quot;7&quot;)</code>
+                <utteranceTemplate>This trip from %getDepartureCity to %getDestinationCity costs #price Euros.</utteranceTemplate>
+                <code>executionResults.put(&quot;price&quot;,&quot;257&quot;)</code>
             </action>
             <itos>
                 <ito name="getDepartureCity">
@@ -64,9 +64,16 @@
             </selector>
         </task>
         <task name="getWeatherInformation">
-            <action xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="dummyAction">
+            <action xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="groovyAction">
                 <returnAnswer>true</returnAnswer>
                 <utteranceTemplate>The temperature in %getWeatherCity is #temperature degrees.</utteranceTemplate>
+                <code>import groovyx.net.http.*&#xD;
+import javax.xml.xpath.*&#xD;
+def http = new HTTPBuilder('http://weather.yahooapis.com')&#xD;
+http.get( path: '/forecastrss', query:[w:'2502265',u:'c'],  contentType: ContentType.XML) { resp, xml -&gt; &#xD;
+   def temp = xml.channel.item.condition[0].@temp&#xD;
+	executionResults.put(&quot;temperature&quot;,temp.toString())&#xD;
+}</code>
             </action>
             <itos>
                 <ito name="getWeatherCity">

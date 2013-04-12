@@ -12,6 +12,7 @@ public class GroovyAction extends Action{
 
 	private String code;
 	
+	//TODO CDATA
 	public String getCode() {
 		return code;
 	}

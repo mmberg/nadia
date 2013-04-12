@@ -15,7 +15,10 @@ $(document).ready(function(){
 	$.post(location, function(data, textStatus, jqXHR) {
 		$("#systemUtterance").text(data);
 		location=jqXHR.getResponseHeader("Location");
-		if(debug) $("#debug").html(location);
+		if(debug){
+			$("#debug").html(location);
+			$("#debug").append("<br><a href='"+location+"/context' target='_blank'>show context</a>");
+		}
 	});
 	
 	//click
