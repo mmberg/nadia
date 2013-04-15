@@ -8,9 +8,9 @@ import net.mmberg.nadia.Nadia;
 import net.mmberg.nadia.processor.nlu.aqdparser.ParseResults;
 import net.mmberg.nadia.processor.nlu.soda.Soda;
 import net.mmberg.nadia.processor.nlu.soda.classification.features.*;
+import net.mmberg.nadia.processor.utterance.TrainingUtterance;
+import net.mmberg.nadia.processor.utterance.UserUtterance;
 import net.mmberg.nadia.processor.manager.DialogManagerContext;
-import net.mmberg.nadia.utterance.TrainingUtterance;
-import net.mmberg.nadia.utterance.UserUtterance;
 
 public class SodaRecognizer {
 

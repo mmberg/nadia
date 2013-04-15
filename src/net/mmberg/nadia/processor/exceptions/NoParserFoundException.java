@@ -1,4 +1,4 @@
-package net.mmberg.nadia.exceptions;
+package net.mmberg.nadia.processor.exceptions;
 
 public class NoParserFoundException extends Exception{
 

@@ -1,4 +1,4 @@
-package net.mmberg.nadia.ui;
+package net.mmberg.nadia.processor.ui;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -21,9 +21,9 @@ import com.sun.jersey.multipart.FormDataParam;
 import net.mmberg.nadia.Nadia;
 import net.mmberg.nadia.NadiaConfig;
 import net.mmberg.nadia.dialogmodel.Dialog;
-import net.mmberg.nadia.store.DialogStore;
-import net.mmberg.nadia.ui.UIConsumer.UIConsumerMessage;
-import net.mmberg.nadia.ui.UIConsumer.UIConsumerMessage.Meta;
+import net.mmberg.nadia.processor.store.DialogStore;
+import net.mmberg.nadia.processor.ui.UIConsumer.UIConsumerMessage;
+import net.mmberg.nadia.processor.ui.UIConsumer.UIConsumerMessage.Meta;
 
 
 @Path("/")

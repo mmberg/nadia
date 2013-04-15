@@ -9,9 +9,9 @@ import net.mmberg.nadia.processor.nlu.aqdparser.ParseResult;
 import net.mmberg.nadia.processor.nlu.aqdparser.ParseResults;
 import net.mmberg.nadia.processor.nlu.aqdparser.Parsers;
 import net.mmberg.nadia.processor.nlu.soda.classification.SodaRecognizer;
-import net.mmberg.nadia.ui.UIConsumer.UIConsumerMessage;
-import net.mmberg.nadia.ui.UIConsumer.UIConsumerMessage.Meta;
-import net.mmberg.nadia.utterance.UserUtterance;
+import net.mmberg.nadia.processor.ui.UIConsumer.UIConsumerMessage;
+import net.mmberg.nadia.processor.ui.UIConsumer.UIConsumerMessage.Meta;
+import net.mmberg.nadia.processor.utterance.UserUtterance;
 import net.mmberg.nadia.dialogmodel.*;
 
 public class DialogManager {

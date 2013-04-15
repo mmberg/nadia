@@ -1,13 +1,16 @@
-package net.mmberg.nadia.processor.nlu.actions;
+package net.mmberg.nadia.dialogmodel.actions;
 
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 
 import java.util.HashMap;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 import net.mmberg.nadia.dialogmodel.Action;
 import net.mmberg.nadia.dialogmodel.Frame;
 
+@XmlRootElement
 public class GroovyAction extends Action{
 
 	private String code;

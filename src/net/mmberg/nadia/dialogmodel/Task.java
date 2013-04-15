@@ -55,6 +55,7 @@ public class Task {
 		this.selector = selector;
 	}
 
+	@XmlElementRef
 	public Action getAction() {
 		return action;
 	}

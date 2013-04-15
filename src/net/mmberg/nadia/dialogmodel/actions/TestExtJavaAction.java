@@ -1,4 +1,4 @@
-package net.mmberg.nadia.processor.nlu.actions;
+package net.mmberg.nadia.dialogmodel.actions;
 
 import java.util.HashMap;
 

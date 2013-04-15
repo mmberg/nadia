@@ -1,4 +1,4 @@
-package net.mmberg.nadia.utterance;
+package net.mmberg.nadia.processor.utterance;
 
 import java.util.HashSet;
 

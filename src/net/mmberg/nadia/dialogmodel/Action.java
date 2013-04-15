@@ -4,13 +4,15 @@ import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
 
-import net.mmberg.nadia.processor.nlu.actions.DummyAction;
-import net.mmberg.nadia.processor.nlu.actions.GroovyAction;
-import net.mmberg.nadia.processor.nlu.actions.JavaAction;
+import net.mmberg.nadia.dialogmodel.actions.DummyAction;
+import net.mmberg.nadia.dialogmodel.actions.GroovyAction;
+import net.mmberg.nadia.dialogmodel.actions.JavaAction;
 
 @XmlSeeAlso ({DummyAction.class, JavaAction.class, GroovyAction.class})
+@XmlRootElement
 public abstract class Action {
 
 	//serializable features

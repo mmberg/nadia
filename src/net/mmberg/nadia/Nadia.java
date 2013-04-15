@@ -16,8 +16,8 @@ import org.apache.commons.cli.ParseException;
 
 import net.mmberg.nadia.dialogmodel.Dialog;
 import net.mmberg.nadia.processor.manager.DialogManager;
-import net.mmberg.nadia.store.DialogStore;
-import net.mmberg.nadia.ui.*;
+import net.mmberg.nadia.processor.store.DialogStore;
+import net.mmberg.nadia.processor.ui.*;
 
 
 public class Nadia implements UIConsumer {

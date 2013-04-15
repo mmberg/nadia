@@ -1,12 +1,15 @@
-package net.mmberg.nadia.processor.nlu.actions;
+package net.mmberg.nadia.dialogmodel.actions;
 
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.HashMap;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 import net.mmberg.nadia.dialogmodel.Action;
 import net.mmberg.nadia.dialogmodel.Frame;
 
+@XmlRootElement
 public class JavaAction extends Action{
 	
 	private String path;

@@ -1,4 +1,4 @@
-package net.mmberg.nadia.ui;
+package net.mmberg.nadia.processor.ui;
 
 import net.mmberg.nadia.dialogmodel.Dialog;
 

@@ -1,4 +1,4 @@
-package net.mmberg.nadia.processor.nlu.taskselector;
+package net.mmberg.nadia.dialogmodel.taskselector;
 
 import java.util.ArrayList;
 

@@ -1,11 +1,11 @@
-package net.mmberg.nadia.ui;
+package net.mmberg.nadia.processor.ui;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import net.mmberg.nadia.ui.UIConsumer.UIConsumerMessage;
-import net.mmberg.nadia.ui.UIConsumer.UIConsumerMessage.Meta;
+import net.mmberg.nadia.processor.ui.UIConsumer.UIConsumerMessage;
+import net.mmberg.nadia.processor.ui.UIConsumer.UIConsumerMessage.Meta;
 
 public class ConsoleInterface extends UserInterface{
 

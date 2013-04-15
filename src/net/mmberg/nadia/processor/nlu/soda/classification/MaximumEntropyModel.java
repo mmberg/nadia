@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.logging.Logger;
 
 import net.mmberg.nadia.Nadia;
-import net.mmberg.nadia.utterance.TrainingUtterance;
-import net.mmberg.nadia.utterance.UserUtterance;
+import net.mmberg.nadia.processor.utterance.TrainingUtterance;
+import net.mmberg.nadia.processor.utterance.UserUtterance;
 
 import opennlp.maxent.GIS;
 import opennlp.model.Event;

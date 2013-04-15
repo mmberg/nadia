@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!--Created with Liquid XML Studio 2012 Developer Edition (Trial) 10.1.9.4348 (http://www.liquid-technologies.com)-->
+<xs:schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://github.com/mmberg/nadia" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="dialog">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="tasks">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="task" maxOccurs="unbounded">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="action" minOccurs="0">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:choice>
+                                                        <xs:sequence>
+                                                            <xs:element name="path" type="xs:string" />
+                                                            <xs:element name="className" type="xs:string" />
+                                                        </xs:sequence>
+                                                        <xs:sequence>
+                                                            <xs:element name="code" type="xs:string" />
+                                                        </xs:sequence>
+                                                    </xs:choice>
+                                                    <xs:sequence>
+                                                        <xs:element name="utteranceTemplate" type="xs:string" />
+                                                        <xs:element name="returnAnswer" type="xs:boolean" minOccurs="0" />
+                                                    </xs:sequence>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="itos">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="ito" maxOccurs="unbounded">
+                                                        <xs:complexType>
+                                                            <xs:sequence>
+                                                                <xs:element name="AQD">
+                                                                    <xs:complexType>
+                                                                        <xs:sequence>
+                                                                            <xs:element name="type" minOccurs="0">
+                                                                                <xs:complexType>
+                                                                                    <xs:sequence>
+                                                                                        <xs:element name="answerType" type="xs:string" />
+                                                                                    </xs:sequence>
+                                                                                </xs:complexType>
+                                                                            </xs:element>
+                                                                        </xs:sequence>
+                                                                    </xs:complexType>
+                                                                </xs:element>
+                                                                <xs:element name="fallback_question" type="xs:string" />
+                                                                <xs:element name="group" type="xs:unsignedByte" minOccurs="0" />
+                                                                <xs:element name="index" type="xs:unsignedByte" minOccurs="0" />
+                                                                <xs:element name="required" type="xs:boolean" minOccurs="0" />
+                                                                <xs:element name="useLG" type="xs:boolean" minOccurs="0" />
+                                                            </xs:sequence>
+                                                            <xs:attribute name="name" type="xs:string" use="optional" />
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="selector">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="bagOfWords">
+                                                        <xs:complexType>
+                                                            <xs:sequence>
+                                                                <xs:element name="word" type="xs:string" maxOccurs="unbounded" />
+                                                            </xs:sequence>
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                    <xs:attribute name="name" type="xs:string" use="optional" />
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+            <xs:attribute name="name" type="xs:string" use="optional" />
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

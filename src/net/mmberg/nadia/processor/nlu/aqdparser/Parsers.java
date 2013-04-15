@@ -3,7 +3,7 @@ package net.mmberg.nadia.processor.nlu.aqdparser;
 import java.util.HashSet;
 import java.util.Set;
 
-import net.mmberg.nadia.exceptions.NoParserFoundException;
+import net.mmberg.nadia.processor.exceptions.NoParserFoundException;
 
 public class Parsers {
 
