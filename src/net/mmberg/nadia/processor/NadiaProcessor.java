@@ -1,4 +1,4 @@
-package net.mmberg.nadia;
+package net.mmberg.nadia.processor;
 
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Formatter;
@@ -20,7 +20,7 @@ import net.mmberg.nadia.processor.store.DialogStore;
 import net.mmberg.nadia.processor.ui.*;
 
 
-public class Nadia implements UIConsumer {
+public class NadiaProcessor implements UIConsumer {
 
 	
 	private final static Logger logger = Logger.getLogger("nina"); 
@@ -89,7 +89,7 @@ public class Nadia implements UIConsumer {
 			
 		//start Nadia with selected UI
 		default_dialog=dialog_file;
-		Nadia nadia = new Nadia(DialogStore.loadFromPath(dialog_file));
+		NadiaProcessor nadia = new NadiaProcessor(DialogStore.loadFromPath(dialog_file));
 		UserInterface ui;
 		try {
 			ui = ui_class.newInstance();
@@ -99,13 +99,13 @@ public class Nadia implements UIConsumer {
 		}
 	}
 	
-	public Nadia(){
+	public NadiaProcessor(){
 		if (!init) init();
 		manager = new DialogManager();
 		manager.loadDialog(DialogStore.loadFromPath(default_dialog)); //load default dialogue
 	}
 	
-	public Nadia(Dialog d){
+	public NadiaProcessor(Dialog d){
 		manager = new DialogManager();
 		manager.loadDialog(d);	
 	}

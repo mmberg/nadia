@@ -13,7 +13,6 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
-import net.mmberg.nadia.NadiaConfig;
 import net.mmberg.nadia.dialogmodel.Action;
 import net.mmberg.nadia.dialogmodel.Dialog;
 import net.mmberg.nadia.dialogmodel.ITO;
@@ -24,12 +23,13 @@ import net.mmberg.nadia.dialogmodel.aqd.AQDForm;
 import net.mmberg.nadia.dialogmodel.aqd.AQDType;
 import net.mmberg.nadia.dialogmodel.actions.*;
 import net.mmberg.nadia.dialogmodel.taskselector.*;
+import net.mmberg.nadia.processor.NadiaProcessorConfig;
 
 public class DialogStore {
 
 	private static DialogStore dialogstore= null;
 	private HashMap<String, Dialog> store = new HashMap<String, Dialog>();
-	private static NadiaConfig config = NadiaConfig.getInstance();
+	private static NadiaProcessorConfig config = NadiaProcessorConfig.getInstance();
 	
 	private DialogStore(){
 		store.put("dummy1", createDummyDialog());
@@ -214,7 +214,7 @@ private Dialog createDummyDialog2(){
 	
 	public static void saveAs(Dialog d, String filename){
 		try {
-			save(d, new FileOutputStream(config.getProperty(NadiaConfig.DIALOGUEDIR)+filename));
+			save(d, new FileOutputStream(config.getProperty(NadiaProcessorConfig.DIALOGUEDIR)+filename));
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -245,7 +245,7 @@ private Dialog createDummyDialog2(){
 	}
 	
 	public static String toResourcesDirPath(String filename){
-		return config.getProperty(NadiaConfig.DIALOGUEDIR)+filename+".xml";
+		return config.getProperty(NadiaProcessorConfig.DIALOGUEDIR)+filename+".xml";
 	}
 
 	public static Dialog loadFromXml(String xml){

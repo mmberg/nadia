@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.logging.Logger;
 
-import net.mmberg.nadia.Nadia;
+import net.mmberg.nadia.processor.NadiaProcessor;
 import net.mmberg.nadia.processor.nlu.aqdparser.ParseResults;
 import net.mmberg.nadia.processor.nlu.soda.Soda;
 import net.mmberg.nadia.processor.nlu.soda.classification.features.*;
@@ -16,7 +16,7 @@ public class SodaRecognizer {
 
 	private static SodaRecognizer instance;
 	private MaximumEntropyModel model;
-	private final static Logger logger = Nadia.getLogger();
+	private final static Logger logger = NadiaProcessor.getLogger();
 	
 	/**
 	 * @param args

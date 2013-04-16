@@ -1,4 +1,4 @@
-package net.mmberg.nadia;
+package net.mmberg.nadia.processor;
 
 import java.util.Properties;
 
@@ -7,10 +7,10 @@ import java.util.Properties;
  * @author Markus
  *
  */
-public class NadiaConfig extends Properties{
+public class NadiaProcessorConfig extends Properties{
 
 	private static final long serialVersionUID = 1L;
-	private static NadiaConfig instance=null;
+	private static NadiaProcessorConfig instance=null;
 	public static final String ONTOLOGYPATH="OntologyPath";
 	public static final String CCGGRAMMARPATH="CCGgrammarPath";
 	public static final String DIALOGUEDIR="DialogueDir";
@@ -20,13 +20,13 @@ public class NadiaConfig extends Properties{
 	public static final String JETTYRESOURCEBASE="ResourceBase";
 	public static final String JETTYCONTEXTPATH="ContextPath";
 	
-	private NadiaConfig(){
+	private NadiaProcessorConfig(){
 
 	}
 	
-	public static NadiaConfig getInstance(){
+	public static NadiaProcessorConfig getInstance(){
 		if(instance==null){
-			instance=new NadiaConfig();
+			instance=new NadiaProcessorConfig();
 			instance.init();
 		}
 		return instance;

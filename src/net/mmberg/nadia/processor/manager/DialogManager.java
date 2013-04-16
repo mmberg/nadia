@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.logging.Logger;
 
-import net.mmberg.nadia.Nadia;
+import net.mmberg.nadia.processor.NadiaProcessor;
 import net.mmberg.nadia.processor.nlu.aqdparser.ParseResult;
 import net.mmberg.nadia.processor.nlu.aqdparser.ParseResults;
 import net.mmberg.nadia.processor.nlu.aqdparser.Parsers;
@@ -18,7 +18,7 @@ public class DialogManager {
 
 	private SodaRecognizer sodarec=null;
 	private static boolean init=false;
-	private final static Logger logger = Nadia.getLogger();
+	private final static Logger logger = NadiaProcessor.getLogger();
 	
 	private Dialog dialog=null;
 	private DialogManagerContext context=null;

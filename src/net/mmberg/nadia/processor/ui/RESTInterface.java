@@ -18,9 +18,9 @@ import org.eclipse.jetty.server.ServerConnector;
 
 import com.sun.jersey.multipart.FormDataParam;
 
-import net.mmberg.nadia.Nadia;
-import net.mmberg.nadia.NadiaConfig;
+import net.mmberg.nadia.processor.NadiaProcessor;
 import net.mmberg.nadia.dialogmodel.Dialog;
+import net.mmberg.nadia.processor.NadiaProcessorConfig;
 import net.mmberg.nadia.processor.store.DialogStore;
 import net.mmberg.nadia.processor.ui.UIConsumer.UIConsumerMessage;
 import net.mmberg.nadia.processor.ui.UIConsumer.UIConsumerMessage.Meta;
@@ -99,13 +99,13 @@ public class RESTInterface extends UserInterface{
 		UIConsumer new_consumer;
 		if(dialogxml!=null){
 			Dialog d=DialogStore.loadFromXml(dialogxml);
-			new_consumer = new Nadia(d);
+			new_consumer = new NadiaProcessor(d);
 		}
 		else{
-			new_consumer = new Nadia();
+			new_consumer = new NadiaProcessor();
 		}
 		instances.put(instance, new_consumer);
-		Nadia.getLogger().fine("created new instance "+new_consumer.getClass().getName());
+		NadiaProcessor.getLogger().fine("created new instance "+new_consumer.getClass().getName());
 	}
 	
 	private void create_dialog(int instance){
@@ -128,22 +128,22 @@ public class RESTInterface extends UserInterface{
 	public void start(){
 		try{
 			instances.put(0, consumer);
-			NadiaConfig config = NadiaConfig.getInstance();
+			NadiaProcessorConfig config = NadiaProcessorConfig.getInstance();
 			
 			//Jetty:
 			server = new Server();
 			
 			//main config
 	        WebAppContext context = new WebAppContext();
-	        context.setDescriptor(config.getProperty(NadiaConfig.JETTYWEBXMLPATH));
-	        context.setResourceBase(config.getProperty(NadiaConfig.JETTYRESOURCEBASE));
-	        context.setContextPath(config.getProperty(NadiaConfig.JETTYCONTEXTPATH));
+	        context.setDescriptor(config.getProperty(NadiaProcessorConfig.JETTYWEBXMLPATH));
+	        context.setResourceBase(config.getProperty(NadiaProcessorConfig.JETTYRESOURCEBASE));
+	        context.setContextPath(config.getProperty(NadiaProcessorConfig.JETTYCONTEXTPATH));
 	        context.setParentLoaderPriority(true);
 	        server.setHandler(context);
 	        
 	        //ssl (https)
-	        SslContextFactory sslContextFactory = new SslContextFactory(config.getProperty(NadiaConfig.JETTYKEYSTOREPATH));
-	        sslContextFactory.setKeyStorePassword(config.getProperty(NadiaConfig.JETTYKEYSTOREPASS));
+	        SslContextFactory sslContextFactory = new SslContextFactory(config.getProperty(NadiaProcessorConfig.JETTYKEYSTOREPATH));
+	        sslContextFactory.setKeyStorePassword(config.getProperty(NadiaProcessorConfig.JETTYKEYSTOREPASS));
 	
 	        ServerConnector serverconn = new ServerConnector(server, sslContextFactory);
 	        serverconn.setPort(8080); //443 (or 80) not allowed on Linux unless run as root

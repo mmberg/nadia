@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
-import net.mmberg.nadia.Nadia;
+import net.mmberg.nadia.processor.NadiaProcessor;
 import net.mmberg.nadia.processor.utterance.TrainingUtterance;
 import net.mmberg.nadia.processor.utterance.UserUtterance;
 
@@ -18,7 +18,7 @@ public class MaximumEntropyModel {
 	public static double SMOOTHING_OBSERVATION = 0.1;
 	private MaxentModel model;
 	private boolean trained=false;
-	private final static Logger logger = Nadia.getLogger();
+	private final static Logger logger = NadiaProcessor.getLogger();
 	
 	public boolean isTrained(){
 		return trained;

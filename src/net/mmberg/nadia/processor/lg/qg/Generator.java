@@ -5,8 +5,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 
-import net.mmberg.nadia.NadiaConfig;
 import net.mmberg.nadia.dialogmodel.aqd.AQD;
+import net.mmberg.nadia.processor.NadiaProcessorConfig;
 import net.mmberg.nadia.processor.lg.qg.interrogatives.*;
 
 import org.jdom.Document;
@@ -44,8 +44,8 @@ public class Generator {
 	public static Generator getInstance(){
 		if(instance==null){
 			try{
-				NadiaConfig config=NadiaConfig.getInstance();
-				instance=new Generator(new URL(config.getProperty(NadiaConfig.CCGGRAMMARPATH)), new URL(config.getProperty(NadiaConfig.ONTOLOGYPATH)));
+				NadiaProcessorConfig config=NadiaProcessorConfig.getInstance();
+				instance=new Generator(new URL(config.getProperty(NadiaProcessorConfig.CCGGRAMMARPATH)), new URL(config.getProperty(NadiaProcessorConfig.ONTOLOGYPATH)));
 			}
 			catch(MalformedURLException ex){
 				ex.printStackTrace();

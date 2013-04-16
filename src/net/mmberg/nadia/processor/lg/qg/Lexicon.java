@@ -4,7 +4,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
-import net.mmberg.nadia.Nadia;
+import net.mmberg.nadia.processor.NadiaProcessor;
 
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.OntModelSpec;
@@ -24,7 +24,7 @@ public class Lexicon {
 			  "PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>"+
 			  "PREFIX owl:  <http://www.w3.org/2002/07/owl#>"+
 			  "PREFIX fn: <http://www.w3.org/2005/xpath-functions#>";
-    private static Logger logger=Nadia.getLogger();
+    private static Logger logger=NadiaProcessor.getLogger();
 	
 	public Lexicon(URL ontologyURL){
 		this.load(ontologyURL);
