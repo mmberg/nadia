@@ -18,14 +18,12 @@ import net.mmberg.nadia.dialogmodel.Action;
 import net.mmberg.nadia.dialogmodel.Dialog;
 import net.mmberg.nadia.dialogmodel.ITO;
 import net.mmberg.nadia.dialogmodel.Task;
-import net.mmberg.nadia.dialogmodel.actions.DummyAction;
-import net.mmberg.nadia.dialogmodel.actions.GroovyAction;
-import net.mmberg.nadia.dialogmodel.actions.JavaAction;
 import net.mmberg.nadia.dialogmodel.aqd.AQD;
 import net.mmberg.nadia.dialogmodel.aqd.AQDContext;
 import net.mmberg.nadia.dialogmodel.aqd.AQDForm;
 import net.mmberg.nadia.dialogmodel.aqd.AQDType;
-import net.mmberg.nadia.dialogmodel.taskselector.BagOfWordsTaskSelector;
+import net.mmberg.nadia.dialogmodel.actions.*;
+import net.mmberg.nadia.dialogmodel.taskselector.*;
 
 public class DialogStore {
 
