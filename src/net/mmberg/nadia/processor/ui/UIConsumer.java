@@ -1,6 +1,6 @@
 package net.mmberg.nadia.processor.ui;
 
-import net.mmberg.nadia.dialogmodel.Dialog;
+import net.mmberg.nadia.processor.dialogmodel.Dialog;
 
 public interface UIConsumer {
 

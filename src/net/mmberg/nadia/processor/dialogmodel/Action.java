@@ -1,51 +1,22 @@
-package net.mmberg.nadia.dialogmodel;
+package net.mmberg.nadia.processor.dialogmodel;
 
 import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlSeeAlso;
+import net.mmberg.nadia.dialogmodel.definition.ActionModel;
 
-import net.mmberg.nadia.dialogmodel.actions.DummyAction;
-import net.mmberg.nadia.dialogmodel.actions.GroovyAction;
-import net.mmberg.nadia.dialogmodel.actions.JavaAction;
+public abstract class Action extends ActionModel{
 
-@XmlSeeAlso ({DummyAction.class, JavaAction.class, GroovyAction.class})
-@XmlRootElement
-public abstract class Action {
-
-	//serializable features
-	private boolean returnAnswer=true;
-	private String utteranceTemplate=""; //e.g. "The temperature in %getWeatherCity is #temperature!"
-	
 	//non-serializable features
 	protected HashMap<String, String> executionResults = new HashMap<String, String>();
 	
-	//Serialization getters/setters
-	public boolean isReturnAnswer() {
-		return returnAnswer;
-	}
-
-	public void setReturnAnswer(boolean returnAnswer) {
-		this.returnAnswer = returnAnswer;
-	}
-	
-
-	public String getUtteranceTemplate() {
-		return utteranceTemplate;
-	}
-
-	public void setUtteranceTemplate(String utteranceTemplate) {
-		this.utteranceTemplate = utteranceTemplate;
-	}
-
 	public Action(){
-		
+		super();
 	}
 	
 	public Action(String utteranceTemplate){
-		this.utteranceTemplate=utteranceTemplate;
+		super(utteranceTemplate);
 	}
 	
 	//content

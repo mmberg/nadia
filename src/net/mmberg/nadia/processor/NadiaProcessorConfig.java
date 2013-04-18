@@ -35,7 +35,7 @@ public class NadiaProcessorConfig extends Properties{
 	private void init(){
 		this.setProperty(ONTOLOGYPATH, "file:///"+System.getProperty("user.dir")+"/res/ontology/lexicon.owl");
 		this.setProperty(CCGGRAMMARPATH, "file:///"+System.getProperty("user.dir")+"/res/ccggrammar/grammar.xml");
-		this.setProperty(DIALOGUEDIR, "res/dialogues/");
+		this.setProperty(DIALOGUEDIR, "res/dialogues");
 		//Jetty SSL
 		this.setProperty(JETTYKEYSTOREPATH, "res/keys/nadia.jks");
 		this.setProperty(JETTYKEYSTOREPASS, "naturaldialog");

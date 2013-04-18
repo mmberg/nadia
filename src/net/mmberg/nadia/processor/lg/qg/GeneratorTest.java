@@ -2,10 +2,10 @@ package net.mmberg.nadia.processor.lg.qg;
 
 import java.util.ArrayList;
 
-import net.mmberg.nadia.dialogmodel.aqd.AQD;
-import net.mmberg.nadia.dialogmodel.aqd.AQDContext;
-import net.mmberg.nadia.dialogmodel.aqd.AQDForm;
-import net.mmberg.nadia.dialogmodel.aqd.AQDType;
+import net.mmberg.nadia.processor.dialogmodel.aqd.AQD;
+import net.mmberg.nadia.processor.dialogmodel.aqd.AQDContext;
+import net.mmberg.nadia.processor.dialogmodel.aqd.AQDForm;
+import net.mmberg.nadia.processor.dialogmodel.aqd.AQDType;
 
 public class GeneratorTest {
 

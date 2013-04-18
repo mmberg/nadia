@@ -19,9 +19,8 @@ import org.eclipse.jetty.server.ServerConnector;
 import com.sun.jersey.multipart.FormDataParam;
 
 import net.mmberg.nadia.processor.NadiaProcessor;
-import net.mmberg.nadia.dialogmodel.Dialog;
 import net.mmberg.nadia.processor.NadiaProcessorConfig;
-import net.mmberg.nadia.processor.store.DialogStore;
+import net.mmberg.nadia.processor.dialogmodel.Dialog;
 import net.mmberg.nadia.processor.ui.UIConsumer.UIConsumerMessage;
 import net.mmberg.nadia.processor.ui.UIConsumer.UIConsumerMessage.Meta;
 
@@ -98,7 +97,7 @@ public class RESTInterface extends UserInterface{
 	private void create_dialog(int instance, String dialogxml){
 		UIConsumer new_consumer;
 		if(dialogxml!=null){
-			Dialog d=DialogStore.loadFromXml(dialogxml);
+			Dialog d=Dialog.loadFromXml(dialogxml);
 			new_consumer = new NadiaProcessor(d);
 		}
 		else{

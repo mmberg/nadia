@@ -5,8 +5,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 
-import net.mmberg.nadia.dialogmodel.aqd.AQD;
 import net.mmberg.nadia.processor.NadiaProcessorConfig;
+import net.mmberg.nadia.processor.dialogmodel.aqd.AQD;
 import net.mmberg.nadia.processor.lg.qg.interrogatives.*;
 
 import org.jdom.Document;

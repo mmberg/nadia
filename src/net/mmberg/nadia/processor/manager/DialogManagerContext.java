@@ -9,7 +9,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-import net.mmberg.nadia.dialogmodel.*;
+import net.mmberg.nadia.processor.dialogmodel.*;
 
 @XmlRootElement
 public class DialogManagerContext {

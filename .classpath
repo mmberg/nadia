@@ -90,5 +90,6 @@
 	<classpathentry kind="lib" path="lib/groovy/httpbuilder/xml-apis-1.3.04.jar"/>
 	<classpathentry kind="lib" path="lib/groovy/httpbuilder/xml-resolver-1.2.jar"/>
 	<classpathentry kind="lib" path="lib/groovy/groovy-all-2.1.2.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/nadia-model"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

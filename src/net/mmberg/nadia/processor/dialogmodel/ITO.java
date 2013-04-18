@@ -1,22 +1,13 @@
-package net.mmberg.nadia.dialogmodel;
+package net.mmberg.nadia.processor.dialogmodel;
 
-import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlTransient;
 
+import net.mmberg.nadia.dialogmodel.definition.ITOModel;
+import net.mmberg.nadia.processor.dialogmodel.aqd.*;
 import net.mmberg.nadia.processor.lg.qg.Generator;
 import net.mmberg.nadia.processor.nlu.aqdparser.*;
-import net.mmberg.nadia.dialogmodel.aqd.*;
 
-public class ITO {
-	
-	//serializable members
-	private String name;
-	private int group;
-	private int index;
-	private boolean required;
-	private AQD aqd;
-	private String fallback_question;
-	private boolean useLG=true;
+public class ITO extends ITOModel{
 	
 	//unserializable members
 	private boolean filled;
@@ -24,80 +15,16 @@ public class ITO {
 	private static Generator generator=Generator.getInstance();
 	
 	
-	//Serialization getter/setter
 	public ITO(){
-		
+		super();
 	}	
-
-	@XmlAttribute(name="name")
-	public String getName(){
-		return this.name;
-	}
-	
-	public void setName(String name){
-		this.name=name;
-	}
-	
-	public void setAQD(AQD aqd){
-		this.aqd=aqd;
-	}
-	
-	public AQD getAQD() {
-		return aqd;
-	}
-	
-	
-	public int getGroup() {
-		return group;
-	}
-
-	public void setGroup(int group) {
-		this.group = group;
-	}
-
-	public int getIndex() {
-		return index;
-	}
-
-	public void setIndex(int index) {
-		this.index = index;
-	}
-
-	public boolean isRequired() {
-		return required;
-	}
-
-	public void setRequired(boolean required) {
-		this.required = required;
-	}
-
-	public String getFallback_question() {
-		return fallback_question;
-	}
-
-	public void setFallback_question(String fallback_question) {
-		this.fallback_question = fallback_question;
-	}
-
-	public boolean isUseLG() {
-		return useLG;
-	}
-
-	public void setUseLG(boolean useLG) {
-		this.useLG = useLG;
-	}
-
-	//Content
 	
 	public ITO(String name, String fallback_question){
-		this.name=name;
-		this.fallback_question=fallback_question;
+		super(name, fallback_question);
 	}
 	
 	public ITO(String name, String fallback_question, boolean useLG){
-		this.name=name;
-		this.fallback_question=fallback_question;
-		this.useLG=useLG;
+		super(name, fallback_question, useLG);
 	}
 	
 	@XmlTransient

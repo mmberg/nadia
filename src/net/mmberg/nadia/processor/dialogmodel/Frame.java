@@ -1,4 +1,4 @@
-package net.mmberg.nadia.dialogmodel;
+package net.mmberg.nadia.processor.dialogmodel;
 
 import java.util.HashMap;
 

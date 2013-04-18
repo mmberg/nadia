@@ -1,9 +1,8 @@
-package net.mmberg.nadia.dialogmodel.actions;
+package net.mmberg.nadia.processor.dialogmodel.actions;
 
 import java.util.HashMap;
 
-import net.mmberg.nadia.dialogmodel.Frame;
-
+import net.mmberg.nadia.processor.dialogmodel.Frame;
 
 public class TestExtJavaAction extends JavaAction{
 

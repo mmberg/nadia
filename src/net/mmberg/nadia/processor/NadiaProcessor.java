@@ -14,7 +14,7 @@ import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
-import net.mmberg.nadia.dialogmodel.Dialog;
+import net.mmberg.nadia.processor.dialogmodel.Dialog;
 import net.mmberg.nadia.processor.manager.DialogManager;
 import net.mmberg.nadia.processor.store.DialogStore;
 import net.mmberg.nadia.processor.ui.*;
@@ -26,8 +26,10 @@ public class NadiaProcessor implements UIConsumer {
 	private final static Logger logger = Logger.getLogger("nina"); 
 	private DialogManager manager=null;
 	private static boolean init=false;
-	private static String default_dialog=DialogStore.toResourcesDirPath("dummy1"); //default dialogue
-	
+	private static NadiaProcessorConfig config = NadiaProcessorConfig.getInstance();
+	private static String default_dialog=config.getProperty(NadiaProcessorConfig.DIALOGUEDIR)+"/"+"dummy1"; //default dialogue
+
+
 	/**
 	 * @param args
 	 */
@@ -73,13 +75,13 @@ public class NadiaProcessor implements UIConsumer {
 			}
 			//load dialogue from resources
 			if(cmd.hasOption("r")){
-				dialog_file=DialogStore.toResourcesDirPath(cmd.getOptionValue("r"));
+				dialog_file=config.getProperty(NadiaProcessorConfig.DIALOGUEDIR)+"/"+cmd.getOptionValue("r")+".xml";
 			}
 			//load dialogue from internal store
 			if(cmd.hasOption("s")){
 				Dialog store_dialog=DialogStore.getInstance().getDialogFromStore((cmd.getOptionValue("s")));
-				DialogStore.save(store_dialog);
-				dialog_file=DialogStore.toResourcesDirPath(cmd.getOptionValue("s"));
+				store_dialog.save();
+				dialog_file=config.getProperty(NadiaProcessorConfig.DIALOGUEDIR)+"/"+cmd.getOptionValue("s")+".xml";
 			}
 		
 		} catch (ParseException e1) {
@@ -89,7 +91,7 @@ public class NadiaProcessor implements UIConsumer {
 			
 		//start Nadia with selected UI
 		default_dialog=dialog_file;
-		NadiaProcessor nadia = new NadiaProcessor(DialogStore.loadFromPath(dialog_file));
+		NadiaProcessor nadia = new NadiaProcessor(Dialog.loadFromPath(dialog_file));
 		UserInterface ui;
 		try {
 			ui = ui_class.newInstance();
@@ -102,7 +104,7 @@ public class NadiaProcessor implements UIConsumer {
 	public NadiaProcessor(){
 		if (!init) init();
 		manager = new DialogManager();
-		manager.loadDialog(DialogStore.loadFromPath(default_dialog)); //load default dialogue
+		manager.loadDialog(Dialog.loadFromPath(default_dialog)); //load default dialogue
 	}
 	
 	public NadiaProcessor(Dialog d){
@@ -131,7 +133,7 @@ public class NadiaProcessor implements UIConsumer {
 		if(manager!=null){
 			context = manager.getContext().serialize();
 		}
-		context += "\r\n\r\n"+DialogStore.toXML(manager.getDialog());
+		context += "\r\n\r\n"+(manager.getDialog().toXML());
 		return context;
 	}
 	

@@ -1,4 +1,4 @@
-package net.mmberg.nadia.dialogmodel.actions;
+package net.mmberg.nadia.processor.dialogmodel.actions;
 
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
@@ -7,22 +7,11 @@ import java.util.HashMap;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-import net.mmberg.nadia.dialogmodel.Action;
-import net.mmberg.nadia.dialogmodel.Frame;
+import net.mmberg.nadia.dialogmodel.definition.actions.GroovyActionModel;
+import net.mmberg.nadia.processor.dialogmodel.Frame;
 
 @XmlRootElement
-public class GroovyAction extends Action{
-
-	private String code;
-	
-	//TODO CDATA
-	public String getCode() {
-		return code;
-	}
-
-	public void setCode(String code) {
-		this.code = code;
-	}
+public class GroovyAction extends GroovyActionModel {
 
 	public GroovyAction(){
 		super();
