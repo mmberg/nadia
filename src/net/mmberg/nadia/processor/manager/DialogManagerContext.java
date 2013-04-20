@@ -7,6 +7,7 @@ import java.util.Date;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -20,9 +21,12 @@ public class DialogManagerContext {
 	private Date lastAccess;
 	private String additionalDebugInfo;
 	private Boolean question_open=false;
-	private ITO current_question;
+	//private ITO current_question;
 	private Boolean started=false;
-	private ArrayList<ITO> history=new ArrayList<ITO>();
+	private ArrayList<ITO> ito_history=new ArrayList<ITO>();
+	private ArrayList<String> dialog_history=new ArrayList<String>();
+	
+	public enum UTTERANCE_TYPE {USER,SYSTEM};
 	
 	//Accessors
 	public void setQuestionOpen(Boolean question_open) {
@@ -34,10 +38,10 @@ public class DialogManagerContext {
 	}
 	
 	public void setCurrentQuestion(ITO question){
-		this.current_question=question;
+		//this.current_question=question;
 		if(question!=null){
 			setQuestionOpen(true);
-			history.add(question);
+			ito_history.add(question);
 		}
 	}
 	
@@ -67,16 +71,31 @@ public class DialogManagerContext {
 	
 	@XmlTransient
 	public ITO getCurrentQuestion(){
-		return this.current_question;
+		return ito_history.get(ito_history.size()-1);
 	}
 	
 	@XmlElement(name="currentQuestion")
 	private String getCurrentQuestionUtterance(){
-		return this.current_question.ask();
+		if(question_open){
+			return getCurrentQuestion().getUtteranceText();
+		}
+		else return "no current question";
 	}
 
+	@XmlElement(name="utterance")
+	@XmlElementWrapper(name="dialogHistory")
+	private ArrayList<String> getDialogHistory(){
+		return dialog_history;
+	}
+	
+	public void addUtteranceToHistory(String utterance, UTTERANCE_TYPE type){
+		String prefix = (type==UTTERANCE_TYPE.SYSTEM)?"S: ":"U: ";
+		dialog_history.add(prefix+utterance);
+	}
+	
+	@XmlTransient
 	public ArrayList<ITO> getHistory(){
-		return history;
+		return ito_history;
 	}
 	
 	public Boolean isStarted() {

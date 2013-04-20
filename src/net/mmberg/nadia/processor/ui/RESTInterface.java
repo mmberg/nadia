@@ -107,7 +107,12 @@ public class RESTInterface extends UserInterface{
 			@PathParam("instance_id") String instance_id)
 	{
 		UIConsumer instance = instances.get(Integer.parseInt(instance_id));
-		String context=instance.getDebugInfo();
+		String context;
+		if(instance!=null){
+			context=instance.getDebugInfo();
+		}
+		else context="Error no such instance";
+		
 		return Response.ok(context).build();
 	}
 

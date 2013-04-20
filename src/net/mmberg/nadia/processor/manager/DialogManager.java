@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 
 import net.mmberg.nadia.processor.NadiaProcessor;
 import net.mmberg.nadia.processor.dialogmodel.*;
+import net.mmberg.nadia.processor.manager.DialogManagerContext.UTTERANCE_TYPE;
 import net.mmberg.nadia.processor.nlu.aqdparser.ParseResult;
 import net.mmberg.nadia.processor.nlu.aqdparser.ParseResults;
 import net.mmberg.nadia.processor.nlu.aqdparser.Parsers;
@@ -102,6 +103,8 @@ public class DialogManager implements UIConsumer {
 			ito_iterator=itos.iterator();
 		}
 		else if(userUtterance!=null){		
+			context.addUtteranceToHistory(userUtterance, UTTERANCE_TYPE.USER);
+			context.setQuestionOpen(false);
 			//process user answer:
 			answer=new UserUtterance(userUtterance);
 			sodarec.predict(answer,context); //identify dialog act (sets features and soda by reference), access result: answer.getSoda()
@@ -117,7 +120,10 @@ public class DialogManager implements UIConsumer {
 				if(t.isFilled()){
 					//execute action:
 					String sysAns=t.execute();
-					if (t.getAction().isReturnAnswer()) return new UIConsumerMessage(sysAns, Meta.ANSWER);
+					if (t.getAction().isReturnAnswer()){
+						context.addUtteranceToHistory(sysAns, UTTERANCE_TYPE.SYSTEM);
+						return new UIConsumerMessage(sysAns, Meta.ANSWER);
+					}
 				}
 				
 			}
@@ -143,6 +149,7 @@ public class DialogManager implements UIConsumer {
 					ITO ito=ito_iterator.next();
 					context.setCurrentQuestion(ito); //point current question to this ITO
 					String question=ito.ask(); //get question
+					context.addUtteranceToHistory(question, UTTERANCE_TYPE.SYSTEM);
 					return new UIConsumerMessage(question, Meta.QUESTION);
 				}
 			}
@@ -156,6 +163,7 @@ public class DialogManager implements UIConsumer {
 			ITO ito=ito_iterator.next();
 			context.setCurrentQuestion(ito); //point current question to this ITO
 			String question=ito.ask(); //get question
+			context.addUtteranceToHistory(question, UTTERANCE_TYPE.SYSTEM);
 			return new UIConsumerMessage(question, Meta.QUESTION);
 		}
 //		else{

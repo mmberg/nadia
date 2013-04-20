@@ -13,7 +13,7 @@ public class ITO extends ITOModel{
 	private boolean filled;
 	private Object value;
 	private static Generator generator=Generator.getInstance();
-	
+	private String utteranceText;
 	
 	public ITO(){
 		super();
@@ -35,6 +35,11 @@ public class ITO extends ITOModel{
 	@XmlTransient
 	public Object getValue(){
 		return this.value;
+	}
+	
+	@XmlTransient
+	public String getUtteranceText(){
+		return this.utteranceText;
 	}
 	
 	public void setValue(Object value){
@@ -60,7 +65,7 @@ public class ITO extends ITOModel{
 		return results;
 	}
 	
-	public String askWithLG(){
+	private String askWithLG(){
 		if(aqd.getForm().getPoliteness()==null){
 			//clone AQD and set form according to generic dialogue settings, i.e. do not manipulate the AQD
 			AQD tempAQD=new AQD();
@@ -72,25 +77,24 @@ public class ITO extends ITOModel{
 		return generator.generateQuestion(aqd);
 	}
 	
-	public String askFallback(){
-		return fallback_question;
-	}
-	
+
 	//automatic mode
 	public String ask(){
+		String question;
 		//may use AQD (LG) but does't need to
 		if(useLG && (generator!=null)){
 			try{
-				String question = askWithLG();
-				if (question != null) return question;
-				else return askFallback();
+				question = askWithLG();
+				if (question == null) question=getFallback_question();
 			}
 			catch(Exception ex){
 				ex.printStackTrace();
-				return askFallback();
+				question = getFallback_question();
 			}
 		}
-		else return askFallback();
+		else question = getFallback_question();
+		utteranceText=question;
+		return question;
 	}
 	
 }
