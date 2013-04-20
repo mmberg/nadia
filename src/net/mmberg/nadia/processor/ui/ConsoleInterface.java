@@ -9,6 +9,8 @@ import net.mmberg.nadia.processor.ui.UIConsumer.UIConsumerMessage.Meta;
 
 public class ConsoleInterface extends UserInterface{
 
+	UIConsumer consumer;
+	
 	private void send(String text) {
 		System.out.println(text);
 	}
@@ -28,6 +30,7 @@ public class ConsoleInterface extends UserInterface{
 
 	@Override
 	public void start() {
+		consumer=consumerFactory.create();
 		UIConsumerMessage message=consumer.processUtterance(null);
 		String systemUtterance=message.getSystemUtterance();
 		send(systemUtterance);

@@ -21,11 +21,10 @@ import net.mmberg.nadia.processor.store.DialogStore;
 import net.mmberg.nadia.processor.ui.*;
 
 
-public class NadiaProcessor {
+public class NadiaProcessor extends UIConsumerFactory{
 
 	
 	private final static Logger logger = Logger.getLogger("nina"); 
-	private DialogManager manager=null;
 	private static boolean init=false;
 	private static NadiaProcessorConfig config = NadiaProcessorConfig.getInstance();
 	private static String default_dialog=config.getProperty(NadiaProcessorConfig.DIALOGUEDIR)+"/"+"dummy1"; //default dialogue
@@ -93,21 +92,19 @@ public class NadiaProcessor {
 			
 		//start Nadia with selected UI
 		default_dialog=dialog_file;
-		NadiaProcessor nadia = new NadiaProcessor(Dialog.loadFromPath(dialog_file));
-		//UserInterface ui;
+		NadiaProcessor nadia = new NadiaProcessor();
 		try {
 			ui = ui_class.newInstance();
-			nadia.startUI(ui);
+			ui.register(nadia);
+			ui.start();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
-//	public NadiaProcessor(){
-//		if (!init) init();
-//		manager = new DialogManager();
-//		manager.loadDialog(Dialog.loadFromPath(default_dialog)); //load default dialogue
-//	}
+	private NadiaProcessor(){
+		if (!init) init();
+	}
 	
 	public static Dialog getDefaultDialog(){
 		return Dialog.loadFromPath(default_dialog);
@@ -121,15 +118,14 @@ public class NadiaProcessor {
 		return startedOn;
 	}
 	
-	private NadiaProcessor(Dialog d){
-		if (!init) init();
-		manager = new DialogManager();
-		manager.loadDialog(d);	
+	@Override
+	public UIConsumer create() {
+		return new DialogManager();
 	}
 	
-	private void startUI(UserInterface ui){
-		ui.register(manager);
-		ui.start();
+	@Override
+	public UIConsumer create(Dialog d) {
+		return new DialogManager(d);
 	}
 		
 	private void init(){

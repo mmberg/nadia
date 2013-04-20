@@ -2,10 +2,10 @@ package net.mmberg.nadia.processor.ui;
 
 public abstract class UserInterface {
 
-	protected UIConsumer consumer=null; 
+	protected static UIConsumerFactory consumerFactory; 
 	
-	public void register(UIConsumer consumer){
-		this.consumer=consumer;
+	public void register(UIConsumerFactory factory){
+		consumerFactory=factory;
 	}
 	
 	public abstract void start();

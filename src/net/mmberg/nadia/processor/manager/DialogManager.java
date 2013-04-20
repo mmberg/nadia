@@ -47,9 +47,7 @@ public class DialogManager implements UIConsumer {
 		sodarec=SodaRecognizer.getInstance();
 		if(!init){
 			if(!sodarec.isTrained()) sodarec.train(); //train Dialog Act Classifier
-			
 			Parsers.init(); //init (i.e. activate) Parsers
-			
 			init=true;
 		}
 	}
@@ -58,7 +56,7 @@ public class DialogManager implements UIConsumer {
 		return dialog;
 	}
 	
-	//experimental
+	//TODO still experimental
 	private UIConsumerMessage restart(){
 		context.setStarted(false);
 		return processUtterance(null);
@@ -67,6 +65,7 @@ public class DialogManager implements UIConsumer {
 	@Override
 	public void loadDialog(Dialog dialog){
 		this.dialog = dialog;
+		
 	}
 	
 	@Override
@@ -87,7 +86,7 @@ public class DialogManager implements UIConsumer {
 		return context.getLastAccess();
 	}
 	
-	//experimental
+	//TODO experimental
 	@Override
 	public UIConsumerMessage processUtterance(String userUtterance){
 		
@@ -98,7 +97,10 @@ public class DialogManager implements UIConsumer {
 				
 		if(!context.isStarted()){
 			context.setStarted(true);
-			t=dialog.getTask("start"); //get a task and its associated ITOs
+			t=dialog.getStartTask(); //get start task and its associated ITOs
+			if(t==null) {
+				t=dialog.getFirstTask(); //if no start task defined just take the first one
+			}
 			itos=t.getITOs();
 			ito_iterator=itos.iterator();
 		}
@@ -148,7 +150,7 @@ public class DialogManager implements UIConsumer {
 					ito_iterator=itos.iterator();
 					ITO ito=ito_iterator.next();
 					context.setCurrentQuestion(ito); //point current question to this ITO
-					String question=ito.ask(); //get question
+					String question=ito.ask(dialog.getGlobal_politeness(), dialog.getGlobal_formality()); //get question
 					context.addUtteranceToHistory(question, UTTERANCE_TYPE.SYSTEM);
 					return new UIConsumerMessage(question, Meta.QUESTION);
 				}
@@ -156,13 +158,13 @@ public class DialogManager implements UIConsumer {
 			
 			//repeat question:
 			String question="I did not understand that. Please try again. ";
-			question+=context.getCurrentQuestion().ask();
+			question+=context.getCurrentQuestion().ask(dialog.getGlobal_politeness(), dialog.getGlobal_formality());
 			return new UIConsumerMessage(question, Meta.QUESTION);
 		} //next question:
 		else if(ito_iterator!=null && ito_iterator.hasNext()){
 			ITO ito=ito_iterator.next();
 			context.setCurrentQuestion(ito); //point current question to this ITO
-			String question=ito.ask(); //get question
+			String question=ito.ask(dialog.getGlobal_politeness(), dialog.getGlobal_formality()); //get question
 			context.addUtteranceToHistory(question, UTTERANCE_TYPE.SYSTEM);
 			return new UIConsumerMessage(question, Meta.QUESTION);
 		}
@@ -186,47 +188,52 @@ public class DialogManager implements UIConsumer {
 		else return restart(); //new UIConsumerMessage("", Meta.END_OF_DIALOG);
 	}
 	
-	public UIConsumerMessage processUtterance_old(String userUtterance){
-		
-		ParseResults results=null;
-		
-		if(!context.isStarted()){
-			context.setStarted(true);
-			t=dialog.getTask("bsp"); //get a task and its associated ITOs
-			itos=t.getITOs();
-			ito_iterator=itos.iterator();
-		}
-		else if(userUtterance!=null){		
-			//process user answer:
-			UserUtterance answer=new UserUtterance(userUtterance);
-			sodarec.predict(answer,context); //identify dialog act (sets features and soda by reference), access result: answer.getSoda()
-			results=interpret(context.getCurrentQuestion(),answer.getText()); //Parsing
-			//TODO do something with the results
-			
-		}
-		else return new UIConsumerMessage("", Meta.UNCHANGED); //if there is no user utterance nothing will/should happen
-				
-		//return answer or next question or repeat question
-		if(results!=null && results.getState()==ParseResults.NOMATCH){
-			String question="I did not understand that. Please try again. ";
-			question+=context.getCurrentQuestion().ask();
-			return new UIConsumerMessage(question, Meta.QUESTION);
-		}
-		else if(ito_iterator.hasNext()){
-			ITO ito=ito_iterator.next();
-			context.setQuestionOpen(true);
-			context.setCurrentQuestion(ito); //point current question to this ITO
-			String question=ito.ask(); //get question
-			return new UIConsumerMessage(question, Meta.QUESTION);
-		}
-		else return new UIConsumerMessage("", Meta.END_OF_DIALOG);
-	}
-	
 
 	private ParseResults interpret(ITO ito, String user_answer){
 		ParseResults results=ito.parse(user_answer, true);
 		if(results.size()>0) logger.info(results.toString()); else logger.warning("no parser matched");
 		return results;
 	}
+	
+	
+	
+	
+	
+	
+//	public UIConsumerMessage processUtterance_old(String userUtterance){
+//		
+//		ParseResults results=null;
+//		
+//		if(!context.isStarted()){
+//			context.setStarted(true);
+//			t=dialog.getTask("bsp"); //get a task and its associated ITOs
+//			itos=t.getITOs();
+//			ito_iterator=itos.iterator();
+//		}
+//		else if(userUtterance!=null){		
+//			//process user answer:
+//			UserUtterance answer=new UserUtterance(userUtterance);
+//			sodarec.predict(answer,context); //identify dialog act (sets features and soda by reference), access result: answer.getSoda()
+//			results=interpret(context.getCurrentQuestion(),answer.getText()); //Parsing
+//			//TODO do something with the results
+//			
+//		}
+//		else return new UIConsumerMessage("", Meta.UNCHANGED); //if there is no user utterance nothing will/should happen
+//				
+//		//return answer or next question or repeat question
+//		if(results!=null && results.getState()==ParseResults.NOMATCH){
+//			String question="I did not understand that. Please try again. ";
+//			question+=context.getCurrentQuestion().ask();
+//			return new UIConsumerMessage(question, Meta.QUESTION);
+//		}
+//		else if(ito_iterator.hasNext()){
+//			ITO ito=ito_iterator.next();
+//			context.setQuestionOpen(true);
+//			context.setCurrentQuestion(ito); //point current question to this ITO
+//			String question=ito.ask(); //get question
+//			return new UIConsumerMessage(question, Meta.QUESTION);
+//		}
+//		else return new UIConsumerMessage("", Meta.END_OF_DIALOG);
+//	}
 
 }

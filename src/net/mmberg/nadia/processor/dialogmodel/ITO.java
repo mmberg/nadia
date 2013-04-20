@@ -65,13 +65,13 @@ public class ITO extends ITOModel{
 		return results;
 	}
 	
-	private String askWithLG(){
-		if(aqd.getForm().getPoliteness()==null){
+	private String askWithLG(int global_politeness, int global_formality){
+		if(aqd.getForm().getPoliteness()==null){ //if no local politeness scores, use global ones from dialogue definition
 			//clone AQD and set form according to generic dialogue settings, i.e. do not manipulate the AQD
 			AQD tempAQD=new AQD();
 			tempAQD.setType(aqd.getType());
 			tempAQD.setContext(aqd.getContext());
-			tempAQD.setForm(new AQDForm(3,3)); //TODO get values from dialogue
+			tempAQD.setForm(new AQDForm(global_politeness, global_formality)); //TODO get values from dialogue
 			return generator.generateQuestion(tempAQD);
 		}
 		return generator.generateQuestion(aqd);
@@ -79,12 +79,12 @@ public class ITO extends ITOModel{
 	
 
 	//automatic mode
-	public String ask(){
+	public String ask(int global_politeness, int global_formality){
 		String question;
 		//may use AQD (LG) but does't need to
 		if(useLG && (generator!=null)){
 			try{
-				question = askWithLG();
+				question = askWithLG(global_politeness, global_formality);
 				if (question == null) question=getFallback_question();
 			}
 			catch(Exception ex){

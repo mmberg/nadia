@@ -27,7 +27,6 @@ import com.sun.jersey.multipart.FormDataParam;
 import net.mmberg.nadia.processor.NadiaProcessor;
 import net.mmberg.nadia.processor.NadiaProcessorConfig;
 import net.mmberg.nadia.processor.dialogmodel.Dialog;
-import net.mmberg.nadia.processor.manager.DialogManager;
 import net.mmberg.nadia.processor.ui.UIConsumer.UIConsumerMessage;
 import net.mmberg.nadia.processor.ui.UIConsumer.UIConsumerMessage.Meta;
 
@@ -36,8 +35,8 @@ import net.mmberg.nadia.processor.ui.UIConsumer.UIConsumerMessage.Meta;
 public class RESTInterface extends UserInterface{
 
 	private Server server;
-	private static int instance_id=-1;
-	protected static HashMap<Integer, UIConsumer> instances = new HashMap<Integer, UIConsumer>();
+	private static int instance_counter=0;
+	protected static HashMap<String, UIConsumer> instances = new HashMap<String, UIConsumer>();
 	
 	@Context UriInfo uri;
 	@Context HttpServletRequest request;
@@ -50,9 +49,9 @@ public class RESTInterface extends UserInterface{
 	@Path("dialog")
 	public Response createDefaultDialog() throws URISyntaxException, InstantiationException, IllegalAccessException
 	{	 
-		instance_id++;
-		if (instance_id>0) create_dialog(instance_id);
-		return init_dialog(instance_id); //init dialogue, i.e. get first question
+		String nextid=next_id();
+		create_dialog(nextid);
+		return init_dialog(nextid); //init dialogue, i.e. get first question
 	}
 	
 	
@@ -63,9 +62,9 @@ public class RESTInterface extends UserInterface{
 	public Response createDialogFromXML(
 			@FormDataParam("dialogxml") String dialogxml) throws URISyntaxException, InstantiationException, IllegalAccessException
 	{
-		instance_id++;
-		create_dialog(instance_id, dialogxml);		
-		return init_dialog(instance_id); //init dialogue, i.e. get first question
+		String nextid=next_id();
+		create_dialog(nextid, dialogxml);		
+		return init_dialog(nextid); //init dialogue, i.e. get first question
 	}
 	
 	@POST
@@ -75,6 +74,10 @@ public class RESTInterface extends UserInterface{
 			@PathParam("instance_id") String instance_id,
 			@FormParam("userUtterance") String userUtterance)
 	{
+		if(!instances.containsKey(instance_id)){ //check whether instance exists
+			return Response.serverError().entity("Error: no such instance").build(); 
+		}
+		
 		UIConsumerMessage message = process(instance_id, userUtterance);
 		String systemUtterance = message.getSystemUtterance();
 		
@@ -93,7 +96,7 @@ public class RESTInterface extends UserInterface{
 		info+="Default dialogue: "+NadiaProcessor.getDefaultDialog().getName()+"<br>";
 		info+="Started UI: "+NadiaProcessor.getUIType()+"<br>";
 		info+="Current sessions ("+instances.size()+"):<ul>";
-		for(int sid : instances.keySet()){
+		for(String sid : instances.keySet()){
 			info+="<li><a href='/nadia/engine/dialog/"+sid+"/context'>Session "+sid+"</a></li>";
 		}
 		info+="</ul></p></body></html>";
@@ -106,14 +109,10 @@ public class RESTInterface extends UserInterface{
 	public Response getDebugInfo(
 			@PathParam("instance_id") String instance_id)
 	{
-		UIConsumer instance = instances.get(Integer.parseInt(instance_id));
-		String context;
-		if(instance!=null){
-			context=instance.getDebugInfo();
-		}
-		else context="Error no such instance";
+		if (!instances.containsKey(instance_id)) return Response.serverError().entity("Error: no such instance").build();
 		
-		return Response.ok(context).build();
+		UIConsumer instance = instances.get(instance_id);
+		return Response.ok(instance.getDebugInfo()).build();
 	}
 
 	//Convenience functions
@@ -126,27 +125,33 @@ public class RESTInterface extends UserInterface{
 	 * @return
 	 */
 	private UIConsumerMessage process(String instance_id, String userUtterance){
-		consumer=instances.get(Integer.parseInt(instance_id));
+		UIConsumer consumer=instances.get(instance_id);
 		UIConsumerMessage message = consumer.processUtterance(userUtterance);
 		return message;
 	}
 	
-	private void create_dialog(int instance, String dialogxml){
+	private void create_dialog(String instance, String dialogxml){
 		UIConsumer new_consumer;
 		if(dialogxml!=null){
 			Dialog d=Dialog.loadFromXml(dialogxml);
-			new_consumer = new DialogManager(d);
+			new_consumer = consumerFactory.create(d); //new DialogManager(d);
 		}
 		else{
-			new_consumer = new DialogManager();
+			new_consumer = consumerFactory.create(); //new DialogManager();
 		}
 		new_consumer.setAdditionalDebugInfo("Client IP: "+request.getRemoteAddr().toString()+"; User-Agent: "+headers.getRequestHeader("User-Agent"));
 		instances.put(instance, new_consumer);
 		NadiaProcessor.getLogger().fine("created new instance "+new_consumer.getClass().getName());
 	}
 	
-	private void create_dialog(int instance_id){
+	private void create_dialog(String instance_id){
 		create_dialog(instance_id, null);
+	}
+	
+	private String next_id(){
+		instance_counter++;
+		String identifier="d"+instance_counter;
+		return identifier;
 	}
 	
 	/**
@@ -161,14 +166,14 @@ public class RESTInterface extends UserInterface{
 	    cal.add(Calendar.MINUTE, -threshold_minutes);
 	    Date threshold=cal.getTime();
 
-	    ArrayList<Integer> deletionCandidates= new ArrayList<Integer>();
-	    for(Map.Entry<Integer, UIConsumer> entry : instances.entrySet()){
+	    ArrayList<String> deletionCandidates= new ArrayList<String>();
+	    for(Map.Entry<String, UIConsumer> entry : instances.entrySet()){
 	    	if (entry.getValue().getLastAccess().before(threshold)){
 	    		deletionCandidates.add(entry.getKey());
 	    	}
 	    }
 	    
-	    for(Integer id : deletionCandidates){
+	    for(String id : deletionCandidates){
 	    	instances.remove(id);
 	    }
 	}
@@ -179,12 +184,12 @@ public class RESTInterface extends UserInterface{
 	 * @return
 	 * @throws URISyntaxException
 	 */
-	private Response init_dialog(int instance) throws URISyntaxException{
-		UIConsumerMessage message = process(String.valueOf(instance), ""); //empty utterance => init
+	private Response init_dialog(String instance_id) throws URISyntaxException{
+		UIConsumerMessage message = process(instance_id, ""); //empty utterance => init
 		String systemUtterance = message.getSystemUtterance();
 		
-		if (message.getMeta()==Meta.UNCHANGED) return Response.created(new URI("/"+instance)).build();
-		else return Response.created(new URI(uri.getBaseUri()+"dialog/"+instance)).entity(systemUtterance).build();
+		if (message.getMeta()==Meta.UNCHANGED) return Response.created(new URI("/"+instance_id)).build();
+		else return Response.created(new URI(uri.getBaseUri()+"dialog/"+instance_id)).entity(systemUtterance).build();
 	}
 	
 	//Interface functions
@@ -193,7 +198,6 @@ public class RESTInterface extends UserInterface{
 	@Override
 	public void start(){
 		try{
-			instances.put(0, consumer);
 			NadiaProcessorConfig config = NadiaProcessorConfig.getInstance();
 			
 			//Jetty:

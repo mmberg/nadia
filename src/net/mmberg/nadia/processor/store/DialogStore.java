@@ -80,6 +80,10 @@ public class DialogStore {
 private Dialog createDummyDialog2(){
 		
 		Dialog dialog = new Dialog("dummy2");
+		dialog.setGlobal_politeness(4);
+		dialog.setGlobal_formality(4);
+		dialog.setStart_task_name("start");
+		dialog.setStrategy("mixed");
 		ITO ito;
 		AQD aqd;
 		
