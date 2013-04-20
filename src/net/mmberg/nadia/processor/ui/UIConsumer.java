@@ -1,10 +1,16 @@
 package net.mmberg.nadia.processor.ui;
 
+import java.util.Date;
+
 import net.mmberg.nadia.processor.dialogmodel.Dialog;
 
 public interface UIConsumer {
 
-	
+	public abstract void loadDialog (Dialog dialog);
+	public abstract UIConsumerMessage processUtterance(String userUtterance);
+	public abstract String getDebugInfo();
+	public abstract void setAdditionalDebugInfo(String debuginfo);
+	public abstract Date getLastAccess();
 	
 	public class UIConsumerMessage{
 		private String systemUtterance;
@@ -24,9 +30,5 @@ public interface UIConsumer {
 			return meta;
 		}
 	}
-	
-	public abstract void loadDialog (Dialog dialog);
-	public abstract UIConsumerMessage processUtterance(String userUtterance);
-	public abstract String getDebugInfo();
 	
 }

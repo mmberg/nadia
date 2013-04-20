@@ -1,6 +1,7 @@
 package net.mmberg.nadia.processor.manager;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.logging.Logger;
 
@@ -10,11 +11,11 @@ import net.mmberg.nadia.processor.nlu.aqdparser.ParseResult;
 import net.mmberg.nadia.processor.nlu.aqdparser.ParseResults;
 import net.mmberg.nadia.processor.nlu.aqdparser.Parsers;
 import net.mmberg.nadia.processor.nlu.soda.classification.SodaRecognizer;
-import net.mmberg.nadia.processor.ui.UIConsumer.UIConsumerMessage;
+import net.mmberg.nadia.processor.ui.UIConsumer;
 import net.mmberg.nadia.processor.ui.UIConsumer.UIConsumerMessage.Meta;
 import net.mmberg.nadia.processor.utterance.UserUtterance;
 
-public class DialogManager {
+public class DialogManager implements UIConsumer {
 
 	private SodaRecognizer sodarec=null;
 	private static boolean init=false;
@@ -25,10 +26,9 @@ public class DialogManager {
 	private Task t=null;
 	private ITOs itos=null;
 	private Iterator<ITO> ito_iterator=null;
-
 	
 	public DialogManager(){
-		init();
+		this(NadiaProcessor.getDefaultDialog()); //load default dialogue
 	}
 	
 	public DialogManager(Dialog dialog){
@@ -37,30 +37,25 @@ public class DialogManager {
 	}
 	
 	public DialogManagerContext getContext(){
-		if(context==null) context=new DialogManagerContext();
 		return context;
 	}
 	
 	private void init(){
-			sodarec=SodaRecognizer.getInstance();
-			if(!init){
-				if(!sodarec.isTrained()) sodarec.train(); //train Dialog Act Classifier
-				
-				Parsers.init(); //init (i.e. activate) Parsers
-				
-				init=true;
+		context=new DialogManagerContext();
+		context.setCreatedOn(new Date());
+		sodarec=SodaRecognizer.getInstance();
+		if(!init){
+			if(!sodarec.isTrained()) sodarec.train(); //train Dialog Act Classifier
+			
+			Parsers.init(); //init (i.e. activate) Parsers
+			
+			init=true;
 		}
 	}
 	
 	public Dialog getDialog(){
 		return dialog;
 	}
-		
-	public void loadDialog(Dialog dialog){
-		this.dialog = dialog;
-		context=new DialogManagerContext();
-	}
-	
 	
 	//experimental
 	private UIConsumerMessage restart(){
@@ -68,8 +63,34 @@ public class DialogManager {
 		return processUtterance(null);
 	}
 	
+	@Override
+	public void loadDialog(Dialog dialog){
+		this.dialog = dialog;
+	}
+	
+	@Override
+	public String getDebugInfo() {
+		String context="no debug info";
+		context = getContext().serialize();
+		context += "\r\n\r\n"+(getDialog().toXML());
+		return context;
+	}
+	
+	@Override
+	public void setAdditionalDebugInfo(String debugInfo) {
+		context.setAdditionalDebugInfo(debugInfo);
+	}
+	
+	@Override
+	public Date getLastAccess() {
+		return context.getLastAccess();
+	}
+	
 	//experimental
+	@Override
 	public UIConsumerMessage processUtterance(String userUtterance){
+		
+		context.setLastAccess(new Date());
 		
 		ParseResults results=null;
 		UserUtterance answer=null;

@@ -2,6 +2,7 @@ package net.mmberg.nadia.processor.manager;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
@@ -15,6 +16,9 @@ import net.mmberg.nadia.processor.dialogmodel.*;
 public class DialogManagerContext {
 
 	//Features
+	private Date createdOn;
+	private Date lastAccess;
+	private String additionalDebugInfo;
 	private Boolean question_open=false;
 	private ITO current_question;
 	private Boolean started=false;
@@ -35,6 +39,30 @@ public class DialogManagerContext {
 			setQuestionOpen(true);
 			history.add(question);
 		}
+	}
+	
+	public Date getCreatedOn() {
+		return createdOn;
+	}
+
+	public void setCreatedOn(Date createdOn) {
+		this.createdOn = createdOn;
+	}
+
+	public Date getLastAccess() {
+		return lastAccess;
+	}
+
+	public void setLastAccess(Date lastAccess) {
+		this.lastAccess = lastAccess;
+	}
+
+	public String getAdditionalDebugInfo() {
+		return additionalDebugInfo;
+	}
+
+	public void setAdditionalDebugInfo(String additionalDebugInfo) {
+		this.additionalDebugInfo = additionalDebugInfo;
 	}
 	
 	@XmlTransient

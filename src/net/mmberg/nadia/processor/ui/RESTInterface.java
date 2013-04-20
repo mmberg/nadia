@@ -2,10 +2,16 @@ package net.mmberg.nadia.processor.ui;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
@@ -21,6 +27,7 @@ import com.sun.jersey.multipart.FormDataParam;
 import net.mmberg.nadia.processor.NadiaProcessor;
 import net.mmberg.nadia.processor.NadiaProcessorConfig;
 import net.mmberg.nadia.processor.dialogmodel.Dialog;
+import net.mmberg.nadia.processor.manager.DialogManager;
 import net.mmberg.nadia.processor.ui.UIConsumer.UIConsumerMessage;
 import net.mmberg.nadia.processor.ui.UIConsumer.UIConsumerMessage.Meta;
 
@@ -29,11 +36,12 @@ import net.mmberg.nadia.processor.ui.UIConsumer.UIConsumerMessage.Meta;
 public class RESTInterface extends UserInterface{
 
 	private Server server;
-	private static int instance=-1;
+	private static int instance_id=-1;
 	protected static HashMap<Integer, UIConsumer> instances = new HashMap<Integer, UIConsumer>();
 	
-	@Context
-	UriInfo uri;
+	@Context UriInfo uri;
+	@Context HttpServletRequest request;
+	@Context HttpHeaders headers;
 	  
 	//Web Service Methods
 	//===================
@@ -42,9 +50,9 @@ public class RESTInterface extends UserInterface{
 	@Path("dialog")
 	public Response createDefaultDialog() throws URISyntaxException, InstantiationException, IllegalAccessException
 	{	 
-		instance++;
-		if (instance>0) create_dialog(instance);
-		return init_dialog(instance); //init dialogue, i.e. get first question
+		instance_id++;
+		if (instance_id>0) create_dialog(instance_id);
+		return init_dialog(instance_id); //init dialogue, i.e. get first question
 	}
 	
 	
@@ -55,9 +63,9 @@ public class RESTInterface extends UserInterface{
 	public Response createDialogFromXML(
 			@FormDataParam("dialogxml") String dialogxml) throws URISyntaxException, InstantiationException, IllegalAccessException
 	{
-		instance++;
-		create_dialog(instance, dialogxml);		
-		return init_dialog(instance); //init dialogue, i.e. get first question
+		instance_id++;
+		create_dialog(instance_id, dialogxml);		
+		return init_dialog(instance_id); //init dialogue, i.e. get first question
 	}
 	
 	@POST
@@ -75,19 +83,43 @@ public class RESTInterface extends UserInterface{
 	}
 	
 	@GET
+	@Path("status")
+	@Produces( MediaType.TEXT_HTML )
+	public Response getServerInfo()
+	{
+		clean_up();
+		String info="<html><head><title>Nadia Status</title></head><body><p>";
+		info+="Started on: "+NadiaProcessor.getStartedOn().toString()+"<br>";
+		info+="Default dialogue: "+NadiaProcessor.getDefaultDialog().getName()+"<br>";
+		info+="Started UI: "+NadiaProcessor.getUIType()+"<br>";
+		info+="Current sessions ("+instances.size()+"):<ul>";
+		for(int sid : instances.keySet()){
+			info+="<li><a href='/nadia/engine/dialog/"+sid+"/context'>Session "+sid+"</a></li>";
+		}
+		info+="</ul></p></body></html>";
+		return Response.ok(info).build();
+	}
+	
+	@GET
 	@Path("dialog/{instance_id}/context")
 	@Produces( MediaType.TEXT_PLAIN )
 	public Response getDebugInfo(
 			@PathParam("instance_id") String instance_id)
 	{
-		String context=instances.get(Integer.parseInt(instance_id)).getDebugInfo();
+		UIConsumer instance = instances.get(Integer.parseInt(instance_id));
+		String context=instance.getDebugInfo();
 		return Response.ok(context).build();
 	}
 
 	//Convenience functions
 	//=====================
 	
-	//process user utterance
+	/**
+	 * process user utterance
+	 * @param instance_id
+	 * @param userUtterance
+	 * @return
+	 */
 	private UIConsumerMessage process(String instance_id, String userUtterance){
 		consumer=instances.get(Integer.parseInt(instance_id));
 		UIConsumerMessage message = consumer.processUtterance(userUtterance);
@@ -98,20 +130,50 @@ public class RESTInterface extends UserInterface{
 		UIConsumer new_consumer;
 		if(dialogxml!=null){
 			Dialog d=Dialog.loadFromXml(dialogxml);
-			new_consumer = new NadiaProcessor(d);
+			new_consumer = new DialogManager(d);
 		}
 		else{
-			new_consumer = new NadiaProcessor();
+			new_consumer = new DialogManager();
 		}
+		new_consumer.setAdditionalDebugInfo("Client IP: "+request.getRemoteAddr().toString()+"; User-Agent: "+headers.getRequestHeader("User-Agent"));
 		instances.put(instance, new_consumer);
 		NadiaProcessor.getLogger().fine("created new instance "+new_consumer.getClass().getName());
 	}
 	
-	private void create_dialog(int instance){
-		create_dialog(instance, null);
+	private void create_dialog(int instance_id){
+		create_dialog(instance_id, null);
 	}
 	
-	//init dialogue, i.e. get first question
+	/**
+	 * deletes unused sessions
+	 */
+	private void clean_up(){
+		
+		int threshold_minutes=10;
+		
+		Calendar cal = Calendar.getInstance();
+	    cal.setTime(new Date());
+	    cal.add(Calendar.MINUTE, -threshold_minutes);
+	    Date threshold=cal.getTime();
+
+	    ArrayList<Integer> deletionCandidates= new ArrayList<Integer>();
+	    for(Map.Entry<Integer, UIConsumer> entry : instances.entrySet()){
+	    	if (entry.getValue().getLastAccess().before(threshold)){
+	    		deletionCandidates.add(entry.getKey());
+	    	}
+	    }
+	    
+	    for(Integer id : deletionCandidates){
+	    	instances.remove(id);
+	    }
+	}
+	
+	/**
+	 * init dialogue, i.e. get first question
+	 * @param instance
+	 * @return
+	 * @throws URISyntaxException
+	 */
 	private Response init_dialog(int instance) throws URISyntaxException{
 		UIConsumerMessage message = process(String.valueOf(instance), ""); //empty utterance => init
 		String systemUtterance = message.getSystemUtterance();

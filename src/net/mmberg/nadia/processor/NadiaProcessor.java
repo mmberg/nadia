@@ -1,5 +1,6 @@
 package net.mmberg.nadia.processor;
 
+import java.util.Date;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Formatter;
 import java.util.logging.Handler;
@@ -20,7 +21,7 @@ import net.mmberg.nadia.processor.store.DialogStore;
 import net.mmberg.nadia.processor.ui.*;
 
 
-public class NadiaProcessor implements UIConsumer {
+public class NadiaProcessor {
 
 	
 	private final static Logger logger = Logger.getLogger("nina"); 
@@ -28,8 +29,9 @@ public class NadiaProcessor implements UIConsumer {
 	private static boolean init=false;
 	private static NadiaProcessorConfig config = NadiaProcessorConfig.getInstance();
 	private static String default_dialog=config.getProperty(NadiaProcessorConfig.DIALOGUEDIR)+"/"+"dummy1"; //default dialogue
-
-
+	private static UserInterface ui;
+	private static Date startedOn;
+	
 	/**
 	 * @param args
 	 */
@@ -92,7 +94,7 @@ public class NadiaProcessor implements UIConsumer {
 		//start Nadia with selected UI
 		default_dialog=dialog_file;
 		NadiaProcessor nadia = new NadiaProcessor(Dialog.loadFromPath(dialog_file));
-		UserInterface ui;
+		//UserInterface ui;
 		try {
 			ui = ui_class.newInstance();
 			nadia.startUI(ui);
@@ -101,44 +103,38 @@ public class NadiaProcessor implements UIConsumer {
 		}
 	}
 	
-	public NadiaProcessor(){
-		if (!init) init();
-		manager = new DialogManager();
-		manager.loadDialog(Dialog.loadFromPath(default_dialog)); //load default dialogue
+//	public NadiaProcessor(){
+//		if (!init) init();
+//		manager = new DialogManager();
+//		manager.loadDialog(Dialog.loadFromPath(default_dialog)); //load default dialogue
+//	}
+	
+	public static Dialog getDefaultDialog(){
+		return Dialog.loadFromPath(default_dialog);
 	}
 	
-	public NadiaProcessor(Dialog d){
+	public static String getUIType(){
+		return ui.getClass().getSimpleName();
+	}
+	
+	public static Date getStartedOn(){
+		return startedOn;
+	}
+	
+	private NadiaProcessor(Dialog d){
+		if (!init) init();
 		manager = new DialogManager();
 		manager.loadDialog(d);	
 	}
 	
 	private void startUI(UserInterface ui){
-		ui.register(this);
+		ui.register(manager);
 		ui.start();
 	}
-	
-	@Override
-	public void loadDialog(Dialog d){
-		manager.loadDialog(d);
-	}
-	
-	@Override
-	public UIConsumerMessage processUtterance(String userUtterance){
-		return manager.processUtterance(userUtterance);
-	}
 		
-	@Override
-	public String getDebugInfo() {
-		String context="no debug info";
-		if(manager!=null){
-			context = manager.getContext().serialize();
-		}
-		context += "\r\n\r\n"+(manager.getDialog().toXML());
-		return context;
-	}
-	
 	private void init(){
 		init=true;
+		startedOn = new Date();
 		//format logging
 		logger.setUseParentHandlers(false);	 
 		CustomFormatter fmt = new CustomFormatter();
