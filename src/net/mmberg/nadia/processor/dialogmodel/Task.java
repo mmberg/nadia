@@ -14,11 +14,16 @@ public class Task extends TaskModel{
 		super(name);
 	}
 	
-	public Boolean isFilled(){
+	public Boolean isAllFilled(){
 		for(ITO ito : itos){
 			if (!ito.isFilled()) return false;
 		}
 		return true;
+	}
+	
+	//TODO
+	public Boolean isMandatoryFilled(){
+		return false;
 	}
 	
 	public String execute(){
