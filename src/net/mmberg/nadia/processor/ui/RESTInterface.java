@@ -91,7 +91,6 @@ public class RESTInterface extends UserInterface{
 	@Produces( MediaType.TEXT_HTML )
 	public Response getServerInfo()
 	{
-		clean_up();
 		String info="<html><head><title>Nadia Status</title></head><body><p>";
 		info+="Started on: "+NadiaProcessor.getStartedOn().toString()+"<br>";
 		info+="Default dialogue: "+NadiaProcessor.getDefaultDialog().getName()+"<br>";
@@ -106,7 +105,7 @@ public class RESTInterface extends UserInterface{
 	
 	@GET
 	@Path("dialog/{instance_id}/context")
-	@Produces( MediaType.TEXT_PLAIN )
+	@Produces( MediaType.APPLICATION_XML )
 	public Response getDebugInfo(
 			@PathParam("instance_id") String instance_id)
 	{
@@ -173,6 +172,7 @@ public class RESTInterface extends UserInterface{
 	
 	private String next_id(){
 		instance_counter++;
+		if(instance_counter%10==0) clean_up(); //run clean up every 10 instances
 		String identifier="d"+instance_counter;
 		return identifier;
 	}
