@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<dialog name="dummy2">
+<n:dialog xmlns:n="http://mmberg.net/nadia" name="dummy2">
    <global_formality>4</global_formality>
    <global_language>en</global_language>
    <global_politeness>4</global_politeness>
@@ -7,6 +7,9 @@
    <strategy>mixed</strategy>
    <tasks>
       <task name="start">
+         <bagOfWordsTaskSelector>
+            <word>hello</word>
+         </bagOfWordsTaskSelector>
          <itos>
             <ito name="welcome">
                <AQD>
@@ -21,13 +24,14 @@
                <useLG>false</useLG>
             </ito>
          </itos>
-         <selector xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="bagOfWordsTaskSelector">
-            <bagOfWords>
-               <word>hello</word>
-            </bagOfWords>
-         </selector>
       </task>
       <task name="getTripInformation">
+         <bagOfWordsTaskSelector>
+            <word>travel</word>
+            <word>book</word>
+            <word>journey</word>
+            <word>trip</word>
+         </bagOfWordsTaskSelector>
          <itos>
             <ito name="getDepartureCity">
                <AQD>
@@ -71,16 +75,14 @@
             <utteranceTemplate>This trip from %getDepartureCity to %getDestinationCity costs #price Euros.</utteranceTemplate>
             <code><![CDATA[executionResults.put("price","257")]]></code>
          </groovyAction>
-         <selector xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="bagOfWordsTaskSelector">
-            <bagOfWords>
-               <word>travel</word>
-               <word>book</word>
-               <word>journey</word>
-               <word>trip</word>
-            </bagOfWords>
-         </selector>
       </task>
       <task name="getWeatherInformation">
+         <bagOfWordsTaskSelector>
+            <word>weather</word>
+            <word>forecast</word>
+            <word>temperature</word>
+            <word>trip</word>
+         </bagOfWordsTaskSelector>
          <itos>
             <ito name="getWeatherCity">
                <AQD>
@@ -106,14 +108,6 @@ http.get( path: '/forecastrss', query:[w:'2502265',u:'c'],  contentType: Content
 	executionResults.put("temperature",temp.toString())
 }]]></code>
          </groovyAction>
-         <selector xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="bagOfWordsTaskSelector">
-            <bagOfWords>
-               <word>weather</word>
-               <word>forecast</word>
-               <word>temperature</word>
-               <word>trip</word>
-            </bagOfWords>
-         </selector>
       </task>
    </tasks>
-</dialog>
+</n:dialog>

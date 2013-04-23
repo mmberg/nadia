@@ -27,6 +27,7 @@ import com.sun.jersey.multipart.FormDataParam;
 import net.mmberg.nadia.processor.NadiaProcessor;
 import net.mmberg.nadia.processor.NadiaProcessorConfig;
 import net.mmberg.nadia.processor.dialogmodel.Dialog;
+import net.mmberg.nadia.processor.exceptions.ProcessingException;
 import net.mmberg.nadia.processor.ui.UIConsumer.UIConsumerMessage;
 import net.mmberg.nadia.processor.ui.UIConsumer.UIConsumerMessage.Meta;
 
@@ -114,6 +115,22 @@ public class RESTInterface extends UserInterface{
 		UIConsumer instance = instances.get(instance_id);
 		return Response.ok(instance.getDebugInfo()).build();
 	}
+	
+	@GET
+	@Path("dialog/{instance_id}/xml")
+	@Produces( MediaType.APPLICATION_XML )
+	public Response getDialogXML(
+			@PathParam("instance_id") String instance_id)
+	{
+		if (!instances.containsKey(instance_id)) return Response.serverError().entity("Error: no such instance").build();
+		
+		UIConsumer instance = instances.get(instance_id);
+		String xml=instance.getDialogXml();
+		xml=xml.subSequence(xml.indexOf("\n")+1, xml.length()).toString();
+		xml="<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<?xml-stylesheet href=\"/nadia/dialog.xsl\" type=\"text/xsl\"?>\r\n"+xml;
+		return Response.ok(xml).build();
+	}
+
 
 	//Convenience functions
 	//=====================
@@ -126,7 +143,13 @@ public class RESTInterface extends UserInterface{
 	 */
 	private UIConsumerMessage process(String instance_id, String userUtterance){
 		UIConsumer consumer=instances.get(instance_id);
-		UIConsumerMessage message = consumer.processUtterance(userUtterance);
+		UIConsumerMessage message;
+		try{
+			message = consumer.processUtterance(userUtterance);
+		}
+		catch(ProcessingException ex){
+			message = new UIConsumerMessage(ex.getMessage(), Meta.ERROR);
+		}
 		return message;
 	}
 	

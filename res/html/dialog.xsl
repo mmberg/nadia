@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
+xmlns:n="http://mmberg.net/nadia">
+
+<xsl:output method="html" version="4.0"
+encoding="iso-8859-1"/>
+
+<xsl:template match="/">
+<html>
+ <head>
+ <link rel="stylesheet" type="text/css" href="/nadia/dialog.css"/>
+ </head>
+  <body>
+   <xsl:apply-templates/>
+  </body>
+</html>
+</xsl:template>
+
+<xsl:template match="n:dialog">
+<div class="dialog">
+<h3>Dialog: <xsl:value-of select="@name"/></h3>
+   <xsl:apply-templates/>
+</div>
+</xsl:template>
+
+<xsl:template match="task">
+<div class="task">
+<h3>Task: <xsl:value-of select="@name"/></h3>
+   <xsl:apply-templates/>
+</div>
+</xsl:template>
+
+<xsl:template match="tasks">
+   <xsl:apply-templates/>
+</xsl:template>
+
+<xsl:template match="AQD">
+   <xsl:apply-templates/>
+</xsl:template>
+
+<xsl:template match="type">
+   <xsl:apply-templates/>
+</xsl:template>
+
+<xsl:template match="form">
+   <xsl:apply-templates/>
+</xsl:template>
+
+<xsl:template match="context">
+   <xsl:apply-templates/>
+</xsl:template>
+
+<xsl:template match="itos">
+<div class="itos">
+   <xsl:apply-templates/>
+</div>
+</xsl:template>
+
+<xsl:template match="//answerType">
+<i><xsl:value-of select ="name(.)"/></i>: <b><xsl:apply-templates/></b><br/>
+</xsl:template>
+
+<xsl:template match="ito">
+<div class="ito">
+<h3>ITO: <xsl:value-of select="@name"/></h3>
+   <xsl:apply-templates/>
+</div>
+</xsl:template>
+
+<xsl:template match="groovyAction">
+<div class="action">
+Action:
+<ul>
+   <xsl:apply-templates/>
+</ul>
+</div>
+</xsl:template>
+
+<xsl:template match="bagOfWordsTaskSelector">
+<div class="selector">
+   Selector: <xsl:apply-templates/>
+</div>
+</xsl:template>
+
+<xsl:template match='groovyAction/*'>
+   <li><i><xsl:value-of select ="name(.)"/></i>: <xsl:apply-templates/></li>
+</xsl:template>
+
+<xsl:template match='bagOfWordsTaskSelector/*'>
+   <span><xsl:apply-templates/></span>
+</xsl:template>
+
+<xsl:template match='*'>
+   <span><i><xsl:value-of select ="name(.)"/></i>: <xsl:apply-templates/>  </span>
+</xsl:template>
+
+</xsl:stylesheet>

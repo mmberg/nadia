@@ -25,6 +25,7 @@ public class DialogManagerContext {
 	private Boolean started=false;
 	private ArrayList<ITO> ito_history=new ArrayList<ITO>();
 	private ArrayList<String> dialog_history=new ArrayList<String>();
+	private Task task;
 	
 	public enum UTTERANCE_TYPE {USER,SYSTEM};
 	
@@ -96,6 +97,15 @@ public class DialogManagerContext {
 	@XmlTransient
 	public ArrayList<ITO> getHistory(){
 		return ito_history;
+	}
+	
+	public void setTask(Task task){
+		this.task=task;
+	}
+	
+	@XmlElement(name="frame")
+	public Frame getFrame(){
+		return task.toFrame();
 	}
 	
 	public Boolean isStarted() {

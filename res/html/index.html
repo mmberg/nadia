@@ -18,6 +18,7 @@ $(document).ready(function(){
 		if(debug){
 			$("#debug").html(location);
 			$("#debug").append("<br><a href='"+location+"/context' target='_blank'>show context</a>");
+			$("#debug").append(" | <a href='"+location+"/xml' target='_blank'>show dialogue</a>");
 		}
 	});
 	
@@ -167,6 +168,10 @@ div .box{
 #userUtterance{
 	width:350px;
 }
+
+span.grey{
+color:#444;
+}
 </style>
 </head>
 
@@ -174,7 +179,7 @@ div .box{
 <div id="container">
 
 	<div class="box">
-	<h1>NAtural DIAlogue System</h1>
+	<h1>Na<span class="grey">tural</span> Dia<span class="grey">logue System</span></h1>
 	</div>
 	
 	<div id="main" class="box">
