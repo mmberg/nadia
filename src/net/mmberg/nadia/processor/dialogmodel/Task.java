@@ -27,7 +27,7 @@ public class Task extends TaskModel{
 	}
 	
 	public String execute(){
-		return action.executeAndGetAnswer(this);
+		return getAction().executeAndGetAnswer(this);
 	}
 	
 	public Frame toFrame(){

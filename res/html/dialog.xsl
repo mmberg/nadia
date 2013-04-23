@@ -68,31 +68,40 @@ encoding="iso-8859-1"/>
 </div>
 </xsl:template>
 
-<xsl:template match="groovyAction">
+<xsl:template match="action">
 <div class="action">
-Action:
+Action &gt; <xsl:apply-templates/>
+</div>
+</xsl:template>
+
+<xsl:template match="selector">
+<div class="selector">
+   Selector &gt; <xsl:apply-templates/>
+</div>
+</xsl:template>
+
+<xsl:template match='action/*'>
+<xsl:value-of select ="name(.)"/><br/>
 <ul>
    <xsl:apply-templates/>
 </ul>
-</div>
 </xsl:template>
 
-<xsl:template match="bagOfWordsTaskSelector">
-<div class="selector">
-   Selector: <xsl:apply-templates/>
-</div>
-</xsl:template>
-
-<xsl:template match='groovyAction/*'>
+<xsl:template match='action/*/*'>
    <li><i><xsl:value-of select ="name(.)"/></i>: <xsl:apply-templates/></li>
 </xsl:template>
 
-<xsl:template match='bagOfWordsTaskSelector/*'>
-   <span><xsl:apply-templates/></span>
+<xsl:template match='selector/*'>
+  <span><xsl:value-of select ="name(.)"/></span><br/>
+  <xsl:apply-templates/>
+</xsl:template>
+
+<xsl:template match='selector/*/*'>
+   <span><xsl:apply-templates/>&#160;&#160;</span>
 </xsl:template>
 
 <xsl:template match='*'>
-   <span><i><xsl:value-of select ="name(.)"/></i>: <xsl:apply-templates/>  </span>
+   <span><i><xsl:value-of select ="name(.)"/></i>: <xsl:apply-templates/>&#160;&#160;</span>
 </xsl:template>
 
 </xsl:stylesheet>
