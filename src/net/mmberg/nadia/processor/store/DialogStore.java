@@ -132,7 +132,6 @@ private Dialog createDummyDialog2(){
 		//ITO 1
 		ito=new ITO("getDepartureCity", "Where do you want to start?", false);	
 		task1.addITO(ito);
-		//an ITO is associated with AQDs
 		aqd=new AQD();
 		aqd.setType(new AQDType("fact.named_entity.non_animated.location.city"));
 		ito.setAQD(aqd);		
@@ -140,9 +139,15 @@ private Dialog createDummyDialog2(){
 		//ITO 2
 		ito=new ITO("getDestinationCity", "Where do you want to go?", false);	
 		task1.addITO(ito);
-		//an ITO is associated with AQDs
 		aqd=new AQD();
 		aqd.setType(new AQDType("fact.named_entity.non_animated.location.city"));
+		ito.setAQD(aqd);
+		
+		//ITO 3
+		ito=new ITO("getNumberOfPersons", "For how many persons?", false);	
+		task1.addITO(ito);
+		aqd=new AQD();
+		aqd.setType(new AQDType("fact.quantity"));
 		ito.setAQD(aqd);	
 		
 		

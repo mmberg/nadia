@@ -33,9 +33,18 @@ public class Task extends TaskModel{
 	public Frame toFrame(){
 		Frame frame=new Frame();
 		for(ITO ito : itos){
-			frame.put(ito.getName(),ito.getValue());
+			if (ito.isFilled()){
+				frame.put(ito.getName(),ito.getValue());
+			}
 		}
 		return frame;
+	}
+	
+	public void reset(){
+		for(ITO ito : itos){
+			ito.setValue(null);
+			ito.setUnFilled(); //need to be executed after setValue!
+		}
 	}
 	
 }

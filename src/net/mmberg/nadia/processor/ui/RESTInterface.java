@@ -112,7 +112,9 @@ public class RESTInterface extends UserInterface{
 		if (!instances.containsKey(instance_id)) return Response.serverError().entity("Error: no such instance").build();
 		
 		UIConsumer instance = instances.get(instance_id);
-		return Response.ok(instance.getDebugInfo()).build();
+		String debugInfo = instance.getDebugInfo();
+		if(debugInfo==null || debugInfo.length()==0) debugInfo =  "no debug info";
+		return Response.ok(debugInfo).build();
 	}
 	
 	@GET

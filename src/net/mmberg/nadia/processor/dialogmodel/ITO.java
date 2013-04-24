@@ -32,6 +32,10 @@ public class ITO extends ITOModel{
 		return this.filled;
 	}
 	
+	protected void setUnFilled(){
+		this.filled=false;
+	}
+	
 	@XmlTransient
 	public Object getValue(){
 		return this.value;

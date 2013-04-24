@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import net.mmberg.nadia.processor.exceptions.ProcessingException;
 import net.mmberg.nadia.processor.ui.UIConsumer.UIConsumerMessage;
 import net.mmberg.nadia.processor.ui.UIConsumer.UIConsumerMessage.Meta;
 
@@ -30,17 +31,22 @@ public class ConsoleInterface extends UserInterface{
 
 	@Override
 	public void start() {
-		consumer=consumerFactory.create();
-		UIConsumerMessage message=consumer.processUtterance(null);
-		String systemUtterance=message.getSystemUtterance();
-		send(systemUtterance);
-		
-		String userUtterance;		
-		while(!(userUtterance = receive()).equals("\r\n")){
-			message=consumer.processUtterance(userUtterance);
-			systemUtterance=message.getSystemUtterance();
-			if(message.getMeta()==Meta.END_OF_DIALOG) break;
+		try{
+			consumer=consumerFactory.create();
+			UIConsumerMessage message=consumer.processUtterance(null);
+			String systemUtterance=message.getSystemUtterance();
 			send(systemUtterance);
+			
+			String userUtterance;		
+			while(!(userUtterance = receive()).equals("\r\n")){
+				message=consumer.processUtterance(userUtterance);
+				systemUtterance=message.getSystemUtterance();
+				if(message.getMeta()==Meta.END_OF_DIALOG) break;
+				send(systemUtterance);
+			}
+		}
+		catch(ProcessingException ex){
+			ex.printStackTrace();
 		}
 	}
 

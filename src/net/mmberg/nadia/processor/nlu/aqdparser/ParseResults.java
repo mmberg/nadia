@@ -46,4 +46,8 @@ public class ParseResults extends ArrayList<ParseResult>{
 		}
 		return string;
 	}
+	
+	public ParseResult getFirst(){
+		return this.get(0);
+	}
 }

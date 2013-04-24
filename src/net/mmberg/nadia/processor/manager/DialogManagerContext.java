@@ -3,6 +3,10 @@ package net.mmberg.nadia.processor.manager;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Stack;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
@@ -21,37 +25,24 @@ public class DialogManagerContext {
 	private Date lastAccess;
 	private String additionalDebugInfo;
 	private Boolean question_open=false;
-	//private ITO current_question;
 	private Boolean started=false;
 	private ArrayList<ITO> ito_history=new ArrayList<ITO>();
 	private ArrayList<String> dialog_history=new ArrayList<String>();
 	private Task task;
 	
+	private Stack<Task> taskStack=new Stack<Task>();
+	private Iterator<ITO> ito_iterator=null;
+	
 	public enum UTTERANCE_TYPE {USER,SYSTEM};
 	
-	//Accessors
-	public void setQuestionOpen(Boolean question_open) {
-		this.question_open = question_open;
-	}
 
+	//getter
 	public Boolean isQuestionOpen() {
 		return question_open;
 	}
-	
-	public void setCurrentQuestion(ITO question){
-		//this.current_question=question;
-		if(question!=null){
-			setQuestionOpen(true);
-			ito_history.add(question);
-		}
-	}
-	
+		
 	public Date getCreatedOn() {
 		return createdOn;
-	}
-
-	public void setCreatedOn(Date createdOn) {
-		this.createdOn = createdOn;
 	}
 
 	public Date getLastAccess() {
@@ -65,16 +56,12 @@ public class DialogManagerContext {
 	public String getAdditionalDebugInfo() {
 		return additionalDebugInfo;
 	}
+	
+	public Boolean isStarted() {
+		return started;
+	}
 
-	public void setAdditionalDebugInfo(String additionalDebugInfo) {
-		this.additionalDebugInfo = additionalDebugInfo;
-	}
-	
-	@XmlTransient
-	public ITO getCurrentQuestion(){
-		return ito_history.get(ito_history.size()-1);
-	}
-	
+
 	@XmlElement(name="currentQuestion")
 	private String getCurrentQuestionUtterance(){
 		if(question_open){
@@ -89,9 +76,59 @@ public class DialogManagerContext {
 		return dialog_history;
 	}
 	
-	public void addUtteranceToHistory(String utterance, UTTERANCE_TYPE type){
-		String prefix = (type==UTTERANCE_TYPE.SYSTEM)?"S: ":"U: ";
-		dialog_history.add(prefix+utterance);
+	
+	/**
+	 * 
+	 * @return an XML-compatible list-representation of the frame for pretty printing
+	 */
+	@XmlElementWrapper(name="frame")
+	@XmlElement(name="entry")
+	public List<String> getSerializeFrameRepresentation(){
+		ArrayList<String> frame = new ArrayList<String>();
+		for(Map.Entry<Object, Object> entry : task.toFrame().entrySet()){
+			frame.add(entry.getKey().toString()+": "+entry.getValue().toString());
+		}
+		return frame;
+		//return task.toFrame(); //does not work on my Windows Setup... On Mac it works fine...
+	}
+	
+	@XmlElement(name="currentTask")
+	public String getSerializeCurrentTask() {
+		return taskStack.lastElement().getName();
+	}
+	
+	
+	@XmlElementWrapper(name="taskStack")
+	@XmlElement(name="task")
+	public List<String> getSerializeTaskStack(){
+		ArrayList<String> stack = new ArrayList<String>();
+		for(Task t : taskStack){
+			stack.add(t.getName());
+		}
+		return stack;
+	}
+
+
+	//transient getters
+	
+	@XmlTransient
+	public ITO getCurrentQuestion(){
+		return ito_history.get(ito_history.size()-1);
+	}
+	
+	@XmlTransient
+	public Iterator<ITO> getIto_iterator() {
+		return ito_iterator;
+	}
+	
+	@XmlTransient
+	public Task getCurrentTask() {
+		return taskStack.lastElement();
+	}
+
+	@XmlTransient
+	public Stack<Task> getTaskStack() {
+		return taskStack;
 	}
 	
 	@XmlTransient
@@ -99,22 +136,46 @@ public class DialogManagerContext {
 		return ito_history;
 	}
 	
-	public void setTask(Task task){
-		this.task=task;
-	}
-	
-	@XmlElement(name="frame")
-	public Frame getFrame(){
-		return task.toFrame();
-	}
-	
-	public Boolean isStarted() {
-		return started;
-	}
+	//setters
 
 	public void setStarted(Boolean started) {
 		this.started = started;
 	}
+
+	public void setQuestionOpen(Boolean question_open) {
+		this.question_open = question_open;
+	}
+	
+	public void setCurrentQuestion(ITO question){
+		//this.current_question=question;
+		if(question!=null){
+			setQuestionOpen(true);
+			ito_history.add(question);
+		}
+	}
+	
+	public void setCreatedOn(Date createdOn) {
+		this.createdOn = createdOn;
+	}
+	
+	public void setAdditionalDebugInfo(String additionalDebugInfo) {
+		this.additionalDebugInfo = additionalDebugInfo;
+	}
+	
+	public void addUtteranceToHistory(String utterance, UTTERANCE_TYPE type){
+		String prefix = (type==UTTERANCE_TYPE.SYSTEM)?"S: ":"U: ";
+		dialog_history.add(prefix+utterance);
+	}
+	
+	public void setTask(Task task){
+		this.task=task;
+	}
+	
+	public void setIto_iterator(Iterator<ITO> ito_iterator) {
+		this.ito_iterator = ito_iterator;
+	}
+	
+	//serialize
 	
 	public String serialize(){
 		JAXBContext context;
