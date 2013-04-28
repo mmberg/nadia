@@ -10,6 +10,7 @@ public class OpenEndedParser extends Parser{
 	public ParseResults parse(String utterance) {
 
 		ParseResults results=new ParseResults(utterance);
+		if(utterance.equals("bye")) results.add(new ParseResult(this.name,0,2,"bye",this.type,"bye"));
 //		results.add(new ParseResult(this.name,0,0,"dummy",this.type,"dummy"));
 		return results;
 	}

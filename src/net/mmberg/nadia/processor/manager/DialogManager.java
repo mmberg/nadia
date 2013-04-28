@@ -143,13 +143,27 @@ public class DialogManager implements UIConsumer {
 						}
 					}
 						
-					//if not successful, check for other tasks
+					//if not successful, check for OTHER tasks
 					if(!found_question_for_given_answer){
 						ArrayList<Task> tasklist=dialog.getTasks();
 						for(Task tsk : tasklist){
+							if (tsk==context.getCurrentTask()) continue; //except this task
 							if (tsk.getSelector()!=null && tsk.getSelector().isResponsible(userUtterance)){
-								//if suitable task found, switch to this task and load first question
+								
+								//check if task is already on stack (anti recursion!)
+								/* i.e. if user goes back (if he does not call a new subdialog but instead calls 
+								 * a previous (existing) dialog, i.e. goes back in history), 
+								 * destroy until desired task is active again */
+								if(context.getTaskStack().contains(tsk)){
+									Task poppedTask;
+									while((poppedTask=context.getTaskStack().pop())!=tsk){ //pop and reset until selected task is active
+										poppedTask.reset();
+									}
+								}
+								
+								//if suitable task found, switch to this task and load first/next question
 								return initTaskAndGetNextQuestion(tsk);
+								
 							}
 						}
 					}
@@ -166,7 +180,7 @@ public class DialogManager implements UIConsumer {
 			//STEP 3:
 			//3a) IF ALL INFORMATION RETRIEVED, EXECUTE ACTION
 			UIConsumerMessage answer_msg=null;
-			if(context.getCurrentTask().isAllFilled()){
+			if(context.getCurrentTask().isAllFilled() && (context.getCurrentTask().getAction()!=null)){
 				String sysAns=context.getCurrentTask().execute();
 				if (context.getCurrentTask().getAction().isReturnAnswer()){
 					//context.addUtteranceToHistory(sysAns, UTTERANCE_TYPE.SYSTEM);
@@ -216,14 +230,16 @@ public class DialogManager implements UIConsumer {
 			if (ito.isFilled()) return getNextQuestion(questionPrefix); //if already answered, get next question
 			else{
 				context.setCurrentQuestion(ito); //point current question to this ITO
-				String question=(questionPrefix==null)?"":(questionPrefix.getSystemUtterance()+" ");
-				question+=ito.ask(dialog.getGlobal_politeness(), dialog.getGlobal_formality()); //get question
-				context.addUtteranceToHistory(question, UTTERANCE_TYPE.SYSTEM, context.getTaskStack().size());
-				return new UIConsumerMessage(question, Meta.QUESTION);
+				String answer_message=(questionPrefix==null)?"":(questionPrefix.getSystemUtterance()+" ");
+				String question=ito.ask(dialog.getGlobal_politeness(), dialog.getGlobal_formality()); //get question
+				String utterance = answer_message+question;
+				context.addUtteranceToHistory(question, UTTERANCE_TYPE.SYSTEM, context.getTaskStack().size()); //answer is recorded in different else-branch
+				return new UIConsumerMessage(utterance, Meta.QUESTION);
 			}
 		}
 		//if current task has no more questions, get next task from stack
 		else if(context.getTaskStack().size()>1){ //other tasks on stack (apart from current task)
+			if(questionPrefix != null) context.addUtteranceToHistory(questionPrefix.getSystemUtterance(), UTTERANCE_TYPE.SYSTEM, context.getTaskStack().size());
 			context.getTaskStack().pop().reset(); //remove current (finished task) from stack and reset
 			return initTaskAndGetNextQuestion(context.getTaskStack().pop(), questionPrefix);//get next task from stack 
 		}
@@ -250,9 +266,13 @@ public class DialogManager implements UIConsumer {
 	}
 	
 	//TODO still experimental
-		private UIConsumerMessage end() throws ProcessingException{
-			return new UIConsumerMessage("-- END OF DIALOG --", Meta.END_OF_DIALOG); //or indicate end of dialogue
+	private UIConsumerMessage end() throws ProcessingException{
+		while(!context.getTaskStack().isEmpty()){
+			context.getTaskStack().pop().reset(); //destroy all tasks
 		}
+		context.setStarted(false); //allows user to (re)start the dialogue again
+		return new UIConsumerMessage("-- END OF DIALOG --", Meta.END_OF_DIALOG); //or indicate end of dialogue
+	}
 	
 	//TODO still experimental
 	private UIConsumerMessage restart() throws ProcessingException{

@@ -17,6 +17,7 @@ public class DialogStore {
 	private DialogStore(){
 		store.put("dummy1", createDummyDialog());
 		store.put("dummy2", createDummyDialog2());
+		store.put("dummy3", createDummyDialog3());
 	}
 	
 	public static DialogStore getInstance(){
@@ -154,7 +155,7 @@ private Dialog createDummyDialog2(){
 		//Task2
 		//----------------------------------------------
 		Task task2=new Task("getWeatherInformation");
-		bagOfWords = new ArrayList<String>(Arrays.asList("weather","forecast", "temperature","trip"));
+		bagOfWords = new ArrayList<String>(Arrays.asList("weather","forecast", "temperature"));
 		task2.setSelector(new BagOfWordsTaskSelector(bagOfWords));
 //		action=new DummyAction("The temperature in %getWeatherCity is #temperature degrees.");
 //		task2.setAction(action);
@@ -181,4 +182,43 @@ private Dialog createDummyDialog2(){
 		
 		return dialog;			
 	}	
+
+private Dialog createDummyDialog3(){
+	
+	Dialog dialog = new Dialog("dummy3");
+	dialog.setGlobal_politeness(4);
+	dialog.setGlobal_formality(4);
+	dialog.setStart_task_name("getWeatherInformation");
+	dialog.setStrategy("mixed");
+	ITO ito;
+	AQD aqd;
+	
+	Task task2=new Task("getWeatherInformation");
+	ArrayList<String> bagOfWords = new ArrayList<String>(Arrays.asList("weather","forecast", "temperature","trip"));
+	task2.setSelector(new BagOfWordsTaskSelector(bagOfWords));
+//	action=new DummyAction("The temperature in %getWeatherCity is #temperature degrees.");
+//	task2.setAction(action);
+	GroovyAction gaction = new GroovyAction("The temperature in %getWeatherCity is #temperature degrees.");
+	gaction.setCode("" +
+			"import groovyx.net.http.*\r\n"+
+			"import javax.xml.xpath.*\r\n"+
+			"def http = new HTTPBuilder('http://weather.yahooapis.com')\r\n"+
+			"http.get( path: '/forecastrss', query:[w:'2502265',u:'c'],  contentType: ContentType.XML) { resp, xml -> \r\n"+
+			"   def temp = xml.channel.item.condition[0].@temp\r\n"+
+			"	executionResults.put(\"temperature\",temp.toString())\r\n"+
+			"}"
+	);
+	task2.setAction(gaction);
+	dialog.addTask(task2);
+	
+	//ITO 1
+	ito=new ITO("getWeatherCity", "For which city do you want to know the weather?", false);	
+	task2.addITO(ito);
+	//an ITO is associated with AQDs
+	aqd=new AQD();
+	aqd.setType(new AQDType("fact.named_entity.non_animated.location.city"));
+	ito.setAQD(aqd);		
+	
+	return dialog;			
+}	
 }
