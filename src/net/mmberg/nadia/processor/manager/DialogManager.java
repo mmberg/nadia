@@ -109,8 +109,8 @@ public class DialogManager implements UIConsumer {
 			return new UIConsumerMessage("", Meta.UNCHANGED); 
 		}
 		//or 1c) PROCESS USER UTTERANCE
-		else{
-			context.addUtteranceToHistory(userUtterance, UTTERANCE_TYPE.USER);
+		else if(context.getCurrentTask()!=null){
+			context.addUtteranceToHistory(userUtterance, UTTERANCE_TYPE.USER, context.getTaskStack().size());
 			context.setQuestionOpen(false);
 
 			answer=new UserUtterance(userUtterance);
@@ -157,7 +157,8 @@ public class DialogManager implements UIConsumer {
 					
 				//or repeat question (if directed dialogue or alternatives not successful):
 				if(message==null) message="I did not understand that. Please try again. ";
-				String question=message + " "+context.getCurrentQuestion().ask(dialog.getGlobal_politeness(), dialog.getGlobal_formality());
+				String question=message + context.getCurrentQuestion().ask(dialog.getGlobal_politeness(), dialog.getGlobal_formality());
+				context.addUtteranceToHistory(question, UTTERANCE_TYPE.SYSTEM, context.getTaskStack().size());
 				return new UIConsumerMessage(question, Meta.QUESTION);
 					
 			}
@@ -170,7 +171,7 @@ public class DialogManager implements UIConsumer {
 				if (context.getCurrentTask().getAction().isReturnAnswer()){
 					//context.addUtteranceToHistory(sysAns, UTTERANCE_TYPE.SYSTEM);
 					//return new UIConsumerMessage(sysAns, Meta.ANSWER);
-					answer_msg=new UIConsumerMessage(sysAns, Meta.ANSWER);
+					answer_msg=new UIConsumerMessage(sysAns, Meta.ANSWER); //the answer is integrated into the next question
 				}
 			}
 //			//or 3b) GET NEXT QUESTION
@@ -183,6 +184,7 @@ public class DialogManager implements UIConsumer {
 			//else return getNextQuestion(); //get next question or restart if no more questions available
 			return getNextQuestion(answer_msg);
 		}
+		else return end();
 		
 		//this line should never be reached, else throw exception:
 		//throw new ProcessingException("Unexpected dialogue state. This error should never occur!");
@@ -214,19 +216,25 @@ public class DialogManager implements UIConsumer {
 			if (ito.isFilled()) return getNextQuestion(questionPrefix); //if already answered, get next question
 			else{
 				context.setCurrentQuestion(ito); //point current question to this ITO
-				String question=(questionPrefix==null)?"":questionPrefix.getSystemUtterance();
-				question+=" "+ito.ask(dialog.getGlobal_politeness(), dialog.getGlobal_formality()); //get question
-				context.addUtteranceToHistory(question, UTTERANCE_TYPE.SYSTEM);
+				String question=(questionPrefix==null)?"":(questionPrefix.getSystemUtterance()+" ");
+				question+=ito.ask(dialog.getGlobal_politeness(), dialog.getGlobal_formality()); //get question
+				context.addUtteranceToHistory(question, UTTERANCE_TYPE.SYSTEM, context.getTaskStack().size());
 				return new UIConsumerMessage(question, Meta.QUESTION);
 			}
 		}
 		//if current task has no more questions, get next task from stack
-		else if(!context.getTaskStack().isEmpty()){ //other tasks on stack
+		else if(context.getTaskStack().size()>1){ //other tasks on stack (apart from current task)
 			context.getTaskStack().pop().reset(); //remove current (finished task) from stack and reset
 			return initTaskAndGetNextQuestion(context.getTaskStack().pop(), questionPrefix);//get next task from stack 
 		}
+		//if stack is empty and no more questions available but an answer from the last execution is still pending, return this answer
+		else if(questionPrefix!=null){
+			context.getTaskStack().pop().reset(); //remove current (finished task) from stack
+			return questionPrefix;
+		}
 		//else return restart(); //restart if no more questions available
-		else return new UIConsumerMessage("-- END OF DIALOG --", Meta.END_OF_DIALOG); //or indicate end of dialogue
+		//else return new UIConsumerMessage("-- END OF DIALOG --", Meta.END_OF_DIALOG); //or indicate end of dialogue
+		else return end();
 	}
 	
 	private UIConsumerMessage initTaskAndGetNextQuestion(Task t) throws ProcessingException{
@@ -240,6 +248,11 @@ public class DialogManager implements UIConsumer {
 		
 		return getNextQuestion(questionPrefix);
 	}
+	
+	//TODO still experimental
+		private UIConsumerMessage end() throws ProcessingException{
+			return new UIConsumerMessage("-- END OF DIALOG --", Meta.END_OF_DIALOG); //or indicate end of dialogue
+		}
 	
 	//TODO still experimental
 	private UIConsumerMessage restart() throws ProcessingException{

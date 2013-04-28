@@ -1,0 +1,17 @@
+div.box{
+border-style: dotted;
+border-width: 1px;
+border-color: #000;
+background-color: #EEE;
+margin:6px;
+padding:0px;
+width:700px;
+}
+
+
+li.user{
+font-style:italic;
+}
+
+li.system{
+}

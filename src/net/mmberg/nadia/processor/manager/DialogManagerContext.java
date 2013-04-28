@@ -14,10 +14,15 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
 
 import net.mmberg.nadia.processor.dialogmodel.*;
+import net.mmberg.nadia.processor.manager.contexthelper.HistoryElem;
+import net.mmberg.nadia.processor.manager.contexthelper.HistoryTree;
+
 
 @XmlRootElement
+@XmlType(propOrder={"dialogHistory","serializeTaskStack","serializeFrameRepresentation","serializeCurrentTask","questionOpen","currentQuestionUtterance","started","lastAccess","createdOn","additionalDebugInfo"})
 public class DialogManagerContext {
 
 	//Features
@@ -27,15 +32,14 @@ public class DialogManagerContext {
 	private Boolean question_open=false;
 	private Boolean started=false;
 	private ArrayList<ITO> ito_history=new ArrayList<ITO>();
-	private ArrayList<String> dialog_history=new ArrayList<String>();
 	private Task task;
-	
+	private HistoryTree history = new HistoryTree(1);
+	private HistoryTree current_node = history;
 	private Stack<Task> taskStack=new Stack<Task>();
 	private Iterator<ITO> ito_iterator=null;
 	
 	public enum UTTERANCE_TYPE {USER,SYSTEM};
 	
-
 	//getter
 	public Boolean isQuestionOpen() {
 		return question_open;
@@ -70,10 +74,10 @@ public class DialogManagerContext {
 		else return "no current question";
 	}
 
-	@XmlElement(name="utterance")
-	@XmlElementWrapper(name="dialogHistory")
-	private ArrayList<String> getDialogHistory(){
-		return dialog_history;
+	
+	@XmlElement(name="dialogHistory")
+	private HistoryTree getDialogHistory(){
+		return history;
 	}
 	
 	
@@ -94,7 +98,8 @@ public class DialogManagerContext {
 	
 	@XmlElement(name="currentTask")
 	public String getSerializeCurrentTask() {
-		return taskStack.lastElement().getName();
+		if(taskStack.size()>0) return taskStack.lastElement().getName();
+		else return "none";
 	}
 	
 	
@@ -123,7 +128,8 @@ public class DialogManagerContext {
 	
 	@XmlTransient
 	public Task getCurrentTask() {
-		return taskStack.lastElement();
+		if(taskStack.size()>0) return taskStack.lastElement();
+		else return null;
 	}
 
 	@XmlTransient
@@ -147,7 +153,6 @@ public class DialogManagerContext {
 	}
 	
 	public void setCurrentQuestion(ITO question){
-		//this.current_question=question;
 		if(question!=null){
 			setQuestionOpen(true);
 			ito_history.add(question);
@@ -162,9 +167,25 @@ public class DialogManagerContext {
 		this.additionalDebugInfo = additionalDebugInfo;
 	}
 	
-	public void addUtteranceToHistory(String utterance, UTTERANCE_TYPE type){
-		String prefix = (type==UTTERANCE_TYPE.SYSTEM)?"S: ":"U: ";
-		dialog_history.add(prefix+utterance);
+	public void addUtteranceToHistory(String utterance, UTTERANCE_TYPE type, int level){
+		
+		//create tree (hierarchical representation according to task level)
+		//used as basis for output as HTML list
+		if(level==current_node.getLevel()){
+			current_node.addChild(new HistoryTree(new HistoryElem(utterance, level, type), current_node, level));
+		}
+		else if (level>current_node.getLevel()){
+			HistoryTree child=new HistoryTree(current_node, level);
+				HistoryTree leaf=new HistoryTree(new HistoryElem(utterance, level, type), child, level);
+				child.addChild(leaf);
+			current_node.addChild(child);
+			current_node=child;
+		}
+		else{
+			current_node=current_node.getParent();
+			current_node.addChild(new HistoryTree(new HistoryElem(utterance, level, type), current_node, level));
+		}
+		
 	}
 	
 	public void setTask(Task task){
