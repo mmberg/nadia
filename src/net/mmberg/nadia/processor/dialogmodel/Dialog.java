@@ -12,6 +12,7 @@ import net.mmberg.nadia.processor.NadiaProcessorConfig;
 public class Dialog extends DialogModel{
 
 	private static NadiaProcessorConfig config = NadiaProcessorConfig.getInstance();
+
 	
 	public Dialog(){
 		super();
@@ -21,7 +22,6 @@ public class Dialog extends DialogModel{
 		super(name);
 	}
 	
-
 	
 	//Serialization / Deserialization
 	

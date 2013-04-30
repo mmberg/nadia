@@ -85,6 +85,7 @@ private Dialog createDummyDialog2(){
 		dialog.setGlobal_formality(4);
 		dialog.setStart_task_name("start");
 		dialog.setStrategy("mixed");
+		dialog.setAllowCorrection(false);
 		ITO ito;
 		AQD aqd;
 		

@@ -90,7 +90,6 @@ public class DialogManager implements UIConsumer {
 	public UIConsumerMessage processUtterance(String userUtterance) throws ProcessingException{
 		
 		context.setLastAccess(new Date());
-		
 		ParseResults results=null;
 		UserUtterance answer=null;
 				
@@ -111,49 +110,49 @@ public class DialogManager implements UIConsumer {
 		//or 1c) PROCESS USER UTTERANCE
 		else if(context.getCurrentTask()!=null){
 			context.addUtteranceToHistory(userUtterance, UTTERANCE_TYPE.USER, context.getTaskStack().size());
-			context.setQuestionOpen(false);
-
 			answer=new UserUtterance(userUtterance);
 			sodarec.predict(answer, context); //identify dialog act (sets features and soda by reference), access result: answer.getSoda()
-			results=interpret(context.getCurrentQuestion(), answer.getText()); //Parsing; currentQuestion has been set in last call
+			context.setQuestionOpen(false); //needs to be set AFTER dialogue act recognition!
+			
+			//Parse:
+			if((dialog.isUseSODA() && answer.getSoda().equals("prov"))||(!dialog.isUseSODA())){
+				results=interpret(context.getCurrentQuestion(), answer.getText()); //Parsing; currentQuestion has been set in last call		
+			}
 			
 			//STEP 2:
 			//2a) IF PARSING SUCCESSFUL, SAVE RESULTS
-			if(results.getState()==ParseResults.MATCH){
+			if(results!=null && results.getState()==ParseResults.MATCH){
 				storeResults(context.getCurrentQuestion(), results);
 			}
 			//or 2b) IF PARSING NOT SUCCESSFUL, CHECK FOR OTHER POSSIBILITIES
-			else if(results!=null && results.getState()==ParseResults.NOMATCH){
+			else if(results==null || results.getState()==ParseResults.NOMATCH){
 					
 				String message=null;
-				
-				//if mixed initiative
-				if(dialog.getStrategy().equals("mixed")){
+				boolean found_question_for_given_answer=false;
+				boolean found_different_task=false;
 					
-					//check for all/other questions in this task
-					//TODO buggy (e.g. do not proceed to next question) 
-					boolean found_question_for_given_answer=false;
-					for(ITO ito : context.getCurrentTask().getITOs()){
-						results=interpret(ito, answer.getText());
-						if(results.getState()==ParseResults.MATCH){
-							found_question_for_given_answer=true;
-							storeResults(ito, results);
+				//2b1) check for all/other questions in THIS task
+				if((dialog.isUseSODA() && answer.getSoda().equals("prov"))||(!dialog.isUseSODA())){
+					if(dialog.isAllowDifferentQuestion()){
+						if(found_question_for_given_answer = lookForAnswers(context.getCurrentTask().getITOs(), answer)){
 							message="Ok. "; //acknowledge that different question has been filled
-							break;
-						}
+						}					
 					}
-						
-					//if not successful, check for OTHER tasks
-					if(!found_question_for_given_answer){
+				}
+					
+				//2b2) if not successful, check for OTHER tasks
+				if((dialog.isUseSODA() && answer.getSoda().equals("seek")) || !dialog.isUseSODA()){
+					if(dialog.isAllowSwitchTasks() && !found_question_for_given_answer){
 						ArrayList<Task> tasklist=dialog.getTasks();
 						for(Task tsk : tasklist){
 							if (tsk==context.getCurrentTask()) continue; //except this task
 							if (tsk.getSelector()!=null && tsk.getSelector().isResponsible(userUtterance)){
 								
-								//check if task is already on stack (anti recursion!)
-								/* i.e. if user goes back (if he does not call a new subdialog but instead calls 
-								 * a previous (existing) dialog, i.e. goes back in history), 
-								 * destroy until desired task is active again */
+								found_different_task=true;
+								
+								/* check if task is already on stack (anti recursion!)
+								 * i.e. if user goes back (if he does not call a new subdialog but instead calls  a previous (existing) dialog, 
+								 * i.e. goes back in history), destroy until desired task is active again */
 								if(context.getTaskStack().contains(tsk)){
 									Task poppedTask;
 									while((poppedTask=context.getTaskStack().pop())!=tsk){ //pop and reset until selected task is active
@@ -161,21 +160,22 @@ public class DialogManager implements UIConsumer {
 									}
 								}
 								
-								//if suitable task found, switch to this task and load first/next question
-								return initTaskAndGetNextQuestion(tsk);
-								
+								//check this task-switch-request for further information
+								switchTask(tsk);
+								if (dialog.isAllowOverAnswering()) lookForAnswers(tsk.getITOs(), answer);						
 							}
 						}
 					}
 				}
 					
-				//or repeat question (if directed dialogue or alternatives not successful):
-				if(message==null) message="I did not understand that. Please try again. ";
-				String question=message + context.getCurrentQuestion().ask(dialog.getGlobal_politeness(), dialog.getGlobal_formality());
-				context.addUtteranceToHistory(question, UTTERANCE_TYPE.SYSTEM, context.getTaskStack().size());
-				return new UIConsumerMessage(question, Meta.QUESTION);
-					
-			}
+				//2b3) or repeat question (if directed dialogue or alternatives not successful):
+				if(!found_different_task){
+					if(message==null) message="I did not understand that. Please try again. ";
+					String question=message + context.getCurrentQuestion().ask(dialog.getGlobal_politeness(), dialog.getGlobal_formality());
+					context.addUtteranceToHistory(question, UTTERANCE_TYPE.SYSTEM, context.getTaskStack().size());
+					return new UIConsumerMessage(question, Meta.QUESTION);
+				}
+			} //-- endif 2b (parsing unsuccessful)
 			
 			//STEP 3:
 			//3a) IF ALL INFORMATION RETRIEVED, EXECUTE ACTION
@@ -183,19 +183,9 @@ public class DialogManager implements UIConsumer {
 			if(context.getCurrentTask().isAllFilled() && (context.getCurrentTask().getAction()!=null)){
 				String sysAns=context.getCurrentTask().execute();
 				if (context.getCurrentTask().getAction().isReturnAnswer()){
-					//context.addUtteranceToHistory(sysAns, UTTERANCE_TYPE.SYSTEM);
-					//return new UIConsumerMessage(sysAns, Meta.ANSWER);
 					answer_msg=new UIConsumerMessage(sysAns, Meta.ANSWER); //the answer is integrated into the next question
 				}
 			}
-//			//or 3b) GET NEXT QUESTION
-//			else if(ito_iterator!=null && ito_iterator.hasNext()){
-//				return getNextQuestion();
-//			}
-//			//or 3c) RESTART DIALOGUE IF NO MORE QUESTIONS AVAILABLE 
-//			else return restart(); //or indicate end of dialogue: new UIConsumerMessage("", Meta.END_OF_DIALOG);
-						
-			//else return getNextQuestion(); //get next question or restart if no more questions available
 			return getNextQuestion(answer_msg);
 		}
 		else return end();
@@ -203,6 +193,7 @@ public class DialogManager implements UIConsumer {
 		//this line should never be reached, else throw exception:
 		//throw new ProcessingException("Unexpected dialogue state. This error should never occur!");
 	}
+	
 	
 
 	//Helpers:
@@ -218,6 +209,29 @@ public class DialogManager implements UIConsumer {
 			ito.setValue(results.getFirst().getResultString()); //TODO what if more than one parse result?
 		}
 		else logger.warning("ParseResults were empty and could not be stored in frame.");
+	}
+	
+	/*
+	 * check for all/other questions in this task
+	 */
+	private boolean lookForAnswers(ArrayList<ITO> itos, UserUtterance answer){
+
+		boolean found=false;
+		ParseResults results;
+		for(ITO ito : itos){
+			if(!dialog.isAllowCorrection()){ //if correction not allowed, only use unanswered ITOs
+				if (ito.isFilled()) continue;
+			}
+			
+			results=interpret(ito, answer.getText());
+			if(results.getState()==ParseResults.MATCH){
+				found=true;
+				storeResults(ito, results);
+				break; //abort after first success
+			}
+		}
+		
+		return found;
 	}
 	
 	private UIConsumerMessage getNextQuestion() throws ProcessingException{
@@ -257,11 +271,15 @@ public class DialogManager implements UIConsumer {
 		return initTaskAndGetNextQuestion(t, null);
 	}
 	
-	private UIConsumerMessage initTaskAndGetNextQuestion(Task t, UIConsumerMessage questionPrefix) throws ProcessingException{
+	
+	private void switchTask(Task t){
 		context.getTaskStack().push(t);
 		context.setTask(t);
 		context.setIto_iterator(t.getITOs().iterator());
-		
+	}
+	
+	private UIConsumerMessage initTaskAndGetNextQuestion(Task t, UIConsumerMessage questionPrefix) throws ProcessingException{
+		switchTask(t);
 		return getNextQuestion(questionPrefix);
 	}
 	
