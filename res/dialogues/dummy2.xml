@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <n:dialog xsi:schemaLocation="http://mmberg.net/nadia schema1.xsd" xmlns:n="http://mmberg.net/nadia" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="dummy2">
-   <global_formality>4</global_formality>
+   <start_task_name>start</start_task_name>
    <global_language>en</global_language>
    <global_politeness>4</global_politeness>
-   <start_task_name>start</start_task_name>
-   <strategy>mixed</strategy>
+   <global_formality>4</global_formality>
+   <useSODA>true</useSODA>
+   <allowSwitchTasks>true</allowSwitchTasks>
+   <allowOverAnswering>true</allowOverAnswering>
+   <allowDifferentQuestion>true</allowDifferentQuestion>
+   <allowCorrection>true</allowCorrection>
    <tasks>
       <task name="start">
          <selector>
@@ -88,7 +92,6 @@
                <word>weather</word>
                <word>forecast</word>
                <word>temperature</word>
-               <word>trip</word>
             </bagOfWordsTaskSelector>
          </selector>
          <itos>

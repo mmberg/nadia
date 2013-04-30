@@ -84,8 +84,6 @@ private Dialog createDummyDialog2(){
 		dialog.setGlobal_politeness(4);
 		dialog.setGlobal_formality(4);
 		dialog.setStart_task_name("start");
-		dialog.setStrategy("mixed");
-		dialog.setAllowCorrection(false);
 		ITO ito;
 		AQD aqd;
 		
@@ -190,7 +188,6 @@ private Dialog createDummyDialog3(){
 	dialog.setGlobal_politeness(4);
 	dialog.setGlobal_formality(4);
 	dialog.setStart_task_name("getWeatherInformation");
-	dialog.setStrategy("mixed");
 	ITO ito;
 	AQD aqd;
 	
