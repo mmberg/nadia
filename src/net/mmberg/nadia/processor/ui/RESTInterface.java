@@ -113,7 +113,13 @@ public class RESTInterface extends UserInterface{
 		
 		UIConsumer instance = instances.get(instance_id);
 		String debugInfo = instance.getDebugInfo();
-		if(debugInfo==null || debugInfo.length()==0) debugInfo =  "no debug info";
+		if(debugInfo==null || debugInfo.length()==0){
+			debugInfo = "no debug info";
+		}
+		else{
+			debugInfo = addXSDReference(debugInfo, "/nadia/context.xsl");
+		}
+		
 		return Response.ok(debugInfo).build();
 	}
 	
@@ -127,8 +133,9 @@ public class RESTInterface extends UserInterface{
 		
 		UIConsumer instance = instances.get(instance_id);
 		String xml=instance.getDialogXml();
-		xml=xml.subSequence(xml.indexOf("\n")+1, xml.length()).toString();
-		xml="<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<?xml-stylesheet href=\"/nadia/dialog.xsl\" type=\"text/xsl\"?>\r\n"+xml;
+//		xml=xml.subSequence(xml.indexOf("\n")+1, xml.length()).toString();
+//		xml="<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<?xml-stylesheet href=\"/nadia/dialog.xsl\" type=\"text/xsl\"?>\r\n"+xml;
+		xml=addXSDReference(xml, "/nadia/dialog.xsl");
 		return Response.ok(xml).build();
 	}
 
@@ -215,6 +222,13 @@ public class RESTInterface extends UserInterface{
 		
 		if (message.getMeta()==Meta.UNCHANGED) return Response.created(new URI("/"+instance_id)).build();
 		else return Response.created(new URI(uri.getBaseUri()+"dialog/"+instance_id)).entity(systemUtterance).build();
+	}
+	
+	private String addXSDReference(String xml, String schemaPath){
+		xml=xml.subSequence(xml.indexOf("\n")+1, xml.length()).toString();
+		xml="<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<?xml-stylesheet href=\""+schemaPath+"\" type=\"text/xsl\"?>\r\n"+xml;
+		
+		return xml;
 	}
 	
 	//Interface functions
