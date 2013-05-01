@@ -9,7 +9,7 @@ $(document).ready(function(){
  var wants_speech = false;
  var location="//localhost:8080/nadia/engine/dialog"
  
- $("#userUtterance").focus();
+setGuiEnabled(false);
 	
 	//init
 	$.post(location, function(data, textStatus, jqXHR) {
@@ -20,6 +20,7 @@ $(document).ready(function(){
 			$("#debug").append("<br><a href='"+location+"/context' target='_blank'>show context</a>");
 			$("#debug").append(" | <a href='"+location+"/xml' target='_blank'>show dialogue</a>");
 		}
+		setGuiEnabled(true);
 	});
 	
 	//click
@@ -36,15 +37,34 @@ $(document).ready(function(){
 })
   	
   	function submit(){
+		setGuiEnabled(false);
   		$.post(location, {userUtterance: $("#userUtterance").val()}, function(data) {
 			$("#systemUtterance").text(data);
+			setGuiEnabled(true);
 			//is user has used ASR before, automatically start recognition
 			if(wants_speech){
 				start_stop_recognition();
 			}
 		});
-		$('#userUtterance').select();
   	}
+  	
+  function setGuiEnabled(state){
+ 	if(state){
+ 		$('#userUtterance').prop('disabled', false);
+ 		$('#submitbtn').prop('disabled', false);
+ 		$('#recobtn').prop('disabled', false);
+ 		
+		$('#loader').removeClass("loading");
+		$("#userUtterance").focus();
+		$('#userUtterance').select();
+	}
+	else{
+		$('#userUtterance').prop('disabled', true);
+		$('#submitbtn').prop('disabled', true);
+ 		$('#recobtn').prop('disabled', true);
+		$('#loader').addClass("loading");
+	}
+  }
   	
 
   if (!('webkitSpeechRecognition' in window)) {
@@ -60,18 +80,32 @@ $(document).ready(function(){
   	recognition.continuous = false;
   	recognition.interimResults = false;
 
+	function updateGui(state){
+		if(state){
+			$("#recobtn").addClass("recording");
+			$("#recobtn").html("Listening...");
+		}
+		else{
+			$("#recobtn").removeClass("recording");
+			$("#recobtn").html("Start recognition");
+		}
+	}
+
  	recognition.onstart = function() {
     	recognizing = true;
-        $("#btn").html("Listening...");
+        updateGui(true);
  	};
  
  	recognition.onerror = function(event) {
  		ignore_onend = true;
- 		alert("An error occured: "+event.error);
+ 		updateGui(false);
+ 		wants_speech=false;
+ 		$("#error").html(event.error);
+ 		$("#error:hidden:first").fadeIn(500).delay(3500).fadeOut(500);
  	}; 
  
  	recognition.onend = function() {
- 		$("#btn").html("Start recognition");
+ 		updateGui(false);
      	recognizing = false;
     	if (ignore_onend) {
       		return;
@@ -115,7 +149,7 @@ $(document).ready(function(){
   		ignore_onend = false;
    }
   
- 	$("#btn").click(function(event){ 
+ 	$("#recobtn").click(function(event){ 
   		start_stop_recognition();
 	});
 }
@@ -137,6 +171,8 @@ body {
 }
 
 div .box{
+	position:relative;
+
 	background:#AAAAAA;
 	padding: 15px;
 	margin-top:7px;
@@ -144,6 +180,9 @@ div .box{
 	border-color:#222222;
 	border-width: 1px;
 	border-style: solid;
+	
+	-moz-border-radius: 5px;
+	border-radius: 5px;
 }
 
 #main{
@@ -189,6 +228,44 @@ font-size:20pt;
 margin-top:5px;
 margin-bottom:0px;
 }
+
+#loader{
+	position:relative;
+	top:3px;
+	margin-left:6px;
+	visibility:hidden;
+}
+
+#loader.loading{
+	visibility:visible;
+}
+
+#recobtn.recording{
+	color:#d00;
+	font-weight:bold;
+}
+
+#error{
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	border-color:#aaa;
+	border-width: 1px;
+	border-style: solid;
+	font-size:15pt;
+	font-weight:bold;
+	color:#d00;
+	width:420px;
+	height:80px;
+	background:#DDD;
+	position:absolute;
+	top:40px;
+	left:25px;
+	opacity:.97;
+	display:none;
+	padding: 28px 12px 12px 12px;
+	text-align:center;
+}
+
 </style>
 </head>
 
@@ -201,17 +278,16 @@ margin-bottom:0px;
 	</div>
 	
 	<div id="main" class="box">
+		<div id="error"></div>
 		<div><p><i>System:</i>&nbsp;<span id="systemUtterance"></span></p></div>
-		<div><p><i>You:</i>&nbsp;<input id="userUtterance" type="text"></input></p></div>
+		<div><p><i>You:</i>&nbsp;<input id="userUtterance" type="text"></input><img id="loader" src="ajax-loader.gif" alt="Loader gif by http://www.ajaxload.info/"></p></div>
 		<div>
-			<button id="btn">Start recognition</button>
+			<button id="recobtn">Start recognition</button>
 			<button id="submitbtn">Submit</button>
 		</div>
 	</div>
 	
-	<div id="debug" class="box">
-		
-	</div>
+	<div id="debug" class="box"></div>
 	
 	<div id="footer" class="box">
 	&copy; 2013 by <a href="http://mmberg.net">Markus M. Berg</a> | Project on <a href="https://github.com/mmberg/nadia">Github</a></a><br>
