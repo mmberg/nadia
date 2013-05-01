@@ -109,9 +109,6 @@ private Dialog createDummyDialog2(){
 		bagOfWords = new ArrayList<String>(Arrays.asList("travel","book", "journey","trip"));
 		task1.setSelector(new BagOfWordsTaskSelector(bagOfWords));
 		
-//		action=new DummyAction("This trip from %getDepartureCity to %getDestinationCity costs #temperature Euros.");
-//		task1.setAction(action);
-
 //		JavaAction jaction=new JavaAction("This trip from %getDepartureCity to %getDestinationCity costs #temperature Euros.");
 //		try{
 //			jaction.setPath("/Users/markus/");
@@ -156,8 +153,6 @@ private Dialog createDummyDialog2(){
 		Task task2=new Task("getWeatherInformation");
 		bagOfWords = new ArrayList<String>(Arrays.asList("weather","forecast", "temperature"));
 		task2.setSelector(new BagOfWordsTaskSelector(bagOfWords));
-//		action=new DummyAction("The temperature in %getWeatherCity is #temperature degrees.");
-//		task2.setAction(action);
 		gaction = new GroovyAction("The temperature in %getWeatherCity is #temperature degrees.");
 		gaction.setCode("" +
 				"import groovyx.net.http.*\r\n"+
@@ -178,6 +173,25 @@ private Dialog createDummyDialog2(){
 		aqd=new AQD();
 		aqd.setType(new AQDType("fact.named_entity.non_animated.location.city"));
 		ito.setAQD(aqd);		
+		
+		//Task3
+		//-----------------------------------------------
+		Task task3 = new Task("getWikipediaCityInfo");
+		bagOfWords = new ArrayList<String>(Arrays.asList("wikipedia","tell me about", "know about"));
+		task3.setSelector(new BagOfWordsTaskSelector(bagOfWords));
+		XmlReaderAction xaction=new XmlReaderAction("#result");
+		xaction.setUrl("http://en.wikipedia.org/w/api.php?format=xml&action=query&prop=extracts&explaintext&exsentences=3&titles=%getWikiCity");
+		xaction.setXpath("//extract");
+		task3.setAction(xaction);
+		dialog.addTask(task3);
+		
+		//ITO1
+		ito=new ITO("getWikiCity", "What city do you want to know more about?",false);
+		task3.addITO(ito);
+		aqd=new AQD();
+		aqd.setType(new AQDType("fact.named_entity.non_animated.location.city"));
+		ito.setAQD(aqd);		
+		
 		
 		return dialog;			
 	}	

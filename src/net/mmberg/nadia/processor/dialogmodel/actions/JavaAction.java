@@ -6,31 +6,13 @@ import java.util.HashMap;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+import net.mmberg.nadia.dialogmodel.definition.actions.JavaActionModel;
 import net.mmberg.nadia.processor.dialogmodel.Action;
 import net.mmberg.nadia.processor.dialogmodel.Frame;
 
 @XmlRootElement
-public class JavaAction extends Action{
+public class JavaAction extends JavaActionModel{
 	
-	private String path;
-	private String className;
-	
-	public String getClassName() {
-		return className;
-	}
-
-	public void setClassName(String className) {
-		this.className = className;
-	}
-
-	public String getPath() {
-		return path;
-	}
-
-	public void setPath(String path) {
-		this.path = path;
-	}
-
 	public JavaAction(){
 		super();
 	}

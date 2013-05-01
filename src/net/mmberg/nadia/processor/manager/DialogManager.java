@@ -1,3 +1,4 @@
+
 package net.mmberg.nadia.processor.manager;
 
 import java.util.ArrayList;
@@ -173,6 +174,7 @@ public class DialogManager implements UIConsumer {
 					if(message==null) message="I did not understand that. Please try again. ";
 					String question=message + context.getCurrentQuestion().ask(dialog.getGlobal_politeness(), dialog.getGlobal_formality());
 					context.addUtteranceToHistory(question, UTTERANCE_TYPE.SYSTEM, context.getTaskStack().size());
+					context.setQuestionOpen(true);
 					return new UIConsumerMessage(question, Meta.QUESTION);
 				}
 			} //-- endif 2b (parsing unsuccessful)
