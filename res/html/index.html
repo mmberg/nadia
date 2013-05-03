@@ -6,13 +6,14 @@
 $(document).ready(function(){
 
  var debug = true;
+ var chrome = false;
  var wants_speech = false;
  var location="//localhost:8080/nadia/engine/dialog"
  
 setGuiEnabled(false);
 	
-	//init
-	$.post(location, function(data, textStatus, jqXHR) {
+//init
+$.post(location, function(data, textStatus, jqXHR) {
 		$("#systemUtterance").text(data);
 		location=jqXHR.getResponseHeader("Location");
 		if(debug){
@@ -21,38 +22,45 @@ setGuiEnabled(false);
 			$("#debug").append(" | <a href='"+location+"/xml' target='_blank'>show dialogue</a>");
 		}
 		setGuiEnabled(true);
-	});
+}).fail(function(xhRequest, status, thrownError){showError("Initialisation failed.", true);});
 	
-	//click
-  	$("#submitbtn").click(function(){
+//click
+$("#submitbtn").click(function(){
     	submit();
-  	});
+});
   	
-  	//enter
-  	$('#userUtterance').keydown(function (e){
+//enter
+$('#userUtterance').keydown(function (e){
     if(e.keyCode == 13){
         submit();
         
     }
 })
   	
-  	function submit(){
-		setGuiEnabled(false);
-  		$.post(location, {userUtterance: $("#userUtterance").val()}, function(data) {
-			$("#systemUtterance").text(data);
-			setGuiEnabled(true);
-			//is user has used ASR before, automatically start recognition
-			if(wants_speech){
-				start_stop_recognition();
-			}
-		});
-  	}
+function submit(){
+	setGuiEnabled(false);
+	$.post(location, {userUtterance: $("#userUtterance").val()}, function(data) {
+		$("#systemUtterance").text(data);
+		setGuiEnabled(true);
+		//is user has used ASR before, automatically start recognition
+		if(wants_speech){
+			var query=data.replace(/ /g, '+');
+			playtts("http://translate.google.com/translate_tts?tl=en&q="+query);
+		}
+	}).fail(function(xhRequest, status, thrownError){showError("Server error or service unavailable.", true);});
+}
+
+function showError(error, fatal){
+		$("#error").html(error);
+		if(fatal) $("#error:hidden:first").fadeIn(500);
+		else $("#error:hidden:first").fadeIn(500).delay(3500).fadeOut(500);
+}
   	
-  function setGuiEnabled(state){
+function setGuiEnabled(state){
  	if(state){
  		$('#userUtterance').prop('disabled', false);
  		$('#submitbtn').prop('disabled', false);
- 		$('#recobtn').prop('disabled', false);
+ 		if(chrome) $('#recobtn').prop('disabled', false);
  		
 		$('#loader').removeClass("loading");
 		$("#userUtterance").focus();
@@ -64,13 +72,42 @@ setGuiEnabled(false);
  		$('#recobtn').prop('disabled', true);
 		$('#loader').addClass("loading");
 	}
-  }
+}
   	
-
+function updateGui(state){
+		if(state){
+			$("#recobtn").addClass("recording");
+			$("#recobtn").html("Listening...");
+		}
+		else{
+			$("#recobtn").removeClass("recording");
+			$("#recobtn").html("Start recognition");
+		}
+}
+	
+function playtts(url){
+	    var audioElement = document.createElement('audio');
+	    audioElement.setAttribute('src', url);
+	    audioElement.setAttribute('type', 'audio/mpeg');
+	    audioElement.addEventListener("ended", function() {
+	        start_stop_recognition();
+	    });
+	    audioElement.addEventListener("canplay", function() {
+	        audioElement.play();
+	    });
+	    audioElement.addEventListener("error", function() {
+	 		showError("Cannot play audio.", false);
+	    });
+	    audioElement.load();
+}
+	
+	
   if (!('webkitSpeechRecognition' in window)) {
-  	alert("works only in Chrome");
+  	showError("Speech recognition only works in Chrome.", false);
+  	$('#recobtn').prop('disabled', true);
   }
   else{
+	chrome=true;
     var auto_submit = true;
     var recognizing = false;
   	var final_transcript = '';
@@ -80,29 +117,17 @@ setGuiEnabled(false);
   	recognition.continuous = false;
   	recognition.interimResults = false;
 
-	function updateGui(state){
-		if(state){
-			$("#recobtn").addClass("recording");
-			$("#recobtn").html("Listening...");
-		}
-		else{
-			$("#recobtn").removeClass("recording");
-			$("#recobtn").html("Start recognition");
-		}
-	}
-
- 	recognition.onstart = function() {
-    	recognizing = true;
-        updateGui(true);
- 	};
- 
  	recognition.onerror = function(event) {
  		ignore_onend = true;
  		updateGui(false);
  		wants_speech=false;
- 		$("#error").html(event.error);
- 		$("#error:hidden:first").fadeIn(500).delay(3500).fadeOut(500);
- 	}; 
+ 		showError(event.error, false);
+ 	};
+ 	
+ 	recognition.onstart = function() {
+    	recognizing = true;
+        updateGui(true);
+ 	};
  
  	recognition.onend = function() {
  		updateGui(false);
@@ -118,7 +143,7 @@ setGuiEnabled(false);
 		if (typeof(event.results) == 'undefined') {
       		recognition.onend = null;
       		recognition.stop();
-      		alert("Result undefined");
+      		showError("Result undefined", false);
 		    return;
     	}
     
@@ -158,22 +183,26 @@ setGuiEnabled(false);
 </script>
 <style>
 body {
-	background:#666666;
+	background:#555;
 	font-family:Verdana;
 	color:#222222;
 	margin:auto;
-	padding-top:100px;
 }
 
 #container{
 	width: 500px;
 	margin:auto;
+	padding-top:7%;
 }
 
 div .box{
 	position:relative;
-
 	background:#AAAAAA;
+	background-image: -moz-linear-gradient(top left, #888 25%, #aaa 75%);
+	background-image: -webkit-linear-gradient(top left, #888 25%, #aaa 75%);
+	background-image: -ms-linear-gradient(top left, #888 25%, #aaa 75%);
+	background-image: -o-linear-gradient(top left, #888 25%, #aaa 75%);
+	background-image: linear-gradient(top left, #888 25%, #aaa 75%);
 	padding: 15px;
 	margin-top:7px;
 
@@ -181,12 +210,17 @@ div .box{
 	border-width: 1px;
 	border-style: solid;
 	
-	-moz-border-radius: 5px;
-	border-radius: 5px;
+	-moz-border-radius: 6px;
+	border-radius: 6px;
 }
 
 #main{
 	background:#CCCCCC;
+	background-image: -moz-linear-gradient(top left, #bbb 25%, #ccc 75%);
+	background-image: -webkit-linear-gradient(top left, #bbb 25%, #ccc 75%);
+	background-image: -ms-linear-gradient(top left, #bbb 25%, #ccc 75%);
+	background-image: -o-linear-gradient(top left, #bbb 25%, #ccc 75%);
+	background-image: linear-gradient(top left, #bbb 25%, #ccc 75%);
 	min-height:150px;
 	padding: 25px;
 }
@@ -205,7 +239,7 @@ div .box{
 }
 
 #userUtterance{
-	width:350px;
+	width:360px;
 }
 
 span.grey{
@@ -264,6 +298,7 @@ margin-bottom:0px;
 	display:none;
 	padding: 28px 12px 12px 12px;
 	text-align:center;
+	z-index:1000;
 }
 
 </style>
