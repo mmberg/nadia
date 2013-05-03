@@ -197,6 +197,7 @@ private Dialog createDummyDialog2(){
 		//Task4
 		//-----------------------------------------------
 		Task task4 = new Task("setLightbulb");
+		task4.setAct("action");
 		bagOfWords = new ArrayList<String>(Arrays.asList("bulb","switch"));
 		task4.setSelector(new BagOfWordsTaskSelector(bagOfWords));
 		httpaction=new HTTPAction("#result");
@@ -214,6 +215,26 @@ private Dialog createDummyDialog2(){
 		aqd.setType(new AQDType("onoff"));
 		ito.setAQD(aqd);	
 		
+		//Task5
+		//-----------------------------------------------
+		Task task5 = new Task("getLightbulb");
+		task5.setAct("seek");
+		bagOfWords = new ArrayList<String>(Arrays.asList("bulb","switch"));
+		task5.setSelector(new BagOfWordsTaskSelector(bagOfWords));
+		httpaction=new HTTPAction("#result");
+		httpaction.setUrl("http://mmt.et.hs-wismar.de:8080/Lightbulb/Lightbulb");
+		httpaction.setMethod("get");
+		httpaction.setParams("getstate");
+		httpaction.setXpath("//message");
+		task5.setAction(httpaction);
+		dialog.addTask(task5);
+		
+//		//ITO1
+//		ito=new ITO("getLightAction", "Do you want to switch it on or off?",false);
+//		task5.addITO(ito);
+//		aqd=new AQD();
+//		aqd.setType(new AQDType("onoff"));
+//		ito.setAQD(aqd);	
 		
 		return dialog;			
 	}	

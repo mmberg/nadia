@@ -40,6 +40,11 @@ public class HTTPAction extends HTTPActionModel {
 		 	 * e.g.,
 		 	 * url="http://en.wikipedia.org/w/api.php?format=xml&action=query&prop=extracts&explaintext&exsentences=3&titles=Edinburgh";
 		 	 * xpath="//extract";
+		 	 * 
+		 	 * or
+		 	 * 
+		 	 * curl --data "state=on" http://mmt.et.hs-wismar.de:8080/Lightbulb/Lightbulb
+		 	 * 
 		 	 */
 		
 			String replaced_url=replaceSlotMarkers(url, frame);

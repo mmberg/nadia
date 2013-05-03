@@ -149,6 +149,14 @@ public class DialogManager implements UIConsumer {
 							if (tsk==context.getCurrentTask()) continue; //except this task
 							if (tsk.getSelector()!=null && tsk.getSelector().isResponsible(userUtterance)){
 								
+								//check act
+								if(dialog.isUseSODA()){
+									if(tsk.getAct()!=null && tsk.getAct().length()>0){
+										if (!answer.getSoda().equals(tsk.getAct())) continue;
+									}
+								}
+								
+								
 								found_different_task=true;
 								
 								/* check if task is already on stack (anti recursion!)
@@ -163,7 +171,8 @@ public class DialogManager implements UIConsumer {
 								
 								//check this task-switch-request for further information
 								switchTask(tsk);
-								if (dialog.isAllowOverAnswering()) lookForAnswers(tsk.getITOs(), answer);						
+								if (dialog.isAllowOverAnswering()) lookForAnswers(tsk.getITOs(), answer);	
+								break;
 							}
 						}
 					}
