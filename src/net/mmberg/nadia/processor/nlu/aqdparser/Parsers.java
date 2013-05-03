@@ -17,6 +17,7 @@ public class Parsers {
 			active_parsers.add(new DateParser());
 			active_parsers.add(new OpenEndedParser());
 			active_parsers.add(new NumberParser());
+			active_parsers.add(new OnOffParser());
 		}
 	}
 	

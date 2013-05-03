@@ -179,10 +179,12 @@ private Dialog createDummyDialog2(){
 		Task task3 = new Task("getWikipediaCityInfo");
 		bagOfWords = new ArrayList<String>(Arrays.asList("wikipedia","tell me about", "know about"));
 		task3.setSelector(new BagOfWordsTaskSelector(bagOfWords));
-		XmlReaderAction xaction=new XmlReaderAction("#result");
-		xaction.setUrl("http://en.wikipedia.org/w/api.php?format=xml&action=query&prop=extracts&explaintext&exsentences=3&titles=%getWikiCity");
-		xaction.setXpath("//extract");
-		task3.setAction(xaction);
+		HTTPAction httpaction=new HTTPAction("#result");
+		httpaction.setUrl("http://en.wikipedia.org/w/api.php");
+		httpaction.setMethod("get");
+		httpaction.setParams("format=xml&action=query&prop=extracts&explaintext&exsentences=3&titles=%getWikiCity");
+		httpaction.setXpath("//extract");
+		task3.setAction(httpaction);
 		dialog.addTask(task3);
 		
 		//ITO1
@@ -190,7 +192,27 @@ private Dialog createDummyDialog2(){
 		task3.addITO(ito);
 		aqd=new AQD();
 		aqd.setType(new AQDType("fact.named_entity.non_animated.location.city"));
-		ito.setAQD(aqd);		
+		ito.setAQD(aqd);	
+		
+		//Task4
+		//-----------------------------------------------
+		Task task4 = new Task("setLightbulb");
+		bagOfWords = new ArrayList<String>(Arrays.asList("bulb","switch"));
+		task4.setSelector(new BagOfWordsTaskSelector(bagOfWords));
+		httpaction=new HTTPAction("#result");
+		httpaction.setUrl("http://mmt.et.hs-wismar.de:8080/Lightbulb/Lightbulb");
+		httpaction.setMethod("post");
+		httpaction.setParams("state=%getLightAction");
+		httpaction.setXpath("//message");
+		task4.setAction(httpaction);
+		dialog.addTask(task4);
+		
+		//ITO1
+		ito=new ITO("getLightAction", "Do you want to switch it on or off?",false);
+		task4.addITO(ito);
+		aqd=new AQD();
+		aqd.setType(new AQDType("onoff"));
+		ito.setAQD(aqd);	
 		
 		
 		return dialog;			

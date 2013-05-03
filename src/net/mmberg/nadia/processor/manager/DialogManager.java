@@ -142,7 +142,7 @@ public class DialogManager implements UIConsumer {
 				}
 					
 				//2b2) if not successful, check for OTHER tasks
-				if((dialog.isUseSODA() && answer.getSoda().equals("seek")) || !dialog.isUseSODA()){
+				if((dialog.isUseSODA() && (answer.getSoda().equals("seek") || answer.getSoda().equals("action"))) || !dialog.isUseSODA()){
 					if(dialog.isAllowSwitchTasks() && !found_question_for_given_answer){
 						ArrayList<Task> tasklist=dialog.getTasks();
 						for(Task tsk : tasklist){
