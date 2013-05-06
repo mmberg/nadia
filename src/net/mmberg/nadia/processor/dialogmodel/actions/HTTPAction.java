@@ -51,7 +51,7 @@ public class HTTPAction extends HTTPActionModel {
 			String replaced_params=replaceSlotMarkers(params, frame);
 			String[] params_arr = replaced_params.split("&");
 			
-			String result="not found";
+			String result="Sorry, that did not work. ";
 	        try{
 	        	
 	        	HttpClient client = new HttpClient();

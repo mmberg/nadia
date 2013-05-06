@@ -192,7 +192,19 @@ private Dialog createDummyDialog2(){
 		task3.addITO(ito);
 		aqd=new AQD();
 		aqd.setType(new AQDType("fact.named_entity.non_animated.location.city"));
-		ito.setAQD(aqd);	
+		ito.setAQD(aqd);
+		
+		//FollowUp ITO
+		ITO followito=new ITO("anotherOne", "Do you want to know about other cities?",false);
+		aqd=new AQD();
+		aqd.setType(new AQDType("decision"));
+		followito.setAQD(aqd);
+		FollowUp follow=new FollowUp();
+		follow.setIto(followito);
+		HashMap<String,String> answerMapping=new HashMap<String, String>();
+		answerMapping.put("YES", "getWikipediaCityInfo");
+		follow.setAnswerMapping(answerMapping);
+		task3.setFollowup(follow);
 		
 		//Task4
 		//-----------------------------------------------
@@ -215,7 +227,7 @@ private Dialog createDummyDialog2(){
 		aqd.setType(new AQDType("onoff"));
 		ito.setAQD(aqd);	
 		
-		//Task5
+		//Task5 (this task has no ITOs!!!)
 		//-----------------------------------------------
 		Task task5 = new Task("getLightbulb");
 		task5.setAct("seek");
@@ -229,12 +241,6 @@ private Dialog createDummyDialog2(){
 		task5.setAction(httpaction);
 		dialog.addTask(task5);
 		
-//		//ITO1
-//		ito=new ITO("getLightAction", "Do you want to switch it on or off?",false);
-//		task5.addITO(ito);
-//		aqd=new AQD();
-//		aqd.setType(new AQDType("onoff"));
-//		ito.setAQD(aqd);	
 		
 		return dialog;			
 	}	
@@ -251,8 +257,6 @@ private Dialog createDummyDialog3(){
 	Task task2=new Task("getWeatherInformation");
 	ArrayList<String> bagOfWords = new ArrayList<String>(Arrays.asList("weather","forecast", "temperature","trip"));
 	task2.setSelector(new BagOfWordsTaskSelector(bagOfWords));
-//	action=new DummyAction("The temperature in %getWeatherCity is #temperature degrees.");
-//	task2.setAction(action);
 	GroovyAction gaction = new GroovyAction("The temperature in %getWeatherCity is #temperature degrees.");
 	gaction.setCode("" +
 			"import groovyx.net.http.*\r\n"+

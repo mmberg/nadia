@@ -15,6 +15,7 @@ setGuiEnabled(false);
 //init
 $.post(location, function(data, textStatus, jqXHR) {
 		$("#systemUtterance").text(data);
+		$("#systemUtterance:hidden:first").fadeIn(600);
 		location=jqXHR.getResponseHeader("Location");
 		if(debug){
 			$("#debug").html(location);
@@ -40,7 +41,7 @@ $('#userUtterance').keydown(function (e){
 function submit(){
 	setGuiEnabled(false);
 	$.post(location, {userUtterance: $("#userUtterance").val()}, function(data) {
-		$("#systemUtterance").text(data);
+		$("#systemUtterance").fadeOut(300, function(){$("#systemUtterance").text(data).fadeIn(600);});
 		setGuiEnabled(true);
 		//is user has used ASR before, automatically start recognition
 		if(wants_speech){
@@ -52,8 +53,14 @@ function submit(){
 
 function showError(error, fatal){
 		$("#error").html(error);
-		if(fatal) $("#error:hidden:first").fadeIn(500);
-		else $("#error:hidden:first").fadeIn(500).delay(3500).fadeOut(500);
+		if(fatal){
+			setGuiEnabled(false);
+			$('#loader').removeClass("loading");
+			$("#error:hidden:first").fadeIn(1000);
+			$('#container').delay(3500).animate({opacity: .2},2500);
+			
+		}
+		else $("#error:hidden:first").fadeIn(1000).delay(3000).fadeOut(1000);
 }
   	
 function setGuiEnabled(state){
@@ -192,7 +199,7 @@ body {
 #container{
 	width: 500px;
 	margin:auto;
-	padding-top:7%;
+	padding-top:6%;
 }
 
 div .box{
@@ -235,6 +242,7 @@ div .box{
 }
 
 #systemUtterance{
+	display:none;
 	font-weight:bold;
 }
 
@@ -308,7 +316,7 @@ margin-bottom:0px;
 <div id="container">
 
 	<div id="header" class="box">
-	<img src="nadia_logo.png" height="80px">
+	<!-- <img src="nadia_logo.png" height="80px">-->
 	<h1>Na<span class="grey">tural</span> Dia<span class="grey">logue System</span></h1>
 	</div>
 	

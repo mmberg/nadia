@@ -22,7 +22,7 @@ import net.mmberg.nadia.processor.manager.contexthelper.HistoryTree;
 
 
 @XmlRootElement
-@XmlType(propOrder={"dialogHistory","serializeTaskStack","serializeFrameRepresentation","serializeCurrentTask","questionOpen","currentQuestionUtterance","started","lastAccess","createdOn","additionalDebugInfo"})
+@XmlType(propOrder={"serializeDialog","dialogHistory","serializeTaskStack","serializeFrameRepresentation","serializeCurrentTask","questionOpen","currentQuestionUtterance","started","lastAccess","createdOn","additionalDebugInfo"})
 public class DialogManagerContext {
 
 	//Features
@@ -32,11 +32,12 @@ public class DialogManagerContext {
 	private Boolean question_open=false;
 	private Boolean started=false;
 	private ArrayList<ITO> ito_history=new ArrayList<ITO>();
-	private Task task;
+	//private Task task;
 	private HistoryTree history = new HistoryTree(1);
 	private HistoryTree current_node = history;
 	private Stack<Task> taskStack=new Stack<Task>();
 	private Iterator<ITO> ito_iterator=null;
+	private Dialog dialog=null;
 	
 	public enum UTTERANCE_TYPE {USER,SYSTEM};
 	
@@ -89,7 +90,8 @@ public class DialogManagerContext {
 	@XmlElement(name="entry")
 	public List<String> getSerializeFrameRepresentation(){
 		ArrayList<String> frame = new ArrayList<String>();
-		for(Map.Entry<Object, Object> entry : task.toFrame().entrySet()){
+		//for(Map.Entry<Object, Object> entry : task.toFrame().entrySet()){
+		for(Map.Entry<Object, Object> entry : taskStack.lastElement().toFrame().entrySet()){
 			frame.add(entry.getKey().toString()+": "+entry.getValue().toString());
 		}
 		return frame;
@@ -112,9 +114,20 @@ public class DialogManagerContext {
 		}
 		return stack;
 	}
+	
+	@XmlElement(name="dialog")
+	public String getSerializeDialog() {
+		return dialog.getName();
+	}
 
 
 	//transient getters
+	
+	@XmlTransient
+	public Dialog getDialog(){
+		return dialog;
+	}
+	
 	
 	@XmlTransient
 	public ITO getCurrentQuestion(){
@@ -144,6 +157,11 @@ public class DialogManagerContext {
 	
 	//setters
 
+	public void setDialog(Dialog dialog){
+		this.dialog=dialog;
+	}
+	
+	
 	public void setStarted(Boolean started) {
 		this.started = started;
 	}
@@ -188,9 +206,9 @@ public class DialogManagerContext {
 		
 	}
 	
-	public void setTask(Task task){
-		this.task=task;
-	}
+//	public void setTask(Task task){
+//		this.task=task;
+//	}
 	
 	public void setIto_iterator(Iterator<ITO> ito_iterator) {
 		this.ito_iterator = ito_iterator;

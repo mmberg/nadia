@@ -45,6 +45,13 @@ public class Task extends TaskModel{
 			ito.setValue(null);
 			ito.setUnFilled(); //need to be executed after setValue!
 		}
+		if(followup!=null){
+			ITO fupIto;
+			if((fupIto=followup.getIto())!=null){
+				fupIto.setValue(null);
+				fupIto.setUnFilled();
+			}
+		}
 	}
 	
 }
