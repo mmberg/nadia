@@ -6,32 +6,28 @@
 	<property name="res.dir"     value="res"/>
 	<property name="webinf.dir"  value="WEB-INF"/>
 	
-	<property name="build.dir"   value="build/jar"/>
-	<property name="buildwar.dir"   value="build/war"/>
+	<property name="build.dir"   value="build"/>
+	<property name="buildjar.dir"   value="${build.dir}/jar"/>
+	<property name="buildwar.dir"   value="${build.dir}/war"/>
+	
 	<property name="temp.dir"   value="${build.dir}/temp"/>
+	<property name="tempbin.dir"   value="${temp.dir}/bin"/>
+	<property name="tempsrc.dir"   value="${temp.dir}/src"/>
+	<property name="templib.dir"   value="${temp.dir}/lib"/>
+	<property name="tempres.dir"   value="${temp.dir}/res"/>
+	<property name="tempwebinf.dir"   value="${temp.dir}/webinf"/>
 	
 	<property name="nadia-model.location" value="../nadia-model"/>
-
-	<!--
-    <path id="nadia-model.classpath">
-        <pathelement location="/lib/org.eclipse.persistence.moxy_2.4.1.v20121003-ad44345.jar"/>
-        <pathelement location="/lib/org.eclipse.persistence.core_2.4.1.v20121003-ad44345.jar"/>
-    </path>
-        -->
-	<!--
-	<path id="nadia.classpath">
-	    <fileset dir="${build.dir}/${lib.dir}" includes="**/*.jar"/>
-	</path>
-
- 	<path id="javac.classpath">
- 		<path refid="nadia-model.classpath"/>
- 		<path refid="nadia.classpath"/>
-    </path>
-	   	-->     	
+  	
     <target name="compile" description="Compiles the Task">
-        <mkdir dir="${temp.dir}/"/>
+    	<mkdir dir="${tempsrc.dir}/"/>
+    	<mkdir dir="${tempbin.dir}/"/>
+    	<mkdir dir="${buildjar.dir}/"/>
+    	<mkdir dir="${buildwar.dir}/"/>
     	
-    	<copy todir="${build.dir}/${lib.dir}" flatten="false">
+    	
+    	<!-- copy global files used for jar and war -->
+    	<copy todir="${templib.dir}" flatten="false">
     		<fileset dir="${nadia-model.location}/${lib.dir}">
     		        <include name="**/*"/>
     		</fileset>
@@ -40,68 +36,102 @@
     		</fileset>
     	</copy>
     	
-    	<copy todir="${build.dir}/${res.dir}" flatten="false">
+    	<copy todir="${tempres.dir}" flatten="false">
     		<fileset dir="${res.dir}">
     		        <include name="**/*"/>
     		</fileset>
     	</copy>
     	
-    	<copy todir="${build.dir}/${webinf.dir}" flatten="false">
+    	<copy todir="${tempwebinf.dir}" flatten="false">
     		<fileset dir="${webinf.dir}">
     		        <include name="**/*"/>
     		</fileset>
     	</copy>
     	
     	
+    	<!-- compile -->
+    	
     	<path id="javac.classpath">
-    	    <fileset dir="${build.dir}/${lib.dir}" includes="**/*.jar"/>
+    	    <fileset dir="${templib.dir}" includes="**/*.jar"/>
     	</path>
     	
-    	<copy todir="${build.dir}/${src.dir}" flatten="false">
+    	<copy todir="${tempsrc.dir}" flatten="false">
     		<fileset dir="${nadia-model.location}/${src.dir}">
     		        <include name="**/*"/>
     		</fileset>
     	</copy>
     	
-    	<copy todir="${build.dir}/${src.dir}" overwrite="true" force="true" flatten="false">
+    	<copy todir="${tempsrc.dir}" overwrite="true" force="true" flatten="false">
     		<fileset dir="${src.dir}">
     		        <include name="**/*"/>
     		</fileset>
     	</copy>
     	
-    	<javac destdir="${temp.dir}" classpathref="javac.classpath" includeantruntime="false">
-    	    <src path="${build.dir}/${src.dir}"/>
+    	<javac destdir="${tempbin.dir}" classpathref="javac.classpath" includeantruntime="false">
+    	    <src path="${tempsrc.dir}"/>
     	 </javac>
     	
-    	<copy todir="${temp.dir}" >
-    	    <fileset dir="${build.dir}/${src.dir}">
+    	<copy todir="${tempbin.dir}" >
+    	    <fileset dir="${tempsrc.dir}">
     	    	<include name="**/*.properties"/>
     	    </fileset>
     	 </copy>
     	
+    	<delete dir="${tempsrc.dir}" failonerror="false"/>
+    	   	
     </target>
 
 		
     <target name="jar" description="JARs the Task" depends="compile">
-    	<delete file="${build.dir}/${ant.project.name}.jar" failonerror="false"/>
-
-    	<manifestclasspath property="manifest.classpath" jarfile="${build.dir}/${ant.project.name}.jar">
+    	<delete file="${buildjar.dir}/${ant.project.name}.jar" failonerror="false"/>
+	
+    	<!-- just choose a dir for jarfile so that the path results in "lib/...." -->
+    	<manifestclasspath property="manifest.classpath" jarfile="${temp.dir}/${ant.project.name}.jar">
     	      <classpath refid="javac.classpath"/>
     	</manifestclasspath>
     		
-    	<jar destfile="${build.dir}/${ant.project.name}.jar" basedir="${temp.dir}">
+    	<jar destfile="${buildjar.dir}/${ant.project.name}.jar" basedir="${tempbin.dir}">
     		<manifest>
     			<attribute name="Main-Class" value="net.mmberg.nadia.processor.NadiaProcessor"/>
     			<attribute name="Class-Path" value="./ ${manifest.classpath}"/>
     	    </manifest>
     	</jar>
+    	
+    	<!-- put other files outside jar -->
+    	<copy todir="${buildjar.dir}/${lib.dir}" flatten="false">
+    		<fileset dir="${templib.dir}">
+    		        <include name="**/*"/>
+    		</fileset>
+    	</copy>
+    	
+    	<copy todir="${buildjar.dir}/${res.dir}" flatten="false">
+    	    		<fileset dir="${tempres.dir}">
+    	    		        <include name="**/*"/>
+    	    		</fileset>
+    	</copy>
+    	
+    	<copy todir="${buildjar.dir}/${webinf.dir}" flatten="false">
+    	    		<fileset dir="${tempwebinf.dir}">
+    	    		        <include name="**/*"/>
+    	    		</fileset>
+    	</copy>
+    	
+    </target>
+	
+    <target name="war" description="WARs the Task" depends="compile">
+    	<delete file="${buildwar.dir}/${ant.project.name}.war" failonerror="false"/>
+    			
+    	<war destfile="${buildwar.dir}/${ant.project.name}.war" webxml="${tempwebinf.dir}/web.xml">
+    		<classes dir="${tempbin.dir}"/>
+    		<lib dir="${templib.dir}"/>
+    		<zipfileset dir="${tempres.dir}" prefix="${res.dir}"/>
+    	</war>
     </target>
 	
     <target name="clean" description="Delete temp files">
         <delete dir="${temp.dir}" failonerror="false"/>
-    	<delete dir="${build.dir}/${src.dir}" failonerror="false"/>
     </target>
 
-	<target name="main" depends="jar, clean"/>
+	<target name="main" depends="jar, war"/>
 
 </project>
