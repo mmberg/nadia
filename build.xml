@@ -6,19 +6,35 @@
 	<property name="res.dir"     value="res"/>
 	<property name="webinf.dir"  value="WEB-INF"/>
 	
-	<property name="build.dir"   value="build"/>
+	<property name="build.dir"   value="build/jar"/>
+	<property name="buildwar.dir"   value="build/war"/>
 	<property name="temp.dir"   value="${build.dir}/temp"/>
+	
+	<property name="nadia-model.location" value="../nadia-model"/>
+
+	<!--
+    <path id="nadia-model.classpath">
+        <pathelement location="/lib/org.eclipse.persistence.moxy_2.4.1.v20121003-ad44345.jar"/>
+        <pathelement location="/lib/org.eclipse.persistence.core_2.4.1.v20121003-ad44345.jar"/>
+    </path>
+        -->
+	<!--
+	<path id="nadia.classpath">
+	    <fileset dir="${build.dir}/${lib.dir}" includes="**/*.jar"/>
+	</path>
 
  	<path id="javac.classpath">
-    	<fileset dir="${lib.dir}" includes="**/*.jar"/>
+ 		<path refid="nadia-model.classpath"/>
+ 		<path refid="nadia.classpath"/>
     </path>
-        	
+	   	-->     	
     <target name="compile" description="Compiles the Task">
         <mkdir dir="${temp.dir}/"/>
-    	    		
-        <javac srcdir="${src.dir}" destdir="${temp.dir}" classpathref="javac.classpath"/>
-
+    	
     	<copy todir="${build.dir}/${lib.dir}" flatten="false">
+    		<fileset dir="${nadia-model.location}/${lib.dir}">
+    		        <include name="**/*"/>
+    		</fileset>
     		<fileset dir="${lib.dir}">
     		        <include name="**/*"/>
     		</fileset>
@@ -35,7 +51,34 @@
     		        <include name="**/*"/>
     		</fileset>
     	</copy>
-
+    	
+    	
+    	<path id="javac.classpath">
+    	    <fileset dir="${build.dir}/${lib.dir}" includes="**/*.jar"/>
+    	</path>
+    	
+    	<copy todir="${build.dir}/${src.dir}" flatten="false">
+    		<fileset dir="${nadia-model.location}/${src.dir}">
+    		        <include name="**/*"/>
+    		</fileset>
+    	</copy>
+    	
+    	<copy todir="${build.dir}/${src.dir}" overwrite="true" force="true" flatten="false">
+    		<fileset dir="${src.dir}">
+    		        <include name="**/*"/>
+    		</fileset>
+    	</copy>
+    	
+    	<javac destdir="${temp.dir}" classpathref="javac.classpath" includeantruntime="false">
+    	    <src path="${build.dir}/${src.dir}"/>
+    	 </javac>
+    	
+    	<copy todir="${temp.dir}" >
+    	    <fileset dir="${build.dir}/${src.dir}">
+    	    	<include name="**/*.properties"/>
+    	    </fileset>
+    	 </copy>
+    	
     </target>
 
 		
@@ -48,7 +91,7 @@
     		
     	<jar destfile="${build.dir}/${ant.project.name}.jar" basedir="${temp.dir}">
     		<manifest>
-    			<attribute name="Main-Class" value="net.mmberg.nadia.Nadia"/>
+    			<attribute name="Main-Class" value="net.mmberg.nadia.processor.NadiaProcessor"/>
     			<attribute name="Class-Path" value="./ ${manifest.classpath}"/>
     	    </manifest>
     	</jar>
@@ -56,6 +99,7 @@
 	
     <target name="clean" description="Delete temp files">
         <delete dir="${temp.dir}" failonerror="false"/>
+    	<delete dir="${build.dir}/${src.dir}" failonerror="false"/>
     </target>
 
 	<target name="main" depends="jar, clean"/>

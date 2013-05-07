@@ -27,7 +27,7 @@ public class NadiaProcessor extends UIConsumerFactory{
 	private final static Logger logger = Logger.getLogger("nina"); 
 	private static boolean init=false;
 	private static NadiaProcessorConfig config = NadiaProcessorConfig.getInstance();
-	private static String default_dialog=config.getProperty(NadiaProcessorConfig.DIALOGUEDIR)+"/"+"dummy1"; //default dialogue
+	private static String default_dialog=config.getProperty(NadiaProcessorConfig.DIALOGUEDIR)+"/"+"dummy2.xml"; //default dialogue
 	private static UserInterface ui;
 	private static Date startedOn;
 	

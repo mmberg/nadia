@@ -122,5 +122,108 @@ http.get( path: '/forecastrss', query:[w:'2502265',u:'c'],  contentType: Content
             </groovyAction>
          </action>
       </task>
+      <task name="getWikipediaCityInfo">
+         <selector>
+            <bagOfWordsTaskSelector>
+               <word>wikipedia</word>
+               <word>tell me about</word>
+               <word>know about</word>
+            </bagOfWordsTaskSelector>
+         </selector>
+         <itos>
+            <ito name="getWikiCity">
+               <AQD>
+                  <type>
+                     <answerType>fact.named_entity.non_animated.location.city</answerType>
+                  </type>
+               </AQD>
+               <fallback_question>What city do you want to know more about?</fallback_question>
+               <group>0</group>
+               <index>0</index>
+               <required>false</required>
+               <useLG>false</useLG>
+            </ito>
+         </itos>
+         <action>
+            <httpAction>
+               <returnAnswer>true</returnAnswer>
+               <utteranceTemplate>#result</utteranceTemplate>
+               <method>get</method>
+               <params>format=xml&amp;action=query&amp;prop=extracts&amp;explaintext&amp;exsentences=3&amp;titles=%getWikiCity</params>
+               <url>http://en.wikipedia.org/w/api.php</url>
+               <xpath>//extract</xpath>
+            </httpAction>
+         </action>
+         <followup>
+            <ito name="anotherOne">
+               <AQD>
+                  <type>
+                     <answerType>decision</answerType>
+                  </type>
+               </AQD>
+               <fallback_question>Do you want to know about other cities?</fallback_question>
+               <group>0</group>
+               <index>0</index>
+               <required>false</required>
+               <useLG>false</useLG>
+            </ito>
+            <answerMapping>
+               <item key="YES">getWikipediaCityInfo</item>
+            </answerMapping>
+         </followup>
+      </task>
+      <task name="setLightbulb">
+         <act>action</act>
+         <selector>
+            <bagOfWordsTaskSelector>
+               <word>bulb</word>
+               <word>switch</word>
+            </bagOfWordsTaskSelector>
+         </selector>
+         <itos>
+            <ito name="getLightAction">
+               <AQD>
+                  <type>
+                     <answerType>onoff</answerType>
+                  </type>
+               </AQD>
+               <fallback_question>Do you want to switch it on or off?</fallback_question>
+               <group>0</group>
+               <index>0</index>
+               <required>false</required>
+               <useLG>false</useLG>
+            </ito>
+         </itos>
+         <action>
+            <httpAction>
+               <returnAnswer>true</returnAnswer>
+               <utteranceTemplate>#result</utteranceTemplate>
+               <method>post</method>
+               <params>state=%getLightAction</params>
+               <url>http://mmt.et.hs-wismar.de:8080/Lightbulb/Lightbulb</url>
+               <xpath>//message</xpath>
+            </httpAction>
+         </action>
+      </task>
+      <task name="getLightbulb">
+         <act>seek</act>
+         <selector>
+            <bagOfWordsTaskSelector>
+               <word>bulb</word>
+               <word>switch</word>
+            </bagOfWordsTaskSelector>
+         </selector>
+         <itos/>
+         <action>
+            <httpAction>
+               <returnAnswer>true</returnAnswer>
+               <utteranceTemplate>#result</utteranceTemplate>
+               <method>get</method>
+               <params>getstate</params>
+               <url>http://mmt.et.hs-wismar.de:8080/Lightbulb/Lightbulb</url>
+               <xpath>//message</xpath>
+            </httpAction>
+         </action>
+      </task>
    </tasks>
 </n:dialog>
