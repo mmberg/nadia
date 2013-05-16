@@ -20,6 +20,8 @@ public class NadiaProcessorConfig extends Properties{
 	public static final String JETTYRESOURCEBASE="ResourceBase";
 	public static final String JETTYCONTEXTPATH="ContextPath";
 	
+	private String basedir = "file:///"+System.getProperty("user.dir");
+	
 	private NadiaProcessorConfig(){
 
 	}
@@ -32,10 +34,15 @@ public class NadiaProcessorConfig extends Properties{
 		return instance;
 	}
 	
+	public void setBaseDir(String path){
+		basedir=path;
+		init();
+	}
+	
 	private void init(){
-		this.setProperty(ONTOLOGYPATH, "file:///"+System.getProperty("user.dir")+"/res/ontology/lexicon.owl");
-		this.setProperty(CCGGRAMMARPATH, "file:///"+System.getProperty("user.dir")+"/res/ccggrammar/grammar.xml");
-		this.setProperty(DIALOGUEDIR, "res/dialogues");
+		this.setProperty(ONTOLOGYPATH, basedir+"/res/ontology/lexicon.owl");
+		this.setProperty(CCGGRAMMARPATH, basedir+"/res/ccggrammar/grammar.xml");
+		this.setProperty(DIALOGUEDIR, basedir+"/res/dialogues");
 		//Jetty SSL
 		this.setProperty(JETTYKEYSTOREPATH, "res/keys/nadia.jks");
 		this.setProperty(JETTYKEYSTOREPASS, "naturaldialog");

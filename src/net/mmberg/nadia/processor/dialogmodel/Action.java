@@ -1,6 +1,8 @@
 package net.mmberg.nadia.processor.dialogmodel;
 
 import java.util.HashMap;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -33,6 +35,21 @@ public abstract class Action extends ActionModel{
 			answer= replaceSlotMarkers(utteranceTemplate, frame);
 			answer= replaceExecutionResultMarkers(answer, executionResults);
 		}
+		//TODO beta:analyse action result 
+//		if(mapping!=null){
+//			String conditionalAnswer;
+//			Set<Entry<String, String>> entryset = mapping.entrySet();
+//			for(Entry<String,String> entry : entryset){
+//				if (executionResults.containsKey(entry.getKey())){
+//					conditionalAnswer=entry.getValue();
+//					conditionalAnswer= replaceSlotMarkers(conditionalAnswer, frame);
+//					conditionalAnswer= replaceExecutionResultMarkers(conditionalAnswer, executionResults);
+//					answer=answer + conditionalAnswer;
+//					break;
+//				}
+//			}
+//		}
+//		//--
 		return answer;
 	}
 	

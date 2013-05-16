@@ -86,6 +86,7 @@ public class NadiaProcessor extends UIConsumerFactory{
 			}
 		
 		} catch (ParseException e1) {
+			logger.severe("NADIA: loading by main-method failed. "+e1.getMessage());
 			e1.printStackTrace();
 		}
 		
@@ -106,6 +107,20 @@ public class NadiaProcessor extends UIConsumerFactory{
 		if (!init) init();
 	}
 	
+	//for external loading (war)
+	public static void loadByWar(UserInterface uinterf){
+		default_dialog=config.getProperty(NadiaProcessorConfig.DIALOGUEDIR)+"/"+"dummy2.xml";
+		NadiaProcessor nadia = new NadiaProcessor();
+		try {
+			ui = uinterf;
+			ui.register(nadia);
+			//ui.start();
+		} catch (Exception e) {
+			logger.severe("NADIA: loading by war failed. "+e.getMessage());
+			e.printStackTrace();
+		}
+	}
+	
 	public static Dialog getDefaultDialog(){
 		return Dialog.loadFromPath(default_dialog);
 	}
@@ -116,6 +131,10 @@ public class NadiaProcessor extends UIConsumerFactory{
 	
 	public static Date getStartedOn(){
 		return startedOn;
+	}
+	
+	public static boolean isInit(){
+		return init;
 	}
 	
 	@Override

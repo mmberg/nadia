@@ -5,6 +5,7 @@
     <property name="lib.dir"     value="lib"/>
 	<property name="res.dir"     value="res"/>
 	<property name="webinf.dir"  value="WEB-INF"/>
+	<property name="metainf.dir"  value="META-INF"/>
 	
 	<property name="build.dir"   value="build"/>
 	<property name="buildjar.dir"   value="${build.dir}/jar"/>
@@ -16,6 +17,7 @@
 	<property name="templib.dir"   value="${temp.dir}/lib"/>
 	<property name="tempres.dir"   value="${temp.dir}/res"/>
 	<property name="tempwebinf.dir"   value="${temp.dir}/webinf"/>
+	<property name="tempmetainf.dir"   value="${temp.dir}/metainf"/>
 	
 	<property name="nadia-model.location" value="../nadia-model"/>
   	
@@ -27,7 +29,7 @@
     	
     	
     	<!-- copy global files used for jar and war -->
-    	<copy todir="${templib.dir}" flatten="false">
+    	<copy todir="${templib.dir}" flatten="true">
     		<fileset dir="${nadia-model.location}/${lib.dir}">
     		        <include name="**/*"/>
     		</fileset>
@@ -44,6 +46,12 @@
     	
     	<copy todir="${tempwebinf.dir}" flatten="false">
     		<fileset dir="${webinf.dir}">
+    		        <include name="**/*"/>
+    		</fileset>
+    	</copy>
+    	
+    	<copy todir="${tempmetainf.dir}" flatten="false">
+    		<fileset dir="${metainf.dir}">
     		        <include name="**/*"/>
     		</fileset>
     	</copy>
@@ -121,10 +129,19 @@
     <target name="war" description="WARs the Task" depends="compile">
     	<delete file="${buildwar.dir}/${ant.project.name}.war" failonerror="false"/>
     			
-    	<war destfile="${buildwar.dir}/${ant.project.name}.war" webxml="${tempwebinf.dir}/web.xml">
+    	<war destfile="${buildwar.dir}/${ant.project.name}.war">
     		<classes dir="${tempbin.dir}"/>
-    		<lib dir="${templib.dir}"/>
+    		<lib dir="${templib.dir}">
+    			<exclude name="jetty-webapp-9.0.0.v20130308.jar"/>
+    			<exclude name="servlet-api-3.0.jar"/>
+    		</lib>
     		<zipfileset dir="${tempres.dir}" prefix="${res.dir}"/>
+    		<webinf dir="${tempwebinf.dir}" 
+    			includes="**/*">
+    		</webinf>
+    		<metainf dir="${tempmetainf.dir}" 
+    		    includes="**/*">
+    		</metainf>
     	</war>
     </target>
 	

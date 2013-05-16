@@ -23,8 +23,7 @@ public class DialogManager implements UIConsumer {
 	private static boolean init=false;
 	private final static Logger logger = NadiaProcessor.getLogger();
 	
-//	private Dialog dialog=null; //move to context?
-	private boolean followup=false;
+	private boolean followup=false; //move to context?
 	private DialogManagerContext context=null;
 	
 	
@@ -52,17 +51,12 @@ public class DialogManager implements UIConsumer {
 		}
 	}
 	
-//	public Dialog getDialog(){
-//		return context.getDialog();
-//	}
-	
 
 	//UIConsumer:
 	
 	@Override
 	public void loadDialog(Dialog dialog){
 		context.setDialog(dialog);
-		
 	}
 	
 	@Override

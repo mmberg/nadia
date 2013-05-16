@@ -7,6 +7,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
@@ -38,11 +39,32 @@ public class RESTInterface extends UserInterface{
 	private Server server;
 	private static int instance_counter=0;
 	protected static HashMap<String, UIConsumer> instances = new HashMap<String, UIConsumer>();
+	private final static Logger logger = NadiaProcessor.getLogger();
 	
 	@Context UriInfo uri;
 	@Context HttpServletRequest request;
 	@Context HttpHeaders headers;
-	  
+	
+	public RESTInterface(){
+		//if loaded externally (Application Server / war) instead of using main-method in NadiaProcessor
+		if(!NadiaProcessor.isInit()){
+			NadiaProcessorConfig config = NadiaProcessorConfig.getInstance();
+			String path="";
+			try{
+//				path = getClass().getProtectionDomain().getCodeSource().getLocation().toURI().resolve("../..").getPath().toString(); //Jetty???
+				path = getClass().getProtectionDomain().getCodeSource().getLocation().toURI().resolve("../../../../../../..").getPath().toString(); //Tomcat
+				logger.info("Nadia Root Path: "+path);
+			}
+			catch(Exception ex){
+				ex.printStackTrace();
+				logger.severe("Nadia RESTInterface constructor failed: "+ex.getMessage());
+			}
+			config.setBaseDir("file://"+path);
+			NadiaProcessor.loadByWar(this);
+		}
+	}
+	
+	
 	//Web Service Methods
 	//===================
 	
@@ -157,6 +179,7 @@ public class RESTInterface extends UserInterface{
 		}
 		catch(ProcessingException ex){
 			message = new UIConsumerMessage(ex.getMessage(), Meta.ERROR);
+			logger.severe("Nadia processing in REST interface failed: "+ex.getMessage());
 		}
 		return message;
 	}
@@ -265,6 +288,7 @@ public class RESTInterface extends UserInterface{
 		}
 		catch(Exception ex){
 			ex.printStackTrace();
+			logger.severe("Nadia: failed to start Jetty: "+ex.getMessage());
 			server.destroy();
 		}
 	}
