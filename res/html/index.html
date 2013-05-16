@@ -5,11 +5,16 @@
 <script>
 $(document).ready(function(){
 
+//config:
  var debug = true;
+ var local = false;
+ var server = local?"localhost":"mmt.et.hs-wismar.de";
+ var location="//"+server+":8080/nadia/engine/dialog"
+ //---
+ 
+ //do not change:
  var chrome = false;
  var wants_speech = false;
- var server = "mmt.et.hs-wismar.de"; //localhost, 10.10.25.102
- var location="//"+server+":8080/nadia/engine/dialog"
  
 setGuiEnabled(false);
 	

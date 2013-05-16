@@ -136,6 +136,7 @@
     			<exclude name="servlet-api-3.0.jar"/>
     		</lib>
     		<zipfileset dir="${tempres.dir}" prefix="${res.dir}"/>
+    		<zipfileset dir="${tempres.dir}/html"/> <!-- for Tomcat -->
     		<webinf dir="${tempwebinf.dir}" 
     			includes="**/*">
     		</webinf>
