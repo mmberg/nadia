@@ -91,8 +91,10 @@ public class DialogManagerContext {
 	public List<String> getSerializeFrameRepresentation(){
 		ArrayList<String> frame = new ArrayList<String>();
 		//for(Map.Entry<Object, Object> entry : task.toFrame().entrySet()){
-		for(Map.Entry<Object, Object> entry : taskStack.lastElement().toFrame().entrySet()){
-			frame.add(entry.getKey().toString()+": "+entry.getValue().toString());
+		if(!taskStack.isEmpty()){
+			for(Map.Entry<Object, Object> entry : taskStack.lastElement().toFrame().entrySet()){
+				frame.add(entry.getKey().toString()+": "+entry.getValue().toString());
+			}
 		}
 		return frame;
 		//return task.toFrame(); //does not work on my Windows Setup... On Mac it works fine...

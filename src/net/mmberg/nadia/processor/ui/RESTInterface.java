@@ -115,7 +115,7 @@ public class RESTInterface extends UserInterface{
 	{
 		String info="<html><head><title>Nadia Status</title></head><body><p>";
 		info+="Started on: "+NadiaProcessor.getStartedOn().toString()+"<br>";
-		info+="Default dialogue: "+NadiaProcessor.getDefaultDialog().getName()+"<br>";
+		info+="Default dialogue: "+NadiaProcessor.getDefaultDialogPathAndName()+"<br>"; //getDefaultDialog().getName()+"<br>";
 		info+="Started UI: "+NadiaProcessor.getUIType()+"<br>";
 		info+="Current sessions ("+instances.size()+"):<ul>";
 		for(String sid : instances.keySet()){

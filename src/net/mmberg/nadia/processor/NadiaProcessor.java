@@ -125,6 +125,10 @@ public class NadiaProcessor extends UIConsumerFactory{
 		return Dialog.loadFromPath(default_dialog);
 	}
 	
+	public static String getDefaultDialogPathAndName(){
+		return default_dialog;
+	}
+	
 	public static String getUIType(){
 		return ui.getClass().getSimpleName();
 	}
