@@ -147,7 +147,7 @@ public class DialogManager implements UIConsumer {
 				
 				//TODO beta
 				//prevent follow-up-stacking!
-				//if follow-up question that has not been answered, remove it from stack
+				//if follow-up question that has not been answered, remove it from stack, i.e. if you ignore a follow-up question, it will not be asked again
 				if(followup){
 					followup=false;
 					context.getTaskStack().pop().reset(); //remove current task from stack and reset
@@ -213,11 +213,20 @@ public class DialogManager implements UIConsumer {
 			//STEP 3:
 			//3a) IF ALL INFORMATION RETRIEVED, EXECUTE ACTION
 			UIConsumerMessage answer_msg=null;
-			if(context.getCurrentTask().isAllFilled() && (context.getCurrentTask().getAction()!=null)){
+			Action action=context.getCurrentTask().getAction();
+			if(context.getCurrentTask().isAllFilled() && (action!=null)){
 				String sysAns=context.getCurrentTask().execute();
-				if (context.getCurrentTask().getAction().isReturnAnswer()){
+				if (action.isReturnAnswer()){
 					answer_msg=new UIConsumerMessage(sysAns, Meta.ANSWER); //the answer is integrated into the next question
 				}
+				//TODO beta: task redirection depending on action result
+				ActionResultMapping resultMapping;
+				if((resultMapping=action.getFirstMatchingResultMapping())!=null){
+					if(resultMapping.getRedirectToTask()!=null && resultMapping.getRedirectToTask().length()>0){
+						return abortAndStartNewTask(resultMapping.getRedirectToTask(),answer_msg);
+					}
+				}
+				//--
 			}
 			return getNextQuestion(answer_msg);
 		}
@@ -280,7 +289,7 @@ public class DialogManager implements UIConsumer {
 				String answer_message=(questionPrefix==null)?"":(questionPrefix.getSystemUtterance()+" ");
 				String question=ito.ask(context.getDialog().getGlobal_politeness(), context.getDialog().getGlobal_formality()); //get question
 				String utterance = answer_message+question;
-				context.addUtteranceToHistory(question, UTTERANCE_TYPE.SYSTEM, context.getTaskStack().size()); //answer is recorded in different else-branch
+				context.addUtteranceToHistory(question, UTTERANCE_TYPE.SYSTEM, context.getTaskStack().size()); //answer_message is recorded in different else-branch
 				return new UIConsumerMessage(utterance, Meta.QUESTION);
 			}
 		}
@@ -322,6 +331,14 @@ public class DialogManager implements UIConsumer {
 		context.getTaskStack().push(t);
 //		context.setTask(t);
 		context.setIto_iterator(t.getITOs().iterator());
+	}
+	
+	//TODO beta
+	private UIConsumerMessage abortAndStartNewTask(String taskName, UIConsumerMessage questionPrefix) throws ProcessingException{
+		if(questionPrefix != null) context.addUtteranceToHistory(questionPrefix.getSystemUtterance(), UTTERANCE_TYPE.SYSTEM, context.getTaskStack().size());
+		context.getTaskStack().pop().reset(); //remove current (finished task) from stack
+		Task newTask=context.getDialog().getTask(taskName);
+		return initTaskAndGetNextQuestion(newTask,questionPrefix);
 	}
 	
 	private UIConsumerMessage initTaskAndGetNextQuestion(Task t, UIConsumerMessage questionPrefix) throws ProcessingException{

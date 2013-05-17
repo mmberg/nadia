@@ -120,8 +120,11 @@ private Dialog createDummyDialog2(){
 //		task1.setAction(jaction);
 		
 		GroovyAction gaction = new GroovyAction("This trip from %getDepartureCity to %getDestinationCity costs #price Euros.");
-		gaction.setCode("executionResults.put(\"price\",\"257\")");
-		//gaction.setReturnAnswer(false);
+		gaction.setCode("executionResults.put(\"price\",\"1000\")");
+		//gaction.setReturnAnswer(false);		
+		gaction.addResultMapping(new ActionResultMapping("price","257","#price Euro for %getDestinationCity is cheap!",null));
+		gaction.addResultMapping(new ActionResultMapping("price","1000","#price Euro for %getDestinationCity is expensive!","getWeatherInformation"));
+		
 		task1.setAction(gaction);
 		
 		dialog.addTask(task1);

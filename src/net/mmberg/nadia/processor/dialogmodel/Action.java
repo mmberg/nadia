@@ -1,8 +1,6 @@
 package net.mmberg.nadia.processor.dialogmodel;
 
 import java.util.HashMap;
-import java.util.Map.Entry;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -34,25 +32,33 @@ public abstract class Action extends ActionModel{
 			answer= replaceExecutionResultMarkers(answer, executionResults);
 		}
 		
-		//TODO beta:analyse action result 
-//		if(mapping!=null){
-//			String conditionalAnswer;
-//			Set<Entry<String, String>> entryset = mapping.entrySet();
-//			for(Entry<String,String> entry : entryset){
-//				if (executionResults.containsKey(entry.getKey())){
-//					conditionalAnswer=entry.getValue();
-//					conditionalAnswer= replaceSlotMarkers(conditionalAnswer, frame);
-//					conditionalAnswer= replaceExecutionResultMarkers(conditionalAnswer, executionResults);
-//					answer=answer + conditionalAnswer;
-//					break;
-//				}
-//			}
-//		}
-//		//--
+		//add further message to utterance depending on result
+		ActionResultMapping resultMapping = getFirstMatchingResultMapping();
+		if(resultMapping!=null){
+			String conditionalAnswer;
+			conditionalAnswer= resultMapping.getMessage();
+			conditionalAnswer= replaceSlotMarkers(conditionalAnswer, frame);
+			conditionalAnswer= replaceExecutionResultMarkers(conditionalAnswer, executionResults);
+			answer=answer + " "+ conditionalAnswer;
+		}
+		
 		return answer;
 	}
 	
-	//marker indicated by hash sign (#)
+	public ActionResultMapping getFirstMatchingResultMapping(){
+		if(resultMappingList!=null){
+			for(ActionResultMapping resultMapping : resultMappingList){
+				if(executionResults.containsKey(resultMapping.getResultVarName())){
+					if(executionResults.get(resultMapping.getResultVarName()).equals(resultMapping.getResultValue())){
+						return resultMapping;
+					}
+				}
+			}
+		}
+		return null;
+	}
+	
+	//marker indicated by hash sign (#), i.e. references to execution results
 	protected static String replaceExecutionResultMarkers(String template, HashMap<String, String> executionResults){
 		String answer="";
 		if(template != null && template.length()>0){
@@ -73,7 +79,7 @@ public abstract class Action extends ActionModel{
 		return answer;
 	}
 	
-	//marker indicated by percentage sign (%)
+	//marker indicated by percentage sign (%), i.e. references to ITOs
 	protected static String replaceSlotMarkers(String template, Frame frame){
 		String answer="";
 		if(template != null && template.length()>0){
