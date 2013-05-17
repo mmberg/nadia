@@ -24,8 +24,6 @@ public abstract class Action extends ActionModel{
 	//content
 	public abstract HashMap<String, String> execute(Frame frame);
 	
-	
-	
 	//fills template with values from frame
 	public String executeAndGetAnswer(Task t){
 		String answer="";
@@ -35,6 +33,7 @@ public abstract class Action extends ActionModel{
 			answer= replaceSlotMarkers(utteranceTemplate, frame);
 			answer= replaceExecutionResultMarkers(answer, executionResults);
 		}
+		
 		//TODO beta:analyse action result 
 //		if(mapping!=null){
 //			String conditionalAnswer;
