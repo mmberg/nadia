@@ -14,6 +14,7 @@ public class YNParser extends Parser{
 		
 		super.match_regex(results,"yes", this.type, "YES");
 		super.match_regex(results,"yep", this.type, "YES");
+		super.match_regex(results,"definitely", this.type, "YES");
 		super.match_regex(results,"no", this.type, "NO");
 		super.match_regex(results,"nope", this.type, "NO");
 	
