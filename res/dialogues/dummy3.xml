@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<n:dialog xsi:schemaLocation="http://mmberg.net/nadia schema1.xsd" xmlns:n="http://mmberg.net/nadia" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="dummy3">
+   <global_formality>4</global_formality>
+   <global_language>en</global_language>
+   <global_politeness>4</global_politeness>
+   <start_task_name>getWeatherInformation</start_task_name>
+   <strategy>mixed</strategy>
+   <tasks>
+      <task name="getWeatherInformation">
+         <selector>
+            <bagOfWordsTaskSelector>
+               <word>weather</word>
+               <word>forecast</word>
+               <word>temperature</word>
+               <word>trip</word>
+            </bagOfWordsTaskSelector>
+         </selector>
+         <itos>
+            <ito name="getWeatherCity">
+               <AQD>
+                  <type>
+                     <answerType>fact.named_entity.non_animated.location.city</answerType>
+                  </type>
+               </AQD>
+               <fallback_question>For which city do you want to know the weather?</fallback_question>
+               <group>0</group>
+               <index>0</index>
+               <required>false</required>
+               <useLG>false</useLG>
+            </ito>
+         </itos>
+         <action>
+            <groovyAction>
+               <returnAnswer>true</returnAnswer>
+               <utteranceTemplate>The temperature in %getWeatherCity is #temperature degrees.</utteranceTemplate>
+               <code><![CDATA[import groovyx.net.http.*
+import javax.xml.xpath.*
+def http = new HTTPBuilder('http://weather.yahooapis.com')
+http.get( path: '/forecastrss', query:[w:'2502265',u:'c'],  contentType: ContentType.XML) { resp, xml -> 
+   def temp = xml.channel.item.condition[0].@temp
+	executionResults.put("temperature",temp.toString())
+}]]></code>
+            </groovyAction>
+         </action>
+      </task>
+   </tasks>
+</n:dialog>
