@@ -17,7 +17,7 @@
 	<property name="templib.dir"   value="${temp.dir}/lib"/>
 	<property name="tempres.dir"   value="${temp.dir}/res"/>
 	<property name="tempwebinf.dir"   value="${temp.dir}/webinf"/>
-	<property name="tempmetainf.dir"   value="${temp.dir}/metainf"/>
+	<!--<property name="tempmetainf.dir"   value="${temp.dir}/metainf"/>-->
 	
 	<property name="nadia-model.location" value="../nadia-model"/>
   	
@@ -50,12 +50,13 @@
     		</fileset>
     	</copy>
     	
+    	<!--
     	<copy todir="${tempmetainf.dir}" flatten="false">
     		<fileset dir="${metainf.dir}">
     		        <include name="**/*"/>
     		</fileset>
     	</copy>
-    	
+    	-->
     	
     	<!-- compile -->
     	
@@ -140,9 +141,11 @@
     		<webinf dir="${tempwebinf.dir}" 
     			includes="**/*">
     		</webinf>
+    		<!--
     		<metainf dir="${tempmetainf.dir}" 
     		    includes="**/*">
     		</metainf>
+    		-->
     	</war>
     </target>
 	
