@@ -119,20 +119,17 @@ public class DialogManager implements UIConsumer {
 			if(results!=null && results.getState()==ParseResults.MATCH){
 				storeResults(context.getCurrentQuestion(), results);
 				
-				//TODO beta
 				//follow-up
 				if(followup){
 					followup=false; //TODO might be better to make a FollowUp:ITO and check type on the fly in process_utterance()
 					HashMap<String, String> mapping=context.getCurrentTask().getFollowup().getAnswerMapping();
 					String taskToStart=mapping.get(results.getFirst().getResultString());
 					if(taskToStart!=null){
-						context.getTaskStack().pop().reset(); //remove current task from stack and reset
-						Task ttt=context.getDialog().getTask(taskToStart);
-						return initTaskAndGetNextQuestion(ttt);
+						return abortAndStartNewTask(taskToStart,null);
 					}
 					else return getNextQuestion();
 				}
-				//---
+
 				
 				//TODO: multiple information in one answer (mixed initiative)
 				//...
@@ -145,15 +142,6 @@ public class DialogManager implements UIConsumer {
 				boolean found_question_for_given_answer=false;
 				boolean found_different_task=false;
 				
-				//TODO beta
-				//prevent follow-up-stacking!
-				//if follow-up question that has not been answered, remove it from stack, i.e. if you ignore a follow-up question, it will not be asked again
-				if(followup){
-					followup=false;
-					context.getTaskStack().pop().reset(); //remove current task from stack and reset
-				}
-				//--
-					
 				//2b1) check for all/other questions in THIS task
 				if((context.getDialog().isUseSODA() && answer.getSoda().equals("prov"))||(!context.getDialog().isUseSODA())){
 					if(context.getDialog().isAllowDifferentQuestion()){
@@ -171,13 +159,22 @@ public class DialogManager implements UIConsumer {
 							if (tsk==context.getCurrentTask()) continue; //except this task
 							if (tsk.getSelector()!=null && tsk.getSelector().isResponsible(userUtterance)){
 								
+								//prevent follow-up-stacking!
+								//if the current question is a follow-up question and the user wants to start another task,
+								//remove it from stack, also if it has not been answered,
+								//i.e. if you ignore a follow-up question, it will not be asked again
+								if(followup){
+									followup=false;
+									context.getTaskStack().pop().reset(); //remove current task from stack and reset
+								}
+
+								
 								//check act
 								if(context.getDialog().isUseSODA()){
 									if(tsk.getAct()!=null && tsk.getAct().length()>0){
 										if (!answer.getSoda().equals(tsk.getAct())) continue;
 									}
-								}
-								
+								}								
 								
 								found_different_task=true;
 								
@@ -190,7 +187,7 @@ public class DialogManager implements UIConsumer {
 										poppedTask.reset();
 									}
 								}
-								
+																
 								//check this task-switch-request for further information
 								switchTask(tsk);
 								if (context.getDialog().isAllowOverAnswering()) lookForAnswers(tsk.getITOs(), answer);	
@@ -205,7 +202,7 @@ public class DialogManager implements UIConsumer {
 					if(message==null) message="I did not understand that. Please try again. ";
 					String question=message + context.getCurrentQuestion().ask(context.getDialog().getGlobal_politeness(), context.getDialog().getGlobal_formality());
 					context.addUtteranceToHistory(question, UTTERANCE_TYPE.SYSTEM, context.getTaskStack().size());
-					context.setQuestionOpen(true);
+					context.setQuestionOpen(true);					
 					return new UIConsumerMessage(question, Meta.QUESTION);
 				}
 			} //-- endif 2b (parsing unsuccessful)
