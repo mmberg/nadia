@@ -23,7 +23,7 @@ public class CityParser extends Parser{
 		if(tokens.size()>0){
 			for(String city : tokens){
 				capitalizedCity = Character.toString(city.charAt(0)).toUpperCase()+city.substring(1);
-				results.add(new ParseResult(this.name,0,0,capitalizedCity,this.type,capitalizedCity));
+				results.add(new ParseResult(this.name,0,0,city,this.type,capitalizedCity));
 			}
 		}
 

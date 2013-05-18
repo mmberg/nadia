@@ -133,6 +133,8 @@ public class DialogManager implements UIConsumer {
 				
 				//TODO: multiple information in one answer (mixed initiative)
 				//...
+					//beta
+					lookForAnswers(context.getCurrentTask().getITOs(), answer);
 				//...
 			}
 			//or 2b) IF PARSING NOT SUCCESSFUL, CHECK FOR OTHER POSSIBILITIES
@@ -246,6 +248,7 @@ public class DialogManager implements UIConsumer {
 	private void storeResults(ITO ito, ParseResults results){
 		if(results!=null && results.size()>0 && results.getState()==ParseResults.MATCH){
 			ito.setValue(results.getFirst().getResultString()); //TODO what if more than one parse result?
+			if (results.size()>1) logger.warning("Multiple Parse Results. Only first one will be processed!");
 		}
 		else logger.warning("ParseResults were empty and could not be stored in frame.");
 	}
@@ -256,17 +259,20 @@ public class DialogManager implements UIConsumer {
 	private boolean lookForAnswers(ArrayList<ITO> itos, UserUtterance answer){
 
 		boolean found=false;
+		String processedAnswer=answer.getText();
 		ParseResults results;
 		for(ITO ito : itos){
 			if(!context.getDialog().isAllowCorrection()){ //if correction not allowed, only use unanswered ITOs
 				if (ito.isFilled()) continue;
 			}
-			
-			results=interpret(ito, answer.getText());
+						
+			results=interpret(ito, processedAnswer); //answer.getText()
 			if(results.getState()==ParseResults.MATCH){
+				System.out.println(processedAnswer);
+				processedAnswer=processedAnswer.replace(results.getFirst().getMatchedSequence(),""); //remove matched parts to prevent multiple processing of same information; otherwise CITY fills both departure and destination
 				found=true;
 				storeResults(ito, results);
-				break; //abort after first success, TODO: multiple information in one answer
+				//break; //abort after first success 
 			}
 		}
 		
