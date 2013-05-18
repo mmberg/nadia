@@ -80,6 +80,19 @@ Action &gt; <xsl:apply-templates/>
 </div>
 </xsl:template>
 
+<xsl:template match="followup">
+<div class="followup">
+FollowUp: <xsl:apply-templates/>
+</div>
+</xsl:template>
+
+<xsl:template match="answerMapping">
+<div class="answerMapping">
+AnswerMapping:<br/>
+<ul><xsl:apply-templates/></ul>
+</div>
+</xsl:template>
+
 <xsl:template match='action/*'>
 <xsl:value-of select ="name(.)"/><br/>
 <ul>
@@ -98,6 +111,20 @@ Action &gt; <xsl:apply-templates/>
 
 <xsl:template match='selector/*/*'>
    <span><xsl:apply-templates/>&#160;&#160;</span>
+</xsl:template>
+
+<xsl:template match='answerMapping/item'>
+   <li><xsl:value-of select ="@key"/>: <xsl:apply-templates/></li>
+</xsl:template>
+
+<xsl:template match='action/*/resultMappings'>
+   <li><i><xsl:value-of select ="name(.)"/></i>:
+   <ul><xsl:apply-templates/></ul>
+   </li>
+</xsl:template>
+
+<xsl:template match='action/*/resultMappings/resultMapping'>
+   <li><xsl:apply-templates/></li>
 </xsl:template>
 
 <xsl:template match='*'>

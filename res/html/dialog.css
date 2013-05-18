@@ -33,6 +33,14 @@ background-color:#070;
 background-color:#CC0;
 }
 
+.followup{
+background-color:#A66;
+}
+
+.answerMapping{
+background-color:#733;
+}
+
 h3{
 font-weight:bold;
 font-size:12pt;
