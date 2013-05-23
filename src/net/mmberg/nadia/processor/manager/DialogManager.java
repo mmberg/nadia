@@ -222,7 +222,7 @@ public class DialogManager implements UIConsumer {
 				ActionResultMapping resultMapping;
 				if((resultMapping=action.getFirstMatchingResultMapping())!=null){
 					if(resultMapping.getRedirectToTask()!=null && resultMapping.getRedirectToTask().length()>0){
-						return abortAndStartNewTask(resultMapping.getRedirectToTask(),answer_msg);
+						return abortAndStartNewTask(resultMapping.getRedirectToTask(),answer_msg); //TODO maybe this should not necessarily abort the current task? 
 					}
 				}
 				//--

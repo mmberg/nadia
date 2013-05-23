@@ -24,12 +24,25 @@ import net.mmberg.nadia.processor.dialogmodel.Frame;
 @XmlRootElement
 public class HTTPAction extends HTTPActionModel {
 
+	private HttpClient client;
+	
 	public HTTPAction(){
 		super();
+		init();
 	}
 	
 	public HTTPAction(String template){
 		super(template);
+		init();
+	}
+	
+	private void init(){
+    	client = new HttpClient();
+    	try {
+			client.start();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	@Override
@@ -53,15 +66,12 @@ public class HTTPAction extends HTTPActionModel {
 			
 			String result="Sorry, that did not work. ";
 	        try{
-	        	
-	        	HttpClient client = new HttpClient();
-	        	client.start();
-	        	 
+	        		        	 
 	        	ContentResponse response;
 	        	Request request;
         		
 	        	request = client.newRequest(replaced_url);
-	        	
+
 	        	//choose method
 	        	if(method.toLowerCase().equals("get")){
 	        		request.method(HttpMethod.GET);

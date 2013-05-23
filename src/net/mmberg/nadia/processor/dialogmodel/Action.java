@@ -32,7 +32,7 @@ public abstract class Action extends ActionModel{
 			answer= replaceExecutionResultMarkers(answer, executionResults);
 		}
 		
-		//add further message to utterance depending on result
+		//add further message to utterance depending on result (extends utteranceTemplate)
 		ActionResultMapping resultMapping = getFirstMatchingResultMapping();
 		if(resultMapping!=null){
 			String conditionalAnswer;
@@ -45,6 +45,7 @@ public abstract class Action extends ActionModel{
 		return answer;
 	}
 	
+	//Returns the first ActionResultMapping that matches the values in the executionResults.
 	public ActionResultMapping getFirstMatchingResultMapping(){
 		if(resultMappingList!=null){
 			for(ActionResultMapping resultMapping : resultMappingList){

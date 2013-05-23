@@ -24,7 +24,7 @@ public class NumberParser extends Parser{
 		
 		ParseResults results = new ParseResults(utterance);
 
-		this.match_regex(results,"\\d", this.type);
+		this.match_regex(results,"\\d+", this.type);
 	
 		return results;
 	}

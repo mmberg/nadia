@@ -95,13 +95,25 @@ private Dialog createDummyDialog2(){
 		dialog.addTask(task0);
 	
 		//ITO 1
-		ito=new ITO("welcome", "Hello! How may I help you?", false);	
+		ito=new ITO("welcome", "How may I help you?", false);	
 		task0.addITO(ito);
 		//an ITO is associated with AQDs
 		aqd=new AQD();
 		aqd.setType(new AQDType("open_ended"));
 		ito.setAQD(aqd);
 		
+//		//no ITOs, but follow up... works!
+//		ITO followito2=new ITO("anotherOne", "Do you want to play a game or know the weather?",false);
+//		aqd=new AQD();
+//		aqd.setType(new AQDType("item(game,weather)"));
+//		followito2.setAQD(aqd);
+//		FollowUp follow2=new FollowUp();
+//		follow2.setIto(followito2);
+//		HashMap<String,String> answerMapping2=new HashMap<String, String>();
+//		answerMapping2.put("GAME", "guessNumber");
+//		answerMapping2.put("WEATHER", "getWeatherInformation");
+//		follow2.setAnswerMapping(answerMapping2);
+//		task0.setFollowup(follow2);
 		
 		//Task 1
 		//----------------------------------------------
@@ -156,17 +168,26 @@ private Dialog createDummyDialog2(){
 		Task task2=new Task("getWeatherInformation");
 		bagOfWords = new ArrayList<String>(Arrays.asList("weather","forecast", "temperature"));
 		task2.setSelector(new BagOfWordsTaskSelector(bagOfWords));
-		gaction = new GroovyAction("The temperature in %getWeatherCity is #temperature degrees.");
-		gaction.setCode("" +
-				"import groovyx.net.http.*\r\n"+
-				"import javax.xml.xpath.*\r\n"+
-				"def http = new HTTPBuilder('http://weather.yahooapis.com')\r\n"+
-				"http.get( path: '/forecastrss', query:[w:'2502265',u:'c'],  contentType: ContentType.XML) { resp, xml -> \r\n"+
-				"   def temp = xml.channel.item.condition[0].@temp\r\n"+
-				"	executionResults.put(\"temperature\",temp.toString())\r\n"+
-				"}"
-		);
-		task2.setAction(gaction);
+//		gaction = new GroovyAction("The temperature in %getWeatherCity is #temperature degrees.");
+//		gaction.setCode("" +
+//				"import groovyx.net.http.*\r\n"+
+//				"import javax.xml.xpath.*\r\n"+
+//				"def http = new HTTPBuilder('http://weather.yahooapis.com')\r\n"+
+//				"http.get( path: '/forecastrss', query:[w:'2502265',u:'c'],  contentType: ContentType.XML) { resp, xml -> \r\n"+
+//				"   def temp = xml.channel.item.condition[0].@temp\r\n"+
+//				"	executionResults.put(\"temperature\",temp.toString())\r\n"+
+//				"}"
+//		);
+//		task2.setAction(gaction);
+		
+		//different weather service:
+		HTTPAction httpaction=new HTTPAction("The temperature in %getWeatherCity is #result degrees.");
+	    httpaction.setUrl("http://api.openweathermap.org/data/2.5/weather");
+	    httpaction.setMethod("get");
+	    httpaction.setParams("q=%getWeatherCity&mode=xml&units=metric");
+	    httpaction.setXpath("/current/temperature/@value");
+	    task2.setAction(httpaction);
+		
 		dialog.addTask(task2);
 		
 		//ITO 1
@@ -182,7 +203,7 @@ private Dialog createDummyDialog2(){
 		Task task3 = new Task("getWikipediaCityInfo");
 		bagOfWords = new ArrayList<String>(Arrays.asList("wikipedia","tell me about", "know about"));
 		task3.setSelector(new BagOfWordsTaskSelector(bagOfWords));
-		HTTPAction httpaction=new HTTPAction("#result");
+		httpaction=new HTTPAction("#result");
 		httpaction.setUrl("http://en.wikipedia.org/w/api.php");
 		httpaction.setMethod("get");
 		httpaction.setParams("format=xml&action=query&prop=extracts&explaintext&exsentences=3&titles=%getWikiCity");
@@ -245,6 +266,42 @@ private Dialog createDummyDialog2(){
 		dialog.addTask(task5);
 		
 		
+		//Task6
+		//-----------------------------------------------
+		Task task6 = new Task("guessNumber");
+		task6.setAct("seek");
+		bagOfWords = new ArrayList<String>(Arrays.asList("guess","number","play"));
+		task6.setSelector(new BagOfWordsTaskSelector(bagOfWords));
+		httpaction=new HTTPAction("%getNumber ");
+		httpaction.setUrl("http://mmt.et.hs-wismar.de:8080/NumberGuessing/NumberGuessing");
+		httpaction.setMethod("get");
+		httpaction.setParams("guess=%getNumber");
+		httpaction.setXpath("//code");
+		httpaction.addResultMapping(new ActionResultMapping("result","TOO_BIG","was too big.","guessNumber"));
+		httpaction.addResultMapping(new ActionResultMapping("result","TOO_SMALL","was too small.","guessNumber"));
+		httpaction.addResultMapping(new ActionResultMapping("result","CORRECT","it is! Congratulations!",null));
+		task6.setAction(httpaction);
+		dialog.addTask(task6);
+		
+		//ITO1
+		ito=new ITO("getNumber", "Guess a number!",false);
+		task6.addITO(ito);
+		aqd=new AQD();
+		aqd.setType(new AQDType("fact.quantity"));
+		ito.setAQD(aqd);	
+		
+		//FollowUp ITO
+		followito=new ITO("playAgain", "Do you want to play again?",false);
+		aqd=new AQD();
+		aqd.setType(new AQDType("decision"));
+		followito.setAQD(aqd);
+		follow=new FollowUp();
+		follow.setIto(followito);
+		answerMapping=new HashMap<String, String>();
+		answerMapping.put("YES", "guessNumber");
+		follow.setAnswerMapping(answerMapping);
+		task6.setFollowup(follow);
+
 		return dialog;			
 	}	
 
