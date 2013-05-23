@@ -7,9 +7,7 @@ $(document).ready(function(){
 
 //config:
  var debug = true;
- var local = true;
- var server = local?"localhost":"mmt.et.hs-wismar.de";
- var location="//"+server+":8080/nadia/engine/dialog"
+ var location="//"+document.location.hostname+":8080/nadia/engine/dialog"
  //---
  
  //do not change:
@@ -346,6 +344,11 @@ margin-bottom:0px;
 
 #dialog{
 	display:none;
+}
+
+#load_dialog{
+	text-align:center;
+	padding-top:20px;
 }
 
 </style>

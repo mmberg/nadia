@@ -34,7 +34,8 @@ public class DialogStore {
 		DialogStore ds=DialogStore.getInstance();
 		ds.getDialogFromStore(test_dialog_name).save();
 		//test load
-		Dialog.loadFromResourcesDir(test_dialog_name);
+		Dialog d = Dialog.loadFromResourcesDir(test_dialog_name);
+		System.out.println(d.toXML());
 	}
 	
 	public Dialog getDialogFromStore(String key){
@@ -284,7 +285,7 @@ private Dialog createDummyDialog2(){
 		dialog.addTask(task6);
 		
 		//ITO1
-		ito=new ITO("getNumber", "Guess a number!",false);
+		ito=new ITO("getNumber", "Guess a number between 1 and 99!",false);
 		task6.addITO(ito);
 		aqd=new AQD();
 		aqd.setType(new AQDType("fact.quantity"));
