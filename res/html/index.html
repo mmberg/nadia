@@ -50,7 +50,9 @@ function submit(){
 		//is user has used ASR before, automatically start recognition
 		if(wants_speech){
 			var query=data.replace(/ /g, '+');
-			playtts("http://translate.google.com/translate_tts?tl=en&q="+query);
+			var query=query.replace(/\?/g, '');
+			//playtts("http://translate.google.com/translate_tts?tl=en&q="+query);
+			playtts("/nadia/engine/redirect?url=https://translate.google.com/translate_tts%3Ftl=en%26q="+query);
 		}
 	}).fail(function(xhRequest, status, thrownError){showError("Server error or service unavailable.", true);});
 }
@@ -64,7 +66,7 @@ function showError(error, fatal){
 			$('#container').delay(3500).animate({opacity: .2},2500);
 			
 		}
-		else $("#error:hidden:first").fadeIn(1000).delay(3000).fadeOut(1000);
+		else $("#error:hidden:first").fadeIn(1000).delay(2000).fadeOut(1000);
 }
   	
 function setGuiEnabled(state){
@@ -97,18 +99,19 @@ function updateGui(state){
 }
 	
 function playtts(url){
-	    var audioElement = document.createElement('audio');
-	    audioElement.setAttribute('src', url);
-	    audioElement.setAttribute('type', 'audio/mpeg');
+	    var audioElement = document.createElement("audio");
+	    audioElement.setAttribute("type", "audio/mpeg");
 	    audioElement.addEventListener("ended", function() {
 	        start_stop_recognition();
 	    });
-	    audioElement.addEventListener("canplay", function() {
+	    audioElement.addEventListener("canplaythrough", function() {
 	        audioElement.play();
 	    });
-	    audioElement.addEventListener("error", function() {
-	 		showError("Cannot play audio.", false);
+	    audioElement.addEventListener("error", function(e) {
+	 		showError("Cannot play audio. "+this.error, false);
 	    });
+	    
+   	    audioElement.setAttribute("src", url);
 	    audioElement.load();
 }
 	

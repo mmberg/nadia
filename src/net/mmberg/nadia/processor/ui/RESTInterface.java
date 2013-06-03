@@ -1,7 +1,11 @@
 package net.mmberg.nadia.processor.ui;
 
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -159,6 +163,42 @@ public class RESTInterface extends UserInterface{
 //		xml="<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<?xml-stylesheet href=\"/nadia/dialog.xsl\" type=\"text/xsl\"?>\r\n"+xml;
 		xml=addXSDReference(xml, "/nadia/dialog.xsl");
 		return Response.ok(xml).build();
+	}
+	
+	/*
+	 * Gets the content from an URL. Used for Google TTS, because we need a client that does not send the referer.
+	 */
+	@GET
+	@Path("redirect")
+	public Response getContentFromUrl(
+			@QueryParam("url") String url_str)
+	{
+		try{
+			url_str=url_str.replaceAll(" ", "+");      	
+		 	URL url = new URL(url_str);
+		 	
+		 	HttpURLConnection httpcon = (HttpURLConnection) url.openConnection(); 
+		 	httpcon.addRequestProperty("User-Agent", "Mozilla/4.76");
+		 	httpcon.connect();
+	        InputStream is = httpcon.getInputStream();
+	        
+	        byte[] buffer = new byte[0xFFFF];
+	        int length;
+	        ByteArrayOutputStream output = new ByteArrayOutputStream();
+
+	        while ((length = is.read(buffer)) != -1){
+	        	output.write(buffer, 0, length);
+	        }
+	        
+	        byte[] content=output.toByteArray();
+	        is.close();
+		        
+			return Response.ok(content).build();
+		}
+		catch(Exception ex){
+			ex.printStackTrace();
+			return Response.noContent().build();
+		}	
 	}
 
 
