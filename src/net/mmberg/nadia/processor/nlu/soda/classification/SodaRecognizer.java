@@ -79,15 +79,17 @@ public class SodaRecognizer {
 		if(act.equals(Soda.INFORMATION_PROVIDING)){
 			//if no question is open or if the answer cannot be parsed with the current question, make it a seeking act
 			ParseResults res = context.getCurrentQuestion().parse(utterance.getText(),true);
-			if( !context.isQuestionOpen() || (res.getState()==ParseResults.NOMATCH))
-			{
-				act=Soda.INFORMATION_SEEKING;
-				logger.info("Postprocessing (open:"+context.isQuestionOpen()+", parseState:"+res.getState()+"): prov -> seek");
-			}
+			
+//			if( !context.isQuestionOpen() || (res.getState()==ParseResults.NOMATCH))
+//			{
+//				act=Soda.INFORMATION_SEEKING;
+//				logger.info("Postprocessing (open:"+context.isQuestionOpen()+", parseState:"+res.getState()+"): prov -> seek");
+//			}
 		}
 		
 		utterance.setSoda(act);
 	}
+	
 	
 	public void test_predict(){
 		ArrayList<UserUtterance> test_utterances=new ArrayList<UserUtterance>(Arrays.asList(

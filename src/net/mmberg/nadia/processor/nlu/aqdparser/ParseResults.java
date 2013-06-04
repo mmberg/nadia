@@ -44,6 +44,7 @@ public class ParseResults extends ArrayList<ParseResult>{
 		for(ParseResult res : this){
 			string+=res.toString()+"\r\n";
 		}
+		string = string.substring(0,string.length()-2);
 		return string;
 	}
 	

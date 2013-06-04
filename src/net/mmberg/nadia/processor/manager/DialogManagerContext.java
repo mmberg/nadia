@@ -135,7 +135,8 @@ public class DialogManagerContext {
 	
 	@XmlTransient
 	public ITO getCurrentQuestion(){
-		return ito_history.get(ito_history.size()-1);
+		if(ito_history.size()==0) return null;
+		else return ito_history.get(ito_history.size()-1);
 	}
 	
 	@XmlTransient
