@@ -5,6 +5,14 @@ import org.jdom.Element;
 
 public class WhQuestion extends Interrogative{
 	
+	public WhQuestion(){
+		super("?");
+	}
+	
+	public WhQuestion(String punctuation){
+		super(punctuation);
+	}
+	
 	protected Element createWh(Boolean connective_opener, Boolean interrogative, String wh_word, String verb){
 		Element node=createNode(wh_word);
 		if (connective_opener) node.setAttribute(new Attribute("modifier", "connective-opener"));

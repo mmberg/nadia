@@ -5,6 +5,14 @@ import org.jdom.Element;
 
 public abstract class Request extends Interrogative{
 
+	public Request(){
+		super("!");
+	}
+	
+	public Request(String punctuation){
+		super(punctuation);
+	}
+	
 	protected Element createRequest(boolean temp_opener, boolean politeness){
 		Element node=createNode("tell");
 		if (temp_opener) node.setAttribute(new Attribute("modifier", "temporal-opener"));

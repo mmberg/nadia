@@ -82,8 +82,8 @@ public class DialogStore {
 private Dialog createDummyDialog2(){
 		
 		Dialog dialog = new Dialog("dummy2");
-		dialog.setGlobal_politeness(4);
-		dialog.setGlobal_formality(4);
+		dialog.setGlobal_politeness(2); //4
+		dialog.setGlobal_formality(2); //4
 		dialog.setStart_task_name("start");
 		ITO ito;
 		AQD aqd;
@@ -143,17 +143,15 @@ private Dialog createDummyDialog2(){
 		dialog.addTask(task1);
 		
 		//ITO 1
-		ito=new ITO("getDepartureCity", "Where do you want to start?", false);	
+		ito=new ITO("getDepartureCity", "Where do you want to start?", true);	
 		task1.addITO(ito);
-		aqd=new AQD();
-		aqd.setType(new AQDType("fact.named_entity.non_animated.location.city"));
+		aqd=new AQD(new AQDType("fact.named_entity.non_animated.location.city"), new AQDContext("begin","trip"), new AQDForm());
 		ito.setAQD(aqd);		
 		
 		//ITO 2
-		ito=new ITO("getDestinationCity", "Where do you want to go?", false);	
+		ito=new ITO("getDestinationCity", "Where do you want to go?", true);	
 		task1.addITO(ito);
-		aqd=new AQD();
-		aqd.setType(new AQDType("fact.named_entity.non_animated.location.city"));
+		aqd=new AQD(new AQDType("fact.named_entity.non_animated.location.city"), new AQDContext("end","trip"), new AQDForm());
 		ito.setAQD(aqd);
 		
 		//ITO 3
@@ -162,6 +160,18 @@ private Dialog createDummyDialog2(){
 		aqd=new AQD();
 		aqd.setType(new AQDType("fact.quantity"));
 		ito.setAQD(aqd);	
+		
+		//ITO 4
+		ito=new ITO("getDate", "When do you want to leave?");	
+		task1.addITO(ito);
+		aqd=new AQD(new AQDType("fact.temporal.date"), new AQDContext("begin","trip"), new AQDForm());
+		ito.setAQD(aqd);	
+		
+		//ITO 5
+		ito=new ITO("getDate", "When do you want to come back?");	
+		task1.addITO(ito);
+		aqd=new AQD(new AQDType("fact.temporal.date"), new AQDContext("end","trip"), new AQDForm());
+		ito.setAQD(aqd);
 		
 		
 		//Task2

@@ -4,6 +4,14 @@ import org.jdom.Element;
 
 public class CanNQuestion extends CanQuestion {
 	
+	public CanNQuestion(){
+		super("?");
+	}
+	
+	public CanNQuestion(String punctuation){
+		super(punctuation);
+	}
+	
 	protected Element createCanNQuestion(String theme, boolean politeness, boolean subj, boolean temp_opener){	
 		Element node=super.createBase(politeness, subj);
 		Element wh = new NRequest().createNRequest(temp_opener, politeness, theme);

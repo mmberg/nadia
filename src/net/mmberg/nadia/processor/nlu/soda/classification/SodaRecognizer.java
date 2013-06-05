@@ -75,18 +75,20 @@ public class SodaRecognizer {
 		extractFeature(utterance);
 		String act=(model!=null)?model.predict(utterance):"unknown";
 		
-		//Post-Processing
-		if(act.equals(Soda.INFORMATION_PROVIDING)){
-			//if no question is open or if the answer cannot be parsed with the current question, make it a seeking act
-			ParseResults res = context.getCurrentQuestion().parse(utterance.getText(),true);
-			
+		//moved to DialogManager because we need to check all ITOs, not just one
+//		//Post-Processing
+//		if(act.equals(Soda.INFORMATION_PROVIDING)){
+//			//if no question is open or if the answer cannot be parsed with the current question, make it a seeking act
+//			ParseResults res = context.getCurrentQuestion().parse(utterance.getText(),true);
+//			
+
 //			if( !context.isQuestionOpen() || (res.getState()==ParseResults.NOMATCH))
 //			{
 //				act=Soda.INFORMATION_SEEKING;
 //				logger.info("Postprocessing (open:"+context.isQuestionOpen()+", parseState:"+res.getState()+"): prov -> seek");
 //			}
-		}
-		
+//		}
+//		
 		utterance.setSoda(act);
 	}
 	

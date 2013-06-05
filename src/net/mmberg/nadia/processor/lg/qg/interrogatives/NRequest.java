@@ -4,6 +4,14 @@ import org.jdom.Element;
 
 public class NRequest extends Request{
 	
+	public NRequest(){
+		super("!");
+	}
+	
+	public NRequest(String punctuation){
+		super(punctuation);
+	}
+	
 	protected Element createNRequest(boolean temp_opener, boolean politeness, String theme){		
 		Element node=createRequest(temp_opener, politeness);
 

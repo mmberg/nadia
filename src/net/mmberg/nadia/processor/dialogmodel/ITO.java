@@ -75,8 +75,8 @@ public class ITO extends ITOModel{
 			AQD tempAQD=new AQD();
 			tempAQD.setType(aqd.getType());
 			tempAQD.setContext(aqd.getContext());
-			tempAQD.setForm(new AQDForm(global_politeness, global_formality)); //TODO get values from dialogue
-			return generator.generateQuestion(tempAQD);
+			tempAQD.setForm(new AQDForm(global_politeness, global_formality));
+			return generator.generateQuestion(tempAQD, true);
 		}
 		return generator.generateQuestion(aqd);
 	}

@@ -4,6 +4,14 @@ import org.jdom.Element;
 
 public class CanWhQuestion extends CanQuestion{
 	
+	public CanWhQuestion(){
+		super("?");
+	}
+	
+	public CanWhQuestion(String punctuation){
+		super(punctuation);
+	}
+	
 	private Element createCanWhQuestion(String wh_word, String verb, boolean politeness, boolean subj, boolean opener){
 		Element node=super.createBase(politeness, subj);
 		Element wh = new WhRequest().createWhRequest(opener, politeness, wh_word, verb);

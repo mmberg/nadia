@@ -26,6 +26,7 @@ public class Generator {
 	private boolean print=false;
 	private List<InterroElem> interrogatives;
 	private Lexicon lex;
+	private int generation_number=0;
 	
 	private class InterroElem{
 		public List<String> applicable_types;
@@ -130,7 +131,7 @@ public class Generator {
 	
 
 	public String generateQuestion(Interrogative type, WordConf wconf, boolean opener, boolean sayPlease, boolean subj){
-		return realize(type.createLF(wconf.getWhWord(), wconf.getVerb(), wconf.getNoun(), opener, sayPlease, subj));
+		return realize(type.createLF(wconf.getWhWord(), wconf.getVerb(), wconf.getNoun(), opener, sayPlease, subj), type.getPunctuation());
 	}
 	
 	public WordConf chooseWords(String dimension, String specification, String referent, int formality){
@@ -184,7 +185,7 @@ public class Generator {
 		for(int i=0; i<n && i<elems.size(); i++){
 			InterroElem elem=elems.get(i);
 			candidates.add(
-					realize(elem.interrogative.createLF(wh_word, verb, noun, opener, (Boolean)elem.params.get(0), (Boolean)elem.params.get(1))));
+					realize(elem.interrogative.createLF(wh_word, verb, noun, opener, (Boolean)elem.params.get(0), (Boolean)elem.params.get(1)),elem.interrogative.getPunctuation()));
 		}
 			
 		return candidates;
@@ -194,12 +195,12 @@ public class Generator {
 					
 		ArrayList<InterroElem> elems=getInterroElemsbyTypeAndPoliteness(dimension, politeness);
 		InterroElem elem=elems.get(0);
-		return realize(elem.interrogative.createLF(wh_word, verb, noun, opener, (Boolean)elem.params.get(0), (Boolean)elem.params.get(1)));
+		return realize(elem.interrogative.createLF(wh_word, verb, noun, opener, (Boolean)elem.params.get(0), (Boolean)elem.params.get(1)), elem.interrogative.getPunctuation());
 		
 		//TODO return object instead of string, need information which class created phrase in order to prevent repetitive styles
 	}
 	
-	private String realize(Element lf_xml){
+	private String realize(Element lf_xml, String punctuation){
 		Document lf_doc=createDoc(lf_xml);
 		LF lf;
 		try {
@@ -213,7 +214,7 @@ public class Generator {
 			}
 			
 			Edge bestEdge = realizer.realize(lf);
-			return bestEdge.getSign().getOrthography();
+			return bestEdge.getSign().getOrthography()+punctuation;
 		} catch (IOException e) {
 			e.printStackTrace();
 			return "";
@@ -270,8 +271,31 @@ public class Generator {
 	}
 	
 	public String generateQuestion(AQD aqd){
+		return generateQuestion(aqd, false);
+	}
+	
+	public String generateQuestion(AQD aqd, boolean variate){
+		
+		//Politeness and opener variation:
+		boolean opener = aqd.getForm().getTemporalOpener();
+		int politeness=aqd.getForm().getPoliteness();
+
+		if(variate){
+			//openers (and/now) only if not the first question and only every second question
+			opener=((generation_number+1)%2==1)?false:true;
+			
+			//politeness variation:
+			if(aqd.getForm().getPoliteness()>=-1 && aqd.getForm().getPoliteness() <=4){
+				int variation=((generation_number+1)%3)-1; //add 0,1,-1,...
+				politeness=aqd.getForm().getPoliteness()+variation;
+			}
+		}
+		generation_number++;
+		//--
+		
 		WordConf wconf = chooseWords(aqd.getType().getAnswerType(), aqd.getContext().getSpecification(), aqd.getContext().getReference(), aqd.getForm().getFormality());
-		GenConf gconf=new GenConf(aqd.getType().getAnswerType(), wconf.getWhWord(), wconf.getVerb(), wconf.getNoun(), aqd.getForm().getFormality(), aqd.getForm().getPoliteness(), aqd.getForm().getTemporalOpener());
+		//GenConf gconf=new GenConf(aqd.getType().getAnswerType(), wconf.getWhWord(), wconf.getVerb(), wconf.getNoun(), aqd.getForm().getFormality(), aqd.getForm().getPoliteness(), aqd.getForm().getTemporalOpener());
+		GenConf gconf=new GenConf(aqd.getType().getAnswerType(), wconf.getWhWord(), wconf.getVerb(), wconf.getNoun(), aqd.getForm().getFormality(), politeness, opener);
 		return makeBeautifully(generateParaphrase(gconf));
 	}
 	

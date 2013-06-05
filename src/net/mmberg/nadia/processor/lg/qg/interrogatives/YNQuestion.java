@@ -6,6 +6,13 @@ public class YNQuestion extends Interrogative{
 
 	//Do you have a customer card?
 	
+	public YNQuestion(){
+		super("?");
+	}
+	
+	public YNQuestion(String punctuation){
+		super(punctuation);
+	}
 	protected Element createYNQuestion(String theme, String verb, boolean connective_opener){	
 		Element node=createNode(verb);
 		node.setAttribute("mood","interrogative");

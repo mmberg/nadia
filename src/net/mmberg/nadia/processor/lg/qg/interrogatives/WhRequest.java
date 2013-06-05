@@ -4,6 +4,14 @@ import org.jdom.Element;
 
 public class WhRequest extends Request{
 
+	public WhRequest(){
+		super("!");
+	}
+	
+	public WhRequest(String punctuation){
+		super(punctuation);
+	}
+	
 	protected Element createWhRequest(boolean temp_opener, boolean politeness, String wh_word, String verb){
 		Element node=createRequest(temp_opener, politeness);
 		Element wh=new WhQuestion().createWh(false, false, wh_word, verb);

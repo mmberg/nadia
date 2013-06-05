@@ -5,6 +5,14 @@ import org.jdom.Element;
 
 public class N extends Interrogative{
 	
+	public N(){
+		super("!");
+	}
+	
+	public N(String punctuation){
+		super(punctuation);
+	}
+	
 	protected Element createN(boolean politeness, boolean opener, String theme){		
 		Element node=createNode(theme); //e.g., destination
 		if (opener) {

@@ -6,6 +6,14 @@ import org.jdom.Element;
 
 public abstract class CanQuestion extends Interrogative{
 	
+	public CanQuestion(){
+		super("?");
+	}
+	
+	public CanQuestion(String punctuation){
+		super(punctuation);
+	}
+	
 	protected Element createBase(boolean politeness, boolean subj){
 		Element node;
 		if(subj){

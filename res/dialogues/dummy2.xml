@@ -2,8 +2,8 @@
 <n:dialog xsi:schemaLocation="http://mmberg.net/nadia schema1.xsd" xmlns:n="http://mmberg.net/nadia" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="dummy2">
    <start_task_name>start</start_task_name>
    <global_language>en</global_language>
-   <global_politeness>4</global_politeness>
-   <global_formality>4</global_formality>
+   <global_politeness>2</global_politeness>
+   <global_formality>2</global_formality>
    <useSODA>true</useSODA>
    <allowSwitchTasks>true</allowSwitchTasks>
    <allowOverAnswering>true</allowOverAnswering>
@@ -23,7 +23,7 @@
                      <answerType>open_ended</answerType>
                   </type>
                </AQD>
-               <fallback_question>Hello! How may I help you?</fallback_question>
+               <fallback_question>How may I help you?</fallback_question>
                <group>0</group>
                <index>0</index>
                <required>false</required>
@@ -43,6 +43,13 @@
          <itos>
             <ito name="getDepartureCity">
                <AQD>
+                  <context>
+                     <reference>trip</reference>
+                     <specification>begin</specification>
+                  </context>
+                  <form>
+                     <temporalOpener>false</temporalOpener>
+                  </form>
                   <type>
                      <answerType>fact.named_entity.non_animated.location.city</answerType>
                   </type>
@@ -51,10 +58,17 @@
                <group>0</group>
                <index>0</index>
                <required>false</required>
-               <useLG>false</useLG>
+               <useLG>true</useLG>
             </ito>
             <ito name="getDestinationCity">
                <AQD>
+                  <context>
+                     <reference>trip</reference>
+                     <specification>end</specification>
+                  </context>
+                  <form>
+                     <temporalOpener>false</temporalOpener>
+                  </form>
                   <type>
                      <answerType>fact.named_entity.non_animated.location.city</answerType>
                   </type>
@@ -63,7 +77,7 @@
                <group>0</group>
                <index>0</index>
                <required>false</required>
-               <useLG>false</useLG>
+               <useLG>true</useLG>
             </ito>
             <ito name="getNumberOfPersons">
                <AQD>
@@ -77,9 +91,59 @@
                <required>false</required>
                <useLG>false</useLG>
             </ito>
+            <ito name="getDate">
+               <AQD>
+                  <context>
+                     <reference>trip</reference>
+                     <specification>begin</specification>
+                  </context>
+                  <form>
+                     <temporalOpener>false</temporalOpener>
+                  </form>
+                  <type>
+                     <answerType>fact.temporal.date</answerType>
+                  </type>
+               </AQD>
+               <fallback_question>When do you want to leave?</fallback_question>
+               <group>0</group>
+               <index>0</index>
+               <required>false</required>
+               <useLG>true</useLG>
+            </ito>
+            <ito name="getDate">
+               <AQD>
+                  <context>
+                     <reference>trip</reference>
+                     <specification>end</specification>
+                  </context>
+                  <form>
+                     <temporalOpener>false</temporalOpener>
+                  </form>
+                  <type>
+                     <answerType>fact.temporal.date</answerType>
+                  </type>
+               </AQD>
+               <fallback_question>When do you want to come back?</fallback_question>
+               <group>0</group>
+               <index>0</index>
+               <required>false</required>
+               <useLG>true</useLG>
+            </ito>
          </itos>
          <action>
             <groovyAction>
+               <resultMappings>
+                  <resultMapping>
+                     <message>#price Euro for %getDestinationCity is cheap!</message>
+                     <resultValue>257</resultValue>
+                     <resultVarName>price</resultVarName>
+                  </resultMapping>
+                  <resultMapping>
+                     <message>#price Euro for %getDestinationCity is expensive!</message>
+                     <resultValue>1000</resultValue>
+                     <resultVarName>price</resultVarName>
+                  </resultMapping>
+               </resultMappings>
                <returnAnswer>true</returnAnswer>
                <utteranceTemplate>This trip from %getDepartureCity to %getDestinationCity costs #price Euros.</utteranceTemplate>
                <code><![CDATA[executionResults.put("price","257")]]></code>
@@ -109,17 +173,14 @@
             </ito>
          </itos>
          <action>
-            <groovyAction>
+            <httpAction>
                <returnAnswer>true</returnAnswer>
-               <utteranceTemplate>The temperature in %getWeatherCity is #temperature degrees.</utteranceTemplate>
-               <code><![CDATA[import groovyx.net.http.*
-import javax.xml.xpath.*
-def http = new HTTPBuilder('http://weather.yahooapis.com')
-http.get( path: '/forecastrss', query:[w:'2502265',u:'c'],  contentType: ContentType.XML) { resp, xml -> 
-   def temp = xml.channel.item.condition[0].@temp
-	executionResults.put("temperature",temp.toString())
-}]]></code>
-            </groovyAction>
+               <utteranceTemplate>The temperature in %getWeatherCity is #result degrees.</utteranceTemplate>
+               <method>get</method>
+               <params>q=%getWeatherCity&amp;mode=xml&amp;units=metric</params>
+               <url>http://api.openweathermap.org/data/2.5/weather</url>
+               <xpath>/current/temperature/@value</xpath>
+            </httpAction>
          </action>
       </task>
       <task name="getWikipediaCityInfo">
@@ -224,6 +285,76 @@ http.get( path: '/forecastrss', query:[w:'2502265',u:'c'],  contentType: Content
                <xpath>//message</xpath>
             </httpAction>
          </action>
+      </task>
+      <task name="guessNumber">
+         <act>seek</act>
+         <selector>
+            <bagOfWordsTaskSelector>
+               <word>guess</word>
+               <word>number</word>
+               <word>play</word>
+            </bagOfWordsTaskSelector>
+         </selector>
+         <itos>
+            <ito name="getNumber">
+               <AQD>
+                  <type>
+                     <answerType>fact.quantity</answerType>
+                  </type>
+               </AQD>
+               <fallback_question>Guess a number between 1 and 99!</fallback_question>
+               <group>0</group>
+               <index>0</index>
+               <required>false</required>
+               <useLG>false</useLG>
+            </ito>
+         </itos>
+         <action>
+            <httpAction>
+               <resultMappings>
+                  <resultMapping>
+                     <message>was too big.</message>
+                     <redirectToTask>guessNumber</redirectToTask>
+                     <resultValue>TOO_BIG</resultValue>
+                     <resultVarName>result</resultVarName>
+                  </resultMapping>
+                  <resultMapping>
+                     <message>was too small.</message>
+                     <redirectToTask>guessNumber</redirectToTask>
+                     <resultValue>TOO_SMALL</resultValue>
+                     <resultVarName>result</resultVarName>
+                  </resultMapping>
+                  <resultMapping>
+                     <message>it is! Congratulations!</message>
+                     <resultValue>CORRECT</resultValue>
+                     <resultVarName>result</resultVarName>
+                  </resultMapping>
+               </resultMappings>
+               <returnAnswer>true</returnAnswer>
+               <utteranceTemplate>%getNumber </utteranceTemplate>
+               <method>get</method>
+               <params>guess=%getNumber</params>
+               <url>http://mmt.et.hs-wismar.de:8080/NumberGuessing/NumberGuessing</url>
+               <xpath>//code</xpath>
+            </httpAction>
+         </action>
+         <followup>
+            <ito name="playAgain">
+               <AQD>
+                  <type>
+                     <answerType>decision</answerType>
+                  </type>
+               </AQD>
+               <fallback_question>Do you want to play again?</fallback_question>
+               <group>0</group>
+               <index>0</index>
+               <required>false</required>
+               <useLG>false</useLG>
+            </ito>
+            <answerMapping>
+               <item key="YES">guessNumber</item>
+            </answerMapping>
+         </followup>
       </task>
    </tasks>
 </n:dialog>

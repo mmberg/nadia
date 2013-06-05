@@ -8,9 +8,14 @@ import org.jdom.Element;
 public abstract class Interrogative {
 		
 	protected static Integer w_counter=-1;
+	protected String punctuation="?";
 	
 	public Interrogative(){
 
+	}
+	
+	public Interrogative(String punctuation){
+		this.punctuation=punctuation;
 	}
 	
 
@@ -20,6 +25,10 @@ public abstract class Interrogative {
 		public static final String DEF="def";
 		public static final String INDEF="indef";
 		public static final String PERSONAL="pers";
+	}
+	
+	public String getPunctuation(){
+		return punctuation;
 	}
 	
 	protected String getNextW(){
