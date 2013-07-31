@@ -76,6 +76,7 @@
   <entry word="London" pos="location"/>
   <entry word="persons" pos="noun" macros="@pl"/>
   <entry word="destination" pos="noun" macros="@sg"/>
+  <entry word="destination_city" pos="noun" macros="@sg"/>
   <entry word="departure_city" pos="noun" macros="@sg"/>
   <entry word="departure_date" pos="noun" macros="@sg"/>  
   <entry word="date_of_departure" pos="noun" macros="@sg"/>  
