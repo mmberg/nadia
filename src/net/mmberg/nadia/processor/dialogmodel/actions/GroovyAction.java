@@ -33,6 +33,7 @@ public class GroovyAction extends GroovyActionModel {
 		if(code!=null && code.length()>0){
 			Binding binding = new Binding();
 			binding.setVariable("executionResults", executionResults);
+			binding.setVariable("frame", frame);
 			GroovyShell shell = new GroovyShell(binding);
 	
 			shell.evaluate(code); //e.g. "executionResults.put(\"temperature\",\"6\")"
