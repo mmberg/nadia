@@ -17,16 +17,16 @@
 	<property name="templib.dir"   value="${temp.dir}/lib"/>
 	<property name="tempres.dir"   value="${temp.dir}/res"/>
 	<property name="tempwebinf.dir"   value="${temp.dir}/webinf"/>
-	<!--<property name="tempmetainf.dir"   value="${temp.dir}/metainf"/>-->
+	<property name="tempmetainf.dir"   value="${temp.dir}/metainf"/>
 	
 	<property name="nadia-model.location" value="../nadia-model"/>
   	
-    <target name="compile" description="Compiles the Task">
+    <target name="compile" description="Compiles the Task" depends="versionInfo">
     	<mkdir dir="${tempsrc.dir}/"/>
     	<mkdir dir="${tempbin.dir}/"/>
     	<mkdir dir="${buildjar.dir}/"/>
     	<mkdir dir="${buildwar.dir}/"/>
-    	
+		<!-- <mkdir dir="${tempmetainf.dir}"/> -->
     	
     	<!-- copy global files used for jar and war -->
     	<copy todir="${templib.dir}" flatten="true">
@@ -98,12 +98,23 @@
     	<manifestclasspath property="manifest.classpath" jarfile="${temp.dir}/${ant.project.name}.jar">
     	      <classpath refid="javac.classpath"/>
     	</manifestclasspath>
-    		
+    	
+    	<!-- create timestamp for versioning -->
+    	<tstamp>
+    	 <format property="timestamp" pattern="yyyy-MM-dd HH:mm:ss" />
+    	</tstamp>
+    	
     	<jar destfile="${buildjar.dir}/${ant.project.name}.jar" basedir="${tempbin.dir}">
     		<manifest>
     			<attribute name="Main-Class" value="net.mmberg.nadia.processor.NadiaProcessor"/>
     			<attribute name="Class-Path" value="./ ${manifest.classpath}"/>
+    			<attribute name="Built-By" value="${user.name}"/>
+    			<attribute name="Build-Date" value="${timestamp}"/> 
     	    </manifest>
+    		
+    		<metainf dir="${tempmetainf.dir}" 
+    		    includes="**/*">
+    		</metainf>
     	</jar>
     	
     	<!-- put other files outside jar -->
@@ -141,18 +152,32 @@
     		<webinf dir="${tempwebinf.dir}" 
     			includes="**/*">
     		</webinf>
-    		<!--
+    		<manifest>
+    		  <attribute name="Built-By" value="${user.name}"/>
+    		  <attribute name="Build-Date" value="${timestamp}"/> 
+    		</manifest>
+    		
     		<metainf dir="${tempmetainf.dir}" 
-    		    includes="**/*">
+    		    		    includes="**/*">
     		</metainf>
-    		-->
     	</war>
+    </target>
+	
+	<target name="versionInfo">	
+			<mkdir dir="${tempmetainf.dir}"/>
+	        <propertyfile
+	            file="${build.dir}/version.properties" comment="Build version info">
+	            <entry key="buildDate" type="date" value="now"/>
+	            <entry key="compilationRun" default="0" type="int" operation="+" value="1"/>
+	        	<entry key="builtBy" type="string" value="${user.name}"/>
+	        </propertyfile>
+			<copyfile src="${build.dir}/version.properties" dest="${tempmetainf.dir}/version.properties"/>
     </target>
 	
     <target name="clean" description="Delete temp files">
         <delete dir="${temp.dir}" failonerror="false"/>
     </target>
 
-	<target name="main" depends="jar, war"/>
+	<target name="main" depends="jar, war, clean"/>
 
 </project>
