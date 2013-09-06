@@ -24,7 +24,7 @@ import net.mmberg.nadia.processor.ui.*;
 public class NadiaProcessor extends UIConsumerFactory{
 
 	
-	private final static Logger logger = Logger.getLogger("nina"); 
+	private final static Logger logger = Logger.getLogger("nadia"); 
 	private static boolean init=false;
 	private static NadiaProcessorConfig config = NadiaProcessorConfig.getInstance();
 	private static String default_dialog=config.getProperty(NadiaProcessorConfig.DIALOGUEDIR)+"/"+"dummy2.xml"; //default dialogue

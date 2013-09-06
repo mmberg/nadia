@@ -2,6 +2,7 @@ package net.mmberg.nadia.processor.dialogmodel.actions;
 
 import java.io.StringReader;
 import java.util.HashMap;
+import java.util.logging.Logger;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.parsers.DocumentBuilder;
@@ -19,12 +20,14 @@ import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 
 import net.mmberg.nadia.dialogmodel.definition.actions.HTTPActionModel;
+import net.mmberg.nadia.processor.NadiaProcessor;
 import net.mmberg.nadia.processor.dialogmodel.Frame;
 
 @XmlRootElement
 public class HTTPAction extends HTTPActionModel {
 
 	private HttpClient client;
+	private final static Logger logger = NadiaProcessor.getLogger();
 	
 	public HTTPAction(){
 		super();
@@ -88,7 +91,9 @@ public class HTTPAction extends HTTPActionModel {
 	        		else request.param(key_value[0], "");
 	        	}       	
 	        	
+	        	logger.info("requesting: "+request.getURI()+", "+request.getParams().toString());
 	        	response = request.send();
+	        	logger.info("HTTP status: "+response.getStatus());
 	        	
 	        	String xml = response.getContentAsString();
 	        	DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
