@@ -26,7 +26,7 @@
                <fallback_question>How may I help you?</fallback_question>
                <group>0</group>
                <index>0</index>
-               <required>false</required>
+               <required>true</required>
                <useLG>false</useLG>
             </ito>
          </itos>
@@ -57,7 +57,7 @@
                <fallback_question>Where do you want to start?</fallback_question>
                <group>0</group>
                <index>0</index>
-               <required>false</required>
+               <required>true</required>
                <useLG>true</useLG>
             </ito>
             <ito name="getDestinationCity">
@@ -76,7 +76,7 @@
                <fallback_question>Where do you want to go?</fallback_question>
                <group>0</group>
                <index>0</index>
-               <required>false</required>
+               <required>true</required>
                <useLG>true</useLG>
             </ito>
             <ito name="getNumberOfPersons">
@@ -88,7 +88,7 @@
                <fallback_question>For how many persons?</fallback_question>
                <group>0</group>
                <index>0</index>
-               <required>false</required>
+               <required>true</required>
                <useLG>false</useLG>
             </ito>
             <ito name="getDate">
@@ -107,7 +107,7 @@
                <fallback_question>When do you want to leave?</fallback_question>
                <group>0</group>
                <index>0</index>
-               <required>false</required>
+               <required>true</required>
                <useLG>true</useLG>
             </ito>
             <ito name="getDate">
@@ -126,7 +126,7 @@
                <fallback_question>When do you want to come back?</fallback_question>
                <group>0</group>
                <index>0</index>
-               <required>false</required>
+               <required>true</required>
                <useLG>true</useLG>
             </ito>
          </itos>
@@ -168,7 +168,7 @@
                <fallback_question>For which city do you want to know the weather?</fallback_question>
                <group>0</group>
                <index>0</index>
-               <required>false</required>
+               <required>true</required>
                <useLG>false</useLG>
             </ito>
          </itos>
@@ -201,7 +201,7 @@
                <fallback_question>What city do you want to know more about?</fallback_question>
                <group>0</group>
                <index>0</index>
-               <required>false</required>
+               <required>true</required>
                <useLG>false</useLG>
             </ito>
          </itos>
@@ -225,7 +225,7 @@
                <fallback_question>Do you want to know about other cities?</fallback_question>
                <group>0</group>
                <index>0</index>
-               <required>false</required>
+               <required>true</required>
                <useLG>false</useLG>
             </ito>
             <answerMapping>
@@ -251,7 +251,7 @@
                <fallback_question>Do you want to switch it on or off?</fallback_question>
                <group>0</group>
                <index>0</index>
-               <required>false</required>
+               <required>true</required>
                <useLG>false</useLG>
             </ito>
          </itos>
@@ -305,7 +305,7 @@
                <fallback_question>Guess a number between 1 and 99!</fallback_question>
                <group>0</group>
                <index>0</index>
-               <required>false</required>
+               <required>true</required>
                <useLG>false</useLG>
             </ito>
          </itos>
@@ -348,7 +348,7 @@
                <fallback_question>Do you want to play again?</fallback_question>
                <group>0</group>
                <index>0</index>
-               <required>false</required>
+               <required>true</required>
                <useLG>false</useLG>
             </ito>
             <answerMapping>

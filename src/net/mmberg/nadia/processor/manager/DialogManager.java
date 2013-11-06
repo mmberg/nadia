@@ -249,10 +249,11 @@ public class DialogManager implements UIConsumer {
 					
 			
 			//STEP 3:
-			//3a) IF ALL INFORMATION RETRIEVED, EXECUTE ACTION
+			//3a) IF ALL REQUIRED INFORMATION RETRIEVED, EXECUTE ACTION
 			UIConsumerMessage answer_msg=null;
 			Action action=context.getCurrentTask().getAction();
-			if(context.getCurrentTask().isAllFilled() && (action!=null)){
+			//if(context.getCurrentTask().isAllFilled() && (action!=null)){
+			if(context.getCurrentTask().isMandatoryFilled() && (action!=null)){
 				logger.info("frame filled, executing action");
 				String sysAns=context.getCurrentTask().execute();
 				if (action.isReturnAnswer()){
@@ -373,6 +374,12 @@ public class DialogManager implements UIConsumer {
 				logger.info("ITO "+ito.getName() + " already filled");
 				return getNextQuestion(questionPrefix); //if already answered, get next question
 			}
+			//beta
+			else if(!ito.isRequired()){
+				logger.info("ITO "+ito.getName() + " is optional and thus skipped");
+				return getNextQuestion(questionPrefix); 
+			}
+			//---
 			else{
 				context.setCurrentQuestion(ito); //point current question to this ITO
 				String answer_message=(questionPrefix==null)?"":(questionPrefix.getSystemUtterance()+" ");

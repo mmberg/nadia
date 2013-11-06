@@ -21,9 +21,11 @@ public class Task extends TaskModel{
 		return true;
 	}
 	
-	//TODO
 	public Boolean isMandatoryFilled(){
-		return false;
+		for(ITO ito : itos){
+			if (!ito.isFilled() && ito.isRequired()) return false;
+		}
+		return true;
 	}
 	
 	public String execute(){

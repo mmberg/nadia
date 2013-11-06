@@ -13,6 +13,10 @@ public class CityParser extends Parser{
 	public ParseResults parse(String utterance) {
 
 		ParseResults results=new ParseResults(utterance);
+		utterance=utterance.replace('?', ' ');
+		utterance=utterance.replace('!', ' ');
+		utterance=utterance.replace(',', ' ');
+		
 		String decap_utterance=utterance.toLowerCase();
 		ArrayList<String> gazetteer = new ArrayList<String>(Arrays.asList("aberdeen","edinburgh", "glasgow","inverness", "portree", "uig", "malaig", "balloch"));
 

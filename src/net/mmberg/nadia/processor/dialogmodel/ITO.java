@@ -70,6 +70,7 @@ public class ITO extends ITOModel{
 	}
 	
 	private String askWithLG(int global_politeness, int global_formality){
+						
 		if(aqd.getForm().getPoliteness()==null){ //if no local politeness scores, use global ones from dialogue definition
 			//clone AQD and set form according to generic dialogue settings, i.e. do not manipulate the AQD
 			AQD tempAQD=new AQD();

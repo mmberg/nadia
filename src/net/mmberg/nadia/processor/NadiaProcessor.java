@@ -72,7 +72,7 @@ public class NadiaProcessor extends UIConsumerFactory{
 			
 			//load dialogue from path file
 			if(cmd.hasOption("f")){
-				dialog_file=cmd.getOptionValue("f");
+				dialog_file="file:///"+cmd.getOptionValue("f");
 			}
 			//load dialogue from resources
 			if(cmd.hasOption("r")){

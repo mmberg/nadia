@@ -92,7 +92,9 @@ public abstract class Action extends ActionModel{
 			String ito_name;
 			while (matcher.find()) {
 				ito_name=matcher.group(1);
-				answer=answer.replaceFirst("%(\\w+)",frame.get(ito_name).toString());
+				if(frame.get(ito_name)!=null){
+					answer=answer.replaceFirst("%(\\w+)",frame.get(ito_name).toString());
+				}
 			}
 		}
 		

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<n:dialog xsi:schemaLocation="http://mmberg.net/nadia schema1.xsd" xmlns:n="http://mmberg.net/nadia" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="eval">
+   <global_language>en</global_language>
+   <global_politeness>3</global_politeness>
+   <global_formality>3</global_formality>
+   <useSODA>true</useSODA>
+   <allowSwitchTasks>true</allowSwitchTasks>
+   <allowOverAnswering>true</allowOverAnswering>
+   <allowDifferentQuestion>true</allowDifferentQuestion>
+   <allowCorrection>true</allowCorrection>
+   <tasks>
+      <task name="welcome">
+         <itos>
+            <ito name="open">
+               <AQD>
+                  <context/>
+                  <form>
+                     <temporalOpener>false</temporalOpener>
+                  </form>
+                  <type>
+                     <answerType>open_ended</answerType>
+                  </type>
+               </AQD>
+               <fallback_question>How may I help you?</fallback_question>
+               <group>0</group>
+               <index>0</index>
+               <required>false</required>
+               <useLG>false</useLG>
+            </ito>
+         </itos>
+      </task>
+      <task name="weather">
+         <selector>
+            <bagOfWordsTaskSelector>
+               <word>weather</word>
+            </bagOfWordsTaskSelector>
+         </selector>
+         <itos>
+            <ito name="getWeatherCity">
+               <AQD>
+                  <type>
+                     <answerType>fact.named_entity.non_animated.location.city</answerType>
+                  </type>
+               </AQD>
+               <fallback_question>For which city do you want to know the weather?</fallback_question>
+               <group>0</group>
+               <index>0</index>
+               <required>false</required>
+               <useLG>false</useLG>
+            </ito>
+            <ito name="getForecastType">
+               <AQD>
+                  <type>
+                     <answerType>item(today,tomorrow)</answerType>
+                  </type>
+               </AQD>
+               <fallback_question>Do you want to know the weather for today or tomorrow?</fallback_question>
+               <group>0</group>
+               <index>0</index>
+               <required>false</required>
+               <useLG>false</useLG>
+            </ito>
+         </itos>
+         <action>
+            <httpAction>
+               <returnAnswer>true</returnAnswer>
+               <utteranceTemplate>The temperature in %getWeatherCity is #result degrees.</utteranceTemplate>
+               <method>get</method>
+               <params>q=%getWeatherCity&amp;mode=xml&amp;units=metric&amp;cnt=2</params>
+               <url>http://api.openweathermap.org/data/2.5/forecast/daily</url>
+               <xpath>/weatherdata/forecast/time[last()]/temperature/@day</xpath>
+            </httpAction>
+         </action>
+      </task>
+   </tasks>
+</n:dialog>

@@ -1,5 +1,7 @@
 package net.mmberg.nadia.processor.nlu.aqdparser;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -7,7 +9,7 @@ import net.mmberg.nadia.processor.exceptions.NoParserFoundException;
 
 public class Parsers {
 
-	private static Set<Parser> active_parsers=new HashSet<Parser>();;  
+	private static Set<Parser> active_parsers=new HashSet<Parser>();
 	
 	public static void init(){
 		//enabled parsers
@@ -18,7 +20,11 @@ public class Parsers {
 			active_parsers.add(new OpenEndedParser());
 			active_parsers.add(new NumberParser());
 			active_parsers.add(new OnOffParser());
-			active_parsers.add(new ItemParser());
+			//active_parsers.add(new ItemParser());
+			active_parsers.add(new ItemParser2(new ArrayList<String>(Arrays.asList("weather","game"))));
+			active_parsers.add(new ItemParser2(new ArrayList<String>(Arrays.asList("today","tomorrow"))));
+			active_parsers.add(new ItemParser2(new ArrayList<String>(Arrays.asList("sport","business","economy","politics"))));
+			active_parsers.add(new ItemParser2(new ArrayList<String>(Arrays.asList("add","subtract","multiply","divide"))));
 		}
 	}
 	

@@ -34,9 +34,10 @@ public class Lexicon {
 			try {
 			    model = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM);
 			    //String file="file:///"+System.getProperty("user.dir")+"/ont/lexicon.owl";
-			    String file=ontologyURL.toString();
+			    String file=ontologyURL.toExternalForm();
 			    model.read(file,"RDF/XML");
 			} catch (Exception e) {
+				logger.warning("Ontology could not be loaded");
 				e.printStackTrace();
 			}
 	}
@@ -63,6 +64,8 @@ public class Lexicon {
 	    //dirty error handling
 	    if(query_results.size()==0){ //throw new Exception("No lexical entry found");
 	    	query_results.add("");
+	    	logger.warning("No lexical entry found");
+	    	logger.info("Query failed: "+querystring);
 	    }
 	    
 	    return query_results;

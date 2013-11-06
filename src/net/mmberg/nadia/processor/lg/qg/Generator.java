@@ -2,9 +2,13 @@ package net.mmberg.nadia.processor.lg.qg;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.*;
+import java.util.logging.Logger;
 
+import net.mmberg.nadia.processor.NadiaProcessor;
 import net.mmberg.nadia.processor.NadiaProcessorConfig;
 import net.mmberg.nadia.processor.dialogmodel.aqd.AQD;
 import net.mmberg.nadia.processor.lg.qg.interrogatives.*;
@@ -27,6 +31,7 @@ public class Generator {
 	private List<InterroElem> interrogatives;
 	private Lexicon lex;
 	private int generation_number=0;
+    private static Logger logger=NadiaProcessor.getLogger();
 	
 	private class InterroElem{
 		public List<String> applicable_types;
@@ -64,7 +69,7 @@ public class Generator {
 			grammar = new Grammar(grammarURL);
 			realizer = new Realizer(grammar);
 			lex = new Lexicon(ontologyURL);
-					
+								
 			//SAXBuilder builder = new SAXBuilder();
 			//Document lfxml = builder.build("./res/7/nowtellme"); //test3
 			
@@ -136,6 +141,8 @@ public class Generator {
 	
 	public WordConf chooseWords(String dimension, String specification, String referent, int formality){
 		
+		logger.info("searching words for: "+ dimension + ", "+specification+", "+referent+", "+formality);
+		
 		String[] dimArr;
 		if(dimension.contains(".")){
 			dimArr=dimension.split("\\.");
@@ -151,6 +158,8 @@ public class Generator {
 		String wh_word=lex.getLex(d1, specification, referent, "whadv", formality).get(0);
 		String verb=lex.getLex(d1, specification, referent, "v", formality).get(0);
 		String noun=lex.getLex(d2, specification, referent, "n", formality).get(0);
+		
+		logger.info("found: wh="+wh_word +", v="+verb+", n="+ noun);
 		
 		/*
 		String wh_word=lex.getLex(dimArr[dimArr.length-2], specification, referent, "whadv", formality).get(0);
@@ -192,33 +201,52 @@ public class Generator {
 	}
 	
 	private String generateParaphrase(String dimension, String wh_word, String verb, String noun, int formality, int politeness, boolean opener){
-					
 		ArrayList<InterroElem> elems=getInterroElemsbyTypeAndPoliteness(dimension, politeness);
-		InterroElem elem=elems.get(0);
+		InterroElem elem=elems.get(0);	
 		return realize(elem.interrogative.createLF(wh_word, verb, noun, opener, (Boolean)elem.params.get(0), (Boolean)elem.params.get(1)), elem.interrogative.getPunctuation());
 		
 		//TODO return object instead of string, need information which class created phrase in order to prevent repetitive styles
 	}
 	
 	private String realize(Element lf_xml, String punctuation){
-		Document lf_doc=createDoc(lf_xml);
-		LF lf;
-		try {
+						
+		Document lf_doc = createDoc(lf_xml);
+		if(lf_doc==null) logger.warning("Logical Form Document could not be created");
+		
+		LF lf=null;
+		try{
+			////there seems to be a bug in grammar.loadLF() that produces a Malformed URL Exception when run on Tomcat
 			lf = grammar.loadLF(lf_doc); //lf = Realizer.getLfFromDoc(lfxml); <-- this example from literature is wrong!
-			
-			if(print){
-				System.out.println("Realizing:\r\n"+lf.prettyPrint("")); //don't know what the argument is for
-				
-				XMLOutputter serializer= new XMLOutputter (Format.getPrettyFormat());
+			if(lf==null) throw new Exception("Logical Form is null.");
+		}
+		catch(Exception ex1){
+			logger.warning("Error while loading logical form with grammar '"+grammar.getName()+"'. Content is: ");
+			XMLOutputter serializer= new XMLOutputter (Format.getPrettyFormat());
+			try {
 				serializer.output(lf_doc, System.out);
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
+			ex1.printStackTrace();
+		}
 			
-			Edge bestEdge = realizer.realize(lf);
-			return bestEdge.getSign().getOrthography()+punctuation;
-		} catch (IOException e) {
-			e.printStackTrace();
-			return "";
-		} 
+		if(print){
+			System.out.println("Realizing:\r\n"+lf.prettyPrint("")); //don't know what the argument is for
+			
+			XMLOutputter serializer= new XMLOutputter (Format.getPrettyFormat());
+			try {
+				serializer.output(lf_doc, System.out);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		Edge bestEdge = realizer.realize(lf);
+		if(bestEdge==null || bestEdge.getSign()==null){
+			logger.warning("An error occured while realizing the utterance from the logical form.");
+		}
+		
+		return bestEdge.getSign().getOrthography()+punctuation;
 
 	}
 	
@@ -301,9 +329,12 @@ public class Generator {
 	
 	
 	private String makeBeautifully(String phrase){
-		phrase=phrase.replaceAll("_", " ");
-		phrase=phrase.substring(0, 1).toUpperCase()+phrase.substring(1);
-		return phrase;
+		if(phrase!=null && phrase.length()>0){
+			phrase=phrase.replaceAll("_", " ");
+			phrase=phrase.substring(0, 1).toUpperCase()+phrase.substring(1);
+			return phrase;
+		}
+		else return "";
 	}
 	
 	private void printBeautifully(String phrase, boolean asDialogue){

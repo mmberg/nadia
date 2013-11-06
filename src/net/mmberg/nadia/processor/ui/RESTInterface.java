@@ -57,6 +57,7 @@ public class RESTInterface extends UserInterface{
 			try{
 //				path = getClass().getProtectionDomain().getCodeSource().getLocation().toURI().resolve("../..").getPath().toString(); //Jetty???
 				path = getClass().getProtectionDomain().getCodeSource().getLocation().toURI().resolve("../../../../../../..").getPath().toString(); //Tomcat
+				path = path.substring(0, path.length()-1); //remove last slash
 				logger.info("Nadia Root Path: "+path);
 			}
 			catch(Exception ex){

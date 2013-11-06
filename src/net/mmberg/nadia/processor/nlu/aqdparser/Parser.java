@@ -17,6 +17,10 @@ public abstract class Parser {
 	public String getType(){
 		return this.type;
 	}
+	
+	public void setType(String type){
+		this.type=type;
+	}
 
 	protected void match_regex(ParseResults results, String regex, String className, String classValue){
 

@@ -12,4 +12,7 @@ public class AQD extends AQDModel{
 		super(type, context, form);
 	}
 
+	public void ichbins(){
+		super.guru();
+	}
 }

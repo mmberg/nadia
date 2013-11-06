@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<n:dialog xsi:schemaLocation="http://mmberg.net/nadia schema1.xsd" xmlns:n="http://mmberg.net/nadia" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="eval3">
+   <global_language>en</global_language>
+   <global_politeness>3</global_politeness>
+   <global_formality>3</global_formality>
+   <useSODA>true</useSODA>
+   <allowSwitchTasks>true</allowSwitchTasks>
+   <allowOverAnswering>true</allowOverAnswering>
+   <allowDifferentQuestion>true</allowDifferentQuestion>
+   <allowCorrection>true</allowCorrection>
+   <tasks>
+      <task name="welcome">
+         <selector>
+            <bagOfWordsTaskSelector>
+               <word>hello</word>
+            </bagOfWordsTaskSelector>
+         </selector>
+         <itos>
+            <ito name="open">
+               <AQD>
+                  <context/>
+                  <form>
+                     <temporalOpener>false</temporalOpener>
+                  </form>
+                  <type>
+                     <answerType>open_ended</answerType>
+                  </type>
+               </AQD>
+               <fallback_question>How may I help you?</fallback_question>
+               <group>0</group>
+               <index>0</index>
+               <required>true</required>
+               <useLG>false</useLG>
+            </ito>
+         </itos>
+      </task>
+      <task name="route">
+         <selector>
+            <bagOfWordsTaskSelector>
+               <word>how far</word>
+               <word>distance</word>
+            </bagOfWordsTaskSelector>
+         </selector>
+         <itos>
+            <ito name="getDepartureCity">
+               <AQD>
+                  <type>
+                     <answerType>fact.named_entity.non_animated.location.city</answerType>
+                  </type>
+               </AQD>
+               <fallback_question>Where do you want to start?</fallback_question>
+               <group>0</group>
+               <index>0</index>
+               <required>true</required>
+               <useLG>false</useLG>
+            </ito>
+            <ito name="getDestinationCity">
+               <AQD>
+                  <type>
+                     <answerType>fact.named_entity.non_animated.location.city</answerType>
+                  </type>
+               </AQD>
+               <fallback_question>Where do you want to go?</fallback_question>
+               <group>0</group>
+               <index>0</index>
+               <required>true</required>
+               <useLG>false</useLG>
+            </ito>
+         </itos>
+         <action>
+            <httpAction>
+               <returnAnswer>true</returnAnswer>
+               <utteranceTemplate>%getDepartureCity is #result away from %getDestinationCity.</utteranceTemplate>
+               <method>get</method>
+               <params>origin=%getDepartureCity&amp;destination=%getDestinationCity&amp;sensor=false&amp;mode=driving&amp;alternatives=false</params>
+               <url>http://maps.googleapis.com/maps/api/directions/xml</url>
+               <xpath>/DirectionsResponse/route/leg/distance/text</xpath>
+            </httpAction>
+         </action>
+      </task>
+      <task name="news">
+         <selector>
+            <bagOfWordsTaskSelector>
+               <word>news</word>
+               <word>headlines</word>
+               <word>what's on</word>
+            </bagOfWordsTaskSelector>
+         </selector>
+         <itos>
+            <ito name="category">
+               <AQD>
+                  <type>
+                     <answerType>item(sport,business,economy,politics)</answerType>
+                  </type>
+               </AQD>
+               <fallback_question>What category are you interested in?</fallback_question>
+               <group>0</group>
+               <index>0</index>
+               <required>false</required>
+               <useLG>false</useLG>
+            </ito>
+         </itos>
+         <action>
+            <httpAction>
+               <returnAnswer>true</returnAnswer>
+               <utteranceTemplate>Today's headline is: #result.</utteranceTemplate>
+               <method>get</method>
+               <params>q=%category</params>
+               <url>http://news.google.com/?output=rss</url>
+               <xpath>/rss/channel/item/title</xpath>
+            </httpAction>
+         </action>
+      </task>
+      <task name="getTripInformation">
+         <selector>
+            <bagOfWordsTaskSelector>
+               <word>travel</word>
+               <word>book</word>
+               <word>journey</word>
+               <word>trip</word>
+            </bagOfWordsTaskSelector>
+         </selector>
+         <itos>
+            <ito name="getDepartureCity">
+               <AQD>
+                  <context>
+                     <reference>trip</reference>
+                     <specification>begin</specification>
+                  </context>
+                  <form>
+                     <temporalOpener>false</temporalOpener>
+                  </form>
+                  <type>
+                     <answerType>fact.named_entity.non_animated.location.city</answerType>
+                  </type>
+               </AQD>
+               <fallback_question>Where do you want to start?</fallback_question>
+               <group>0</group>
+               <index>0</index>
+               <required>true</required>
+               <useLG>true</useLG>
+            </ito>
+            <ito name="getDestinationCity">
+               <AQD>
+                  <context>
+                     <reference>trip</reference>
+                     <specification>end</specification>
+                  </context>
+                  <form>
+                     <temporalOpener>false</temporalOpener>
+                  </form>
+                  <type>
+                     <answerType>fact.named_entity.non_animated.location.city</answerType>
+                  </type>
+               </AQD>
+               <fallback_question>Where do you want to go?</fallback_question>
+               <group>0</group>
+               <index>0</index>
+               <required>true</required>
+               <useLG>true</useLG>
+            </ito>
+         </itos>
+         <action>
+            <groovyAction>
+               <returnAnswer>true</returnAnswer>
+               <utteranceTemplate>This trip from %getDepartureCity to %getDestinationCity costs #price Euros.</utteranceTemplate>
+               <code><![CDATA[Random r=new Random(); Integer p=r.nextInt(300)+100; executionResults.put("price",p.toString())]]></code>
+            </groovyAction>
+         </action>
+      </task>
+      <task name="calculator">
+         <selector>
+            <bagOfWordsTaskSelector>
+               <word>numbers</word>
+               <word>math</word>
+               <word>calculator</word>
+            </bagOfWordsTaskSelector>
+         </selector>
+         <itos>
+            <ito name="number1">
+               <AQD>
+                  <type>
+                     <answerType>fact.quantity</answerType>
+                  </type>
+               </AQD>
+               <fallback_question>Please tell me the first number!</fallback_question>
+               <group>0</group>
+               <index>0</index>
+               <required>true</required>
+               <useLG>false</useLG>
+            </ito>
+            <ito name="number2">
+               <AQD>
+                  <type>
+                     <answerType>fact.quantity</answerType>
+                  </type>
+               </AQD>
+               <fallback_question>Please tell me the second number!</fallback_question>
+               <group>0</group>
+               <index>0</index>
+               <required>true</required>
+               <useLG>false</useLG>
+            </ito>
+            <ito name="op">
+               <AQD>
+                  <type>
+                     <answerType>item(add,subtract,multiply,divide)</answerType>
+                  </type>
+               </AQD>
+               <fallback_question>Please tell me the operation!</fallback_question>
+               <group>0</group>
+               <index>0</index>
+               <required>true</required>
+               <useLG>false</useLG>
+            </ito>
+         </itos>
+         <action>
+            <groovyAction>
+               <returnAnswer>true</returnAnswer>
+               <utteranceTemplate>%number1 %op %number2 is #res.</utteranceTemplate>
+               <code><![CDATA[Integer one=new Integer(frame.get("number1"));
+Integer two=new Integer(frame.get("number2"));
+Float res=0.0;
+switch(frame.get("op")){
+case "ADD": res=one+two; break;
+case "SUBTRACT": res=one-two; break;
+case "DIVIDE": res=one/two; break;
+case "MULTIPLY": res=one*two;break;
+}
+executionResults.put("res",res.toString());]]></code>
+            </groovyAction>
+         </action>
+      </task>
+   </tasks>
+</n:dialog>

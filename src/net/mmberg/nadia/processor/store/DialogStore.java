@@ -18,6 +18,9 @@ public class DialogStore {
 		store.put("dummy1", createDummyDialog());
 		store.put("dummy2", createDummyDialog2());
 		store.put("dummy3", createDummyDialog3());
+		store.put("eval", createEvaluationDialog());
+		store.put("eval2", createEvaluationDialog2());
+		store.put("eval3", createEvaluationDialog3());
 	}
 	
 	public static DialogStore getInstance(){
@@ -351,4 +354,240 @@ private Dialog createDummyDialog3(){
 	
 	return dialog;			
 }	
+
+private Dialog createEvaluationDialog(){
+	Dialog dialog = new Dialog("eval");
+
+	ITO ito;
+	AQD aqd;
+	
+	Task task0=new Task("welcome");
+	ito = new ITO("open","How may I help you?",false);
+	aqd = new AQD(new AQDType("open_ended"), new AQDContext(), new AQDForm());
+	ito.setAQD(aqd);
+	task0.addITO(ito);
+	
+	Task task1=new Task("weather");
+	task1.setSelector(new BagOfWordsTaskSelector(new ArrayList<String>(Arrays.asList("weather"))));
+	ito=new ITO("getWeatherCity", "For which city do you want to know the weather?", false);	
+	//an ITO is associated with AQDs
+	aqd=new AQD();
+	aqd.setType(new AQDType("fact.named_entity.non_animated.location.city"));
+	ito.setAQD(aqd);	
+	task1.addITO(ito);
+	
+	ito=new ITO("getForecastType", "Do you want to know the weather for today or tomorrow?", false);	
+	ito.setRequired(false);
+	//an ITO is associated with AQDs
+	aqd=new AQD();
+	aqd.setType(new AQDType("item(today,tomorrow)"));
+	ito.setAQD(aqd);	
+	task1.addITO(ito);
+	
+	
+	HTTPAction httpaction=new HTTPAction("The temperature in %getWeatherCity will be #result degrees tomorrow.");
+    httpaction.setUrl("http://api.openweathermap.org/data/2.5/forecast/daily");
+    httpaction.setMethod("get");
+    httpaction.setParams("q=%getWeatherCity&mode=xml&units=metric&cnt=2");
+    httpaction.setXpath("/weatherdata/forecast/time[last()]/temperature/@day");
+	
+//	HTTPAction httpaction=new HTTPAction("The temperature in %getWeatherCity is #result degrees.");
+//    httpaction.setUrl("http://api.openweathermap.org/data/2.5/weather");
+//    httpaction.setMethod("get");
+//    httpaction.setParams("q=%getWeatherCity&mode=xml&units=metric");
+//    httpaction.setXpath("/current/temperature/@value");
+    task1.setAction(httpaction);
+	
+	dialog.addTask(task0);
+	dialog.addTask(task1);
+	
+	return dialog;
+}
+
+private Dialog createEvaluationDialog2(){
+	Dialog dialog = new Dialog("eval2");
+
+	ITO ito;
+	AQD aqd;
+	
+	Task task0=new Task("welcome");
+	ArrayList<String> bagOfWords = new ArrayList<String>(Arrays.asList("hello"));
+	task0.setSelector(new BagOfWordsTaskSelector(bagOfWords));
+	ito = new ITO("open","How may I help you?",false);
+	aqd = new AQD(new AQDType("open_ended"), new AQDContext(), new AQDForm());
+	ito.setAQD(aqd);
+	task0.addITO(ito);
+	
+	Task task1=new Task("route");
+	task1.setSelector(new BagOfWordsTaskSelector(new ArrayList<String>(Arrays.asList("time","how long", "route"))));
+	
+	ito=new ITO("getDepartureCity", "Where do you want to start?", false);	
+	aqd=new AQD();
+	aqd.setType(new AQDType("fact.named_entity.non_animated.location.city"));
+	ito.setAQD(aqd);	
+	task1.addITO(ito);
+	
+	ito=new ITO("getDestinationCity", "Where do you want to go?", false);	
+	aqd=new AQD();
+	aqd.setType(new AQDType("fact.named_entity.non_animated.location.city"));
+	ito.setAQD(aqd);	
+	task1.addITO(ito);
+	
+	
+	HTTPAction httpaction=new HTTPAction("You will need #result.");
+    httpaction.setUrl("http://maps.googleapis.com/maps/api/directions/xml");
+    httpaction.setMethod("get");
+    httpaction.setParams("origin=%getDepartureCity&destination=%getDestinationCity&sensor=false&mode=driving&alternatives=false");
+    httpaction.setXpath("/DirectionsResponse/route/leg/duration/text");
+    task1.setAction(httpaction);
+    
+    
+    Task task2=new Task("news");
+	task2.setSelector(new BagOfWordsTaskSelector(new ArrayList<String>(Arrays.asList("news","headlines", "what's on"))));
+	
+	ito=new ITO("category", "What category are you interested in?", false);	
+	ito.setRequired(false);
+	aqd=new AQD();
+	aqd.setType(new AQDType("item(sport,business,economy,politics)"));
+	ito.setAQD(aqd);	
+	task2.addITO(ito);
+	
+	httpaction=new HTTPAction("Today's headline is: #result.");
+    httpaction.setUrl("http://news.google.com/?output=rss");
+    httpaction.setMethod("get");
+    httpaction.setParams("q=%category");
+    httpaction.setXpath("/rss/channel/item/title");
+    task2.setAction(httpaction);
+	
+	dialog.addTask(task0);
+	dialog.addTask(task1);
+	dialog.addTask(task2);
+	
+	return dialog;
+}
+
+private Dialog createEvaluationDialog3(){
+	Dialog dialog = new Dialog("eval3");
+
+	ITO ito;
+	AQD aqd;
+	
+	Task task0=new Task("welcome");
+	ArrayList<String> bagOfWords = new ArrayList<String>(Arrays.asList("hello"));
+	task0.setSelector(new BagOfWordsTaskSelector(bagOfWords));
+	ito = new ITO("open","How may I help you?",false);
+	aqd = new AQD(new AQDType("open_ended"), new AQDContext(), new AQDForm());
+	ito.setAQD(aqd);
+	task0.addITO(ito);
+	
+	Task task1=new Task("route");
+	task1.setSelector(new BagOfWordsTaskSelector(new ArrayList<String>(Arrays.asList("how far", "distance"))));
+	
+	ito=new ITO("getDepartureCity", "Where do you want to start?", false);	
+	aqd=new AQD();
+	aqd.setType(new AQDType("fact.named_entity.non_animated.location.city"));
+	ito.setAQD(aqd);	
+	task1.addITO(ito);
+	
+	ito=new ITO("getDestinationCity", "Where do you want to go?", false);	
+	aqd=new AQD();
+	aqd.setType(new AQDType("fact.named_entity.non_animated.location.city"));
+	ito.setAQD(aqd);	
+	task1.addITO(ito);
+	
+	
+	HTTPAction httpaction=new HTTPAction("%getDepartureCity is #result away from %getDestinationCity.");
+    httpaction.setUrl("http://maps.googleapis.com/maps/api/directions/xml");
+    httpaction.setMethod("get");
+    httpaction.setParams("origin=%getDepartureCity&destination=%getDestinationCity&sensor=false&mode=driving&alternatives=false");
+    httpaction.setXpath("/DirectionsResponse/route/leg/distance/text");
+    task1.setAction(httpaction);
+    
+    
+    Task task2=new Task("news");
+	task2.setSelector(new BagOfWordsTaskSelector(new ArrayList<String>(Arrays.asList("news","headlines", "what's on"))));
+	
+	ito=new ITO("category", "What category are you interested in?", false);	
+	ito.setRequired(false);
+	aqd=new AQD();
+	aqd.setType(new AQDType("item(sport,business,economy,politics)"));
+	ito.setAQD(aqd);	
+	task2.addITO(ito);
+	
+	httpaction=new HTTPAction("Today's headline is: #result.");
+    httpaction.setUrl("http://news.google.com/?output=rss");
+    httpaction.setMethod("get");
+    httpaction.setParams("q=%category");
+    httpaction.setXpath("/rss/channel/item/title");
+    task2.setAction(httpaction);
+	
+    Task task3=new Task("getTripInformation");
+	bagOfWords = new ArrayList<String>(Arrays.asList("travel","book", "journey","trip"));
+	task3.setSelector(new BagOfWordsTaskSelector(bagOfWords));
+	
+	ito=new ITO("getDepartureCity", "Where do you want to start?", true);	
+	task3.addITO(ito);
+	aqd=new AQD(new AQDType("fact.named_entity.non_animated.location.city"), new AQDContext("begin","trip"), new AQDForm());
+	ito.setAQD(aqd);		
+	
+	ito=new ITO("getDestinationCity", "Where do you want to go?", true);	
+	task3.addITO(ito);
+	aqd=new AQD(new AQDType("fact.named_entity.non_animated.location.city"), new AQDContext("end","trip"), new AQDForm());
+	ito.setAQD(aqd);
+
+	GroovyAction gaction = new GroovyAction("This trip from %getDepartureCity to %getDestinationCity costs #price Euros.");
+	gaction.setCode("Random r=new Random(); Integer p=r.nextInt(300)+100; executionResults.put(\"price\",p.toString())");
+	//gaction.setCode("Random r=new Random(); Integer p=r.nextInt(300)+100; executionResults.put(\"price\",p.toString()+frame.get(\"getDepartureCity\"))");
+	task3.setAction(gaction);
+	
+	
+	Task task4=new Task("calculator");
+	task4.setSelector(new BagOfWordsTaskSelector(new ArrayList<String>(Arrays.asList("numbers","math","calculator"))));
+		
+	ito=new ITO("number1", "Please tell me the first number!", false);	
+	ito.setRequired(true);
+	aqd=new AQD();
+	aqd.setType(new AQDType("fact.quantity"));
+	ito.setAQD(aqd);	
+	task4.addITO(ito);
+	
+	ito=new ITO("number2", "Please tell me the second number!", false);	
+	ito.setRequired(true);
+	aqd=new AQD();
+	aqd.setType(new AQDType("fact.quantity"));
+	ito.setAQD(aqd);	
+	task4.addITO(ito);
+	
+	ito=new ITO("op", "Please tell me the operation!", false);	
+	ito.setRequired(true);
+	aqd=new AQD();
+	aqd.setType(new AQDType("item(add,subtract,multiply,divide)"));
+	ito.setAQD(aqd);	
+	task4.addITO(ito);
+		
+	gaction = new GroovyAction("%number1 %op %number2 is #res.");
+	gaction.setCode(""
+			+ "Integer one=new Integer(frame.get(\"number1\"));\r\n"
+			+ "Integer two=new Integer(frame.get(\"number2\"));\r\n"
+			+ "Float res=0.0;\r\n"
+			+ "switch(frame.get(\"op\")){\r\n"
+			+ "case \"ADD\": res=one+two; break;\r\n"
+			+ "case \"SUBTRACT\": res=one-two; break;\r\n"
+			+ "case \"DIVIDE\": res=one/two; break;\r\n"
+			+ "case \"MULTIPLY\": res=one*two;break;\r\n"
+			+ "}\r\n"
+			+ "executionResults.put(\"res\",res.toString());"
+	);
+	task4.setAction(gaction);
+	
+	
+	dialog.addTask(task0);
+	dialog.addTask(task1);
+	dialog.addTask(task2);
+	dialog.addTask(task3);
+	dialog.addTask(task4);
+	
+	return dialog;
+}
+
 }
