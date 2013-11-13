@@ -3,6 +3,7 @@ package net.mmberg.nadia.processor.manager;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +29,7 @@ public class DialogManagerContext {
 	//Features
 	private Date createdOn;
 	private Date lastAccess;
-	private String additionalDebugInfo;
+	private HashMap<String,String> additionalDebugInfo=new HashMap<String,String>();
 	private Boolean question_open=false;
 	private Boolean started=false;
 	private ArrayList<ITO> ito_history=new ArrayList<ITO>();
@@ -58,8 +59,13 @@ public class DialogManagerContext {
 		this.lastAccess = lastAccess;
 	}
 
+	@XmlElement(name="additionalDebugInfo")
 	public String getAdditionalDebugInfo() {
-		return additionalDebugInfo;
+		String info="";
+		for(Map.Entry<String,String> elem : additionalDebugInfo.entrySet()){
+			info+=elem.getKey()+": "+elem.getValue()+"; ";
+		}
+		return info;
 	}
 	
 	public Boolean isStarted() {
@@ -160,6 +166,14 @@ public class DialogManagerContext {
 		return ito_history;
 	}
 	
+	//do not serialize
+	public String getAdditionalDebugInfo(String key) {
+		if(additionalDebugInfo.containsKey(key)){
+			return additionalDebugInfo.get(key);
+		}
+		else return "";
+	}
+	
 	//setters
 
 	public void setDialog(Dialog dialog){
@@ -187,8 +201,12 @@ public class DialogManagerContext {
 		this.createdOn = createdOn;
 	}
 	
-	public void setAdditionalDebugInfo(String additionalDebugInfo) {
-		this.additionalDebugInfo = additionalDebugInfo;
+//	public void setAdditionalDebugInfo(String additionalDebugInfo) {
+//		this.additionalDebugInfo = additionalDebugInfo;
+//	}
+	
+	public void setAdditionalDebugInfo(String key, String additionalDebugInfo) {
+		this.additionalDebugInfo.put(key,additionalDebugInfo);
 	}
 	
 	public void addUtteranceToHistory(String utterance, UTTERANCE_TYPE type, int level){
@@ -239,7 +257,5 @@ public class DialogManagerContext {
 	public void print(){
 		System.out.println(serialize());
 	}
-	
-	
 	
 }

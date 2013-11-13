@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 import net.mmberg.nadia.processor.exceptions.ProcessingException;
+import net.mmberg.nadia.processor.exceptions.RuntimeError;
 import net.mmberg.nadia.processor.ui.UIConsumer.UIConsumerMessage;
 import net.mmberg.nadia.processor.ui.UIConsumer.UIConsumerMessage.Meta;
 
@@ -47,6 +48,8 @@ public class ConsoleInterface extends UserInterface{
 		}
 		catch(ProcessingException ex){
 			ex.printStackTrace();
+		} catch (RuntimeError e) {
+			e.printStackTrace();
 		}
 	}
 

@@ -1,0 +1,364 @@
+<html>
+<head>
+<title>Nadia - NAtural DIAlogue System</title>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>
+
+//script tp get the URL parameters
+function GetURLParameter(sParam){
+    var sPageURL = window.location.search.substring(1);
+    var sURLVariables = sPageURL.split('&');
+    for (var i = 0; i < sURLVariables.length; i++){
+        var sParameterName = sURLVariables[i].split('=');
+        if (sParameterName[0] == sParam)
+        {
+            return sParameterName[1];
+        }
+    }
+}
+
+
+$(document).ready(function(){
+
+//config:
+ var debug = true;
+ var location="//"+document.location.hostname+":8080/nadia/engine/dialog/"+GetURLParameter("dialogid");
+ //---
+ 
+ //do not change:
+ var chrome = false;
+ var wants_speech = false;
+ 
+setGuiEnabled(false);
+	
+//init
+if(debug){
+	$("#debug").html(location);
+	$("#debug").append("<br><a href='"+location+"/context' target='_blank'>show context</a>");
+	$("#debug").append(" | <a href='"+location+"/xml' target='_blank'>show dialogue</a>");
+}
+setGuiEnabled(true);
+submit(" "); //sending of a space repeats last question
+	
+//click
+$("#submitbtn").click(function(){
+    	submit();
+});
+  	
+//enter
+$('#userUtterance').keydown(function (e){
+    if(e.keyCode == 13){
+        submit();
+        
+    }
+})
+  	
+function submit(){
+	submit($("#userUtterance").val());
+}
+
+function submit(text){
+	setGuiEnabled(false);
+	$.post(location, {userUtterance: text}, function(data) {
+		$("#systemUtterance").fadeOut(300, function(){$("#systemUtterance").text(data).fadeIn(600);});
+		setGuiEnabled(true);
+		//is user has used ASR before, automatically start recognition
+		if(wants_speech){
+			var query=data.replace(/ /g, '+');
+			var query=query.replace(/\?/g, '');
+			//playtts("http://translate.google.com/translate_tts?tl=en&q="+query);
+			playtts("/nadia/engine/redirect?url=https://translate.google.com/translate_tts%3Ftl=en%26q="+query);
+		}
+	}).fail(function(xhRequest, status, thrownError){showError("Server error or service unavailable.", true);});
+}
+
+function showError(error, fatal){
+		$("#error").html(error);
+		if(fatal){
+			setGuiEnabled(false);
+			$('#loader').removeClass("loading");
+			$("#error:hidden:first").fadeIn(1000);
+			$('#container').delay(3500).animate({opacity: .2},2500);
+			
+		}
+		else $("#error:hidden:first").fadeIn(1000).delay(2000).fadeOut(1000);
+}
+  	
+function setGuiEnabled(state){
+ 	if(state){
+ 		$('#userUtterance').prop('disabled', false);
+ 		$('#submitbtn').prop('disabled', false);
+ 		if(chrome) $('#recobtn').prop('disabled', false);
+ 		
+		$('#loader').removeClass("loading");
+		$("#userUtterance").focus();
+		$('#userUtterance').select();
+	}
+	else{
+		$('#userUtterance').prop('disabled', true);
+		$('#submitbtn').prop('disabled', true);
+ 		$('#recobtn').prop('disabled', true);
+		$('#loader').addClass("loading");
+	}
+}
+  	
+function updateGui(state){
+		if(state){
+			$("#recobtn").addClass("recording");
+			$("#recobtn").html("Listening...");
+		}
+		else{
+			$("#recobtn").removeClass("recording");
+			$("#recobtn").html("Start recognition");
+		}
+}
+	
+function playtts(url){
+	    var audioElement = document.createElement("audio");
+	    audioElement.setAttribute("type", "audio/mpeg");
+	    audioElement.addEventListener("ended", function() {
+	        start_stop_recognition();
+	    });
+	    audioElement.addEventListener("canplaythrough", function() {
+	        audioElement.play();
+	    });
+	    audioElement.addEventListener("error", function(e) {
+	 		showError("Cannot play audio. "+this.error, false);
+	    });
+	    
+   	    audioElement.setAttribute("src", url);
+	    audioElement.load();
+}
+	
+	
+  if (!('webkitSpeechRecognition' in window)) {
+  	showError("Speech recognition only works in Chrome.", false);
+  	$('#recobtn').prop('disabled', true);
+  }
+  else{
+	chrome=true;
+    var auto_submit = true;
+    var recognizing = false;
+  	var final_transcript = '';
+ 	var ignore_onend=false;
+  	var start_timestamp;
+  	var recognition = new webkitSpeechRecognition();
+  	recognition.continuous = false;
+  	recognition.interimResults = false;
+
+ 	recognition.onerror = function(event) {
+ 		ignore_onend = true;
+ 		updateGui(false);
+ 		wants_speech=false;
+ 		showError(event.error, false);
+ 	};
+ 	
+ 	recognition.onstart = function() {
+    	recognizing = true;
+        updateGui(true);
+ 	};
+ 
+ 	recognition.onend = function() {
+ 		updateGui(false);
+     	recognizing = false;
+    	if (ignore_onend) {
+      		return;
+    	}
+ 	};
+  
+ 	recognition.onresult = function(event) {
+    	var interim_transcript = '';
+
+		if (typeof(event.results) == 'undefined') {
+      		recognition.onend = null;
+      		recognition.stop();
+      		showError("Result undefined", false);
+		    return;
+    	}
+    
+    	for (var i = event.resultIndex; i < event.results.length; ++i) {
+      		if (event.results[i].isFinal) {
+        		final_transcript += event.results[i][0].transcript;
+      		} else {
+        		interim_transcript += event.results[i][0].transcript;
+      		}
+    	}
+    	$("#userUtterance").val(final_transcript);
+    	if(!recognition.continuous){
+    	  recognition.stop();
+    	}
+    	if(auto_submit) submit();
+  	};
+  
+   function start_stop_recognition(){
+   		if (recognizing) {
+    		recognition.stop();
+    		wants_speech=false;
+    		return;
+  		}
+  		wants_speech=true;
+  		final_transcript = '';
+  		recognition.lang = 'en-GB';
+  		recognition.start();
+  		ignore_onend = false;
+   }
+  
+ 	$("#recobtn").click(function(event){ 
+  		start_stop_recognition();
+	});
+}
+
+});
+</script>
+<style>
+body {
+	background:#555;
+	font-family:Verdana;
+	color:#222222;
+	margin:auto;
+}
+
+#container{
+	width: 500px;
+	margin:auto;
+	padding-top:6%;
+}
+
+div .box{
+	position:relative;
+	background:#AAAAAA;
+	background-image: -moz-linear-gradient(top left, #888 25%, #aaa 75%);
+	background-image: -webkit-linear-gradient(top left, #888 25%, #aaa 75%);
+	background-image: -ms-linear-gradient(top left, #888 25%, #aaa 75%);
+	background-image: -o-linear-gradient(top left, #888 25%, #aaa 75%);
+	background-image: linear-gradient(top left, #888 25%, #aaa 75%);
+	padding: 15px;
+	margin-top:7px;
+
+	border-color:#222222;
+	border-width: 1px;
+	border-style: solid;
+	
+	-moz-border-radius: 6px;
+	border-radius: 6px;
+}
+
+#main{
+	background:#CCCCCC;
+	background-image: -moz-linear-gradient(top left, #bbb 25%, #ccc 75%);
+	background-image: -webkit-linear-gradient(top left, #bbb 25%, #ccc 75%);
+	background-image: -ms-linear-gradient(top left, #bbb 25%, #ccc 75%);
+	background-image: -o-linear-gradient(top left, #bbb 25%, #ccc 75%);
+	background-image: linear-gradient(top left, #bbb 25%, #ccc 75%);
+	min-height:150px;
+	padding: 25px;
+}
+
+#footer{
+	font-size:10pt;
+}
+
+#debug{
+	font-size:10pt;
+	font-family:courier;
+}
+
+#systemUtterance{
+	display:none;
+	font-weight:bold;
+}
+
+#userUtterance{
+	width:360px;
+}
+
+span.grey{
+color:#444;
+}
+
+
+#header{
+text-align:center;
+}
+
+#header img {
+margin-left: auto;
+margin-right: auto;
+display: block;
+}
+
+h1{
+font-size:20pt;
+margin-top:5px;
+margin-bottom:0px;
+}
+
+#loader{
+	position:relative;
+	top:3px;
+	margin-left:6px;
+	visibility:hidden;
+}
+
+#loader.loading{
+	visibility:visible;
+}
+
+#recobtn.recording{
+	color:#d00;
+	font-weight:bold;
+}
+
+#error{
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	border-color:#aaa;
+	border-width: 1px;
+	border-style: solid;
+	font-size:15pt;
+	font-weight:bold;
+	color:#d00;
+	width:420px;
+	height:80px;
+	background:#DDD;
+	position:absolute;
+	top:40px;
+	left:25px;
+	opacity:.97;
+	display:none;
+	padding: 28px 12px 12px 12px;
+	text-align:center;
+	z-index:1000;
+}
+
+</style>
+</head>
+
+<body>
+<div id="container">
+
+	<div id="header" class="box">
+	<!-- <img src="nadia_logo.png" height="80px">-->
+	<h1>Na<span class="grey">tural</span> Dia<span class="grey">logue System</span></h1>
+	</div>
+	
+	<div id="main" class="box">
+		<div id="error"></div>
+		<div><p><i>System:</i>&nbsp;<span id="systemUtterance"></span></p></div>
+		<div><p><i>You:</i>&nbsp;<input id="userUtterance" type="text"></input><img id="loader" src="ajax-loader.gif" alt="Loader gif by http://www.ajaxload.info/"></p></div>
+		<div>
+			<button id="recobtn">Start recognition</button>
+			<button id="submitbtn">Submit</button>
+		</div>
+	</div>
+	
+	<div id="debug" class="box"></div>
+	
+	<div id="footer" class="box">
+	&copy; 2013 by <a href="http://mmberg.net">Markus M. Berg</a> | Project on <a href="https://github.com/mmberg/nadia">Github</a></a><br>
+	University of Wismar, University of Kiel, University of Edinburgh
+	</div>
+</div>
+</body>
+</html>
+ 

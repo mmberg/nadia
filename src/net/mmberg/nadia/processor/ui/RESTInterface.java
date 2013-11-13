@@ -11,6 +11,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
@@ -33,6 +34,7 @@ import net.mmberg.nadia.processor.NadiaProcessor;
 import net.mmberg.nadia.processor.NadiaProcessorConfig;
 import net.mmberg.nadia.processor.dialogmodel.Dialog;
 import net.mmberg.nadia.processor.exceptions.ProcessingException;
+import net.mmberg.nadia.processor.exceptions.RuntimeError;
 import net.mmberg.nadia.processor.ui.UIConsumer.UIConsumerMessage;
 import net.mmberg.nadia.processor.ui.UIConsumer.UIConsumerMessage.Meta;
 
@@ -40,7 +42,7 @@ import net.mmberg.nadia.processor.ui.UIConsumer.UIConsumerMessage.Meta;
 @Path("/")
 public class RESTInterface extends UserInterface{
 
-	private Server server;
+	private static Server server;
 	private static int instance_counter=0;
 	protected static HashMap<String, UIConsumer> instances = new HashMap<String, UIConsumer>();
 	private final static Logger logger = NadiaProcessor.getLogger();
@@ -77,9 +79,9 @@ public class RESTInterface extends UserInterface{
 	@Path("dialog")
 	public Response createDefaultDialog() throws URISyntaxException, InstantiationException, IllegalAccessException
 	{	 
-		String nextid=next_id();
-		create_dialog(nextid);
-		return init_dialog(nextid); //init dialogue, i.e. get first question
+		String instanceid=generateDialogID();
+		create_dialog(instanceid);
+		return init_dialog(instanceid); //init dialogue, i.e. get first question
 	}
 	
 	
@@ -90,27 +92,56 @@ public class RESTInterface extends UserInterface{
 	public Response createDialogFromXML(
 			@FormDataParam("dialogxml") String dialogxml) throws URISyntaxException, InstantiationException, IllegalAccessException
 	{
-		String nextid=next_id();
-		create_dialog(nextid, dialogxml);		
-		return init_dialog(nextid); //init dialogue, i.e. get first question
+		String instanceid=generateDialogID();
+		create_dialog(instanceid, dialogxml);		
+		return init_dialog(instanceid); //init dialogue, i.e. get first question
 	}
-	
+
 	@POST
 	@Path("dialog/{instance_id}")
 	@Produces( MediaType.TEXT_PLAIN )
 	public Response exchange_text(
-			@PathParam("instance_id") String instance_id,
+			@PathParam("instance_id") String instance_id, //dialogue instance
 			@FormParam("userUtterance") String userUtterance)
 	{
-		if(!instances.containsKey(instance_id)){ //check whether instance exists
+		if(!instances.containsKey(instance_id)){ //check if instance exists
+			logger.info("no such instance");
 			return Response.serverError().entity("Error: no such instance").build(); 
 		}
-		
-		UIConsumerMessage message = process(instance_id, userUtterance);
-		String systemUtterance = message.getSystemUtterance();
-		
-		if (message.getMeta()==Meta.UNCHANGED) return Response.noContent().build();
-		else return Response.ok(systemUtterance).build();
+		else{
+			//security check (to prevent illegal hijacking of sessions):
+			//check ip
+			String dialog_ip=instances.get(instance_id).getDebugInfo("client-ip");
+			String client_ip=request.getRemoteAddr().toString();
+			if(!dialog_ip.equals(client_ip)){
+				logger.info("hijacking dialogue from different IP not allowed: Client "+client_ip+" vs Dialog "+dialog_ip);
+				return Response.serverError().entity("Security Exception").build();
+			}
+			
+			//process dialogue:
+			UIConsumerMessage message = process(instance_id, userUtterance);
+			String systemUtterance = message.getSystemUtterance();
+			
+			if (message.getMeta()==Meta.UNCHANGED) return Response.noContent().build();
+			else return Response.ok(systemUtterance).build();
+		}
+	}
+	
+	
+	//DIRTY! SECURITY GAP!!! needed for Maren
+	//redirects a get request on the dialogue instance to a user interface (hijack.html) that hijacks this instance and allows to interact
+	//with it based on the current dialogue context
+	@GET
+	@Path("dialog/{instance_id}")
+	public Response hijack_session(
+			@PathParam("instance_id") String instance_id)
+	{
+		try {
+			return Response.seeOther(new URI(server.getURI()+"/hijack.html?dialogid="+instance_id)).build();
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+			return Response.serverError().entity("Error: redirect to dialogue instance failed").build();
+		}
 	}
 	
 	@GET
@@ -119,12 +150,13 @@ public class RESTInterface extends UserInterface{
 	public Response getServerInfo()
 	{
 		String info="<html><head><title>Nadia Status</title></head><body><p>";
+		if(server!=null) info+="URI: "+server.getURI()+"<br>";
 		info+="Started on: "+NadiaProcessor.getStartedOn().toString()+"<br>";
-		info+="Default dialogue: "+NadiaProcessor.getDefaultDialogPathAndName()+"<br>"; //getDefaultDialog().getName()+"<br>";
+		info+="Default dialogue: "+NadiaProcessor.getDefaultDialogPathAndName()+"<br>";
 		info+="Started UI: "+NadiaProcessor.getUIType()+"<br>";
 		info+="Current sessions ("+instances.size()+"):<ul>";
 		for(String sid : instances.keySet()){
-			info+="<li><a href='/nadia/engine/dialog/"+sid+"/context'>Session "+sid+"</a></li>";
+			info+="<li><a href='/nadia/engine/dialog/"+sid+"/context'>Session "+sid.substring(0, 2)+"</a></li>";
 		}
 		info+="</ul></p></body></html>";
 		return Response.ok(info).build();
@@ -227,29 +259,41 @@ public class RESTInterface extends UserInterface{
 	
 	private void create_dialog(String instance, String dialogxml){
 		UIConsumer new_consumer;
-		if(dialogxml!=null){
-			Dialog d=Dialog.loadFromXml(dialogxml);
-			new_consumer = consumerFactory.create(d); //new DialogManager(d);
+		try{
+			if(dialogxml!=null){
+				Dialog d=Dialog.loadFromXml(dialogxml);
+				new_consumer = consumerFactory.create(d); //new DialogManager(d);
+			}
+			else{
+				new_consumer = consumerFactory.create(); //new DialogManager();
+			}
+			
+			new_consumer.setAdditionalDebugInfo("client-ip",request.getRemoteAddr().toString());
+			new_consumer.setAdditionalDebugInfo("user-agent",headers.getRequestHeader("User-Agent").toString());		
+			
+			instances.put(instance, new_consumer);
+			NadiaProcessor.getLogger().fine("created new instance "+new_consumer.getClass().getName());
 		}
-		else{
-			new_consumer = consumerFactory.create(); //new DialogManager();
+		catch(RuntimeError err){
+			err.printStackTrace();
 		}
-		new_consumer.setAdditionalDebugInfo("Client IP: "+request.getRemoteAddr().toString()+"; User-Agent: "+headers.getRequestHeader("User-Agent"));
-		instances.put(instance, new_consumer);
-		NadiaProcessor.getLogger().fine("created new instance "+new_consumer.getClass().getName());
 	}
 	
 	private void create_dialog(String instance_id){
 		create_dialog(instance_id, null);
 	}
 	
-	private String next_id(){
+	private String generateDialogID(){
+		return generateNextID()+"-"+String.valueOf(new Random().nextInt(20000)+10000);
+	}
+		
+	private String generateNextID(){
 		instance_counter++;
 		if(instance_counter%10==0) clean_up(); //run clean up every 10 instances
 		String identifier="d"+instance_counter;
 		return identifier;
 	}
-	
+
 	/**
 	 * deletes unused sessions
 	 */
@@ -324,6 +368,7 @@ public class RESTInterface extends UserInterface{
 	        
 	        //start	        
 	        server.start();
+	        logger.info("REST interface started on "+server.getURI());
 	        server.join();
 			
 		}

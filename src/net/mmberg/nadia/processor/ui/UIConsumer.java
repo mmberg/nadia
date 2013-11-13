@@ -11,13 +11,15 @@ public interface UIConsumer {
 	public abstract String getDialogXml();
 	public abstract UIConsumerMessage processUtterance(String userUtterance) throws ProcessingException;
 	public abstract String getDebugInfo();
-	public abstract void setAdditionalDebugInfo(String debuginfo);
+	public abstract String getDebugInfo(String key);
+	public abstract void setAdditionalDebugInfo(String key, String debuginfo);
 	public abstract Date getLastAccess();
+	public abstract String getIdentifier();
 	
 	public class UIConsumerMessage{
 		private String systemUtterance;
 		private Meta meta;
-		public enum Meta{QUESTION, ANSWER, UNCHANGED, END_OF_DIALOG, ERROR};
+		public enum Meta{QUESTION, ANSWER, UNCHANGED, END_OF_DIALOG, ERROR, REPEATEDQUESTION};
 		
 		public UIConsumerMessage(String systemUtterance, Meta meta){
 			this.systemUtterance=systemUtterance;

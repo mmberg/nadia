@@ -16,6 +16,7 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
 import net.mmberg.nadia.processor.dialogmodel.Dialog;
+import net.mmberg.nadia.processor.exceptions.RuntimeError;
 import net.mmberg.nadia.processor.manager.DialogManager;
 import net.mmberg.nadia.processor.store.DialogStore;
 import net.mmberg.nadia.processor.ui.*;
@@ -142,12 +143,12 @@ public class NadiaProcessor extends UIConsumerFactory{
 	}
 	
 	@Override
-	public UIConsumer create() {
+	public UIConsumer create() throws RuntimeError{
 		return new DialogManager();
 	}
 	
 	@Override
-	public UIConsumer create(Dialog d) {
+	public UIConsumer create(Dialog d) throws RuntimeError {
 		return new DialogManager(d);
 	}
 		

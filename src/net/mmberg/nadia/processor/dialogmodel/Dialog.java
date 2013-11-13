@@ -12,7 +12,7 @@ import net.mmberg.nadia.processor.NadiaProcessorConfig;
 public class Dialog extends DialogModel{
 
 	private static NadiaProcessorConfig config = NadiaProcessorConfig.getInstance();
-
+	
 	
 	public Dialog(){
 		super();

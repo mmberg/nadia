@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 import net.mmberg.nadia.processor.NadiaProcessor;
 import net.mmberg.nadia.processor.dialogmodel.*;
 import net.mmberg.nadia.processor.exceptions.ProcessingException;
+import net.mmberg.nadia.processor.exceptions.RuntimeError;
 import net.mmberg.nadia.processor.manager.DialogManagerContext.UTTERANCE_TYPE;
 import net.mmberg.nadia.processor.nlu.aqdparser.ParseResults;
 import net.mmberg.nadia.processor.nlu.aqdparser.Parsers;
@@ -28,13 +29,14 @@ public class DialogManager implements UIConsumer {
 	private DialogManagerContext context=null;
 	
 	
-	public DialogManager(){
+	public DialogManager() throws RuntimeError{
 		this(NadiaProcessor.getDefaultDialog()); //load default dialogue
 	}
 	
-	public DialogManager(Dialog dialog){
+	public DialogManager(Dialog dialog) throws RuntimeError{
 		init();
-		loadDialog(dialog);
+		if(dialog!=null) loadDialog(dialog);
+		else throw new RuntimeError("The dialogue could not be loaded.");
 	}
 	
 	public DialogManagerContext getContext(){
@@ -66,14 +68,23 @@ public class DialogManager implements UIConsumer {
 	}
 	
 	@Override
+	public String getDebugInfo(String key) {
+		return getContext().getAdditionalDebugInfo(key);
+	}
+	
+	@Override
 	public String getDialogXml() {
 		return context.getDialog().toXML();
 	}
 	
+	@Override
+	public String getIdentifier() {
+		return context.getInstance();
+	}
 	
 	@Override
-	public void setAdditionalDebugInfo(String debugInfo) {
-		context.setAdditionalDebugInfo(debugInfo);
+	public void setAdditionalDebugInfo(String key, String debugInfo) {
+		context.setAdditionalDebugInfo(key, debugInfo);
 	}
 	
 	@Override
@@ -105,6 +116,12 @@ public class DialogManager implements UIConsumer {
 		else if (userUtterance==null || userUtterance.length()==0){
 			logger.info("no utterance, no change");
 			return new UIConsumerMessage("", Meta.UNCHANGED); 
+		}
+		//or 1bb) IF SPACE ENTERED, THEN JUST REPEAT LAST QUESTION 
+		//(not much of a difference to 1b; no change in dialogue context; however this may be required by a client to (re)display the last system utterance)
+		else if (context.getCurrentTask()!=null && userUtterance.equals(" ")){
+			logger.info("recognized space, repeating last question");
+			return new UIConsumerMessage(context.getHistory().get(context.getHistory().size()-1).getUtteranceText(), Meta.REPEATEDQUESTION);
 		}
 		//or 1c) PROCESS USER UTTERANCE
 		else if(context.getCurrentTask()!=null){

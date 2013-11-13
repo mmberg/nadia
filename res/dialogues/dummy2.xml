@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<n:dialog xsi:schemaLocation="http://mmberg.net/nadia schema1.xsd" xmlns:n="http://mmberg.net/nadia" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="dummy2">
+<n:dialog xsi:schemaLocation="http://mmberg.net/nadia schema1.xsd" xmlns:n="http://mmberg.net/nadia/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="dummy2">
    <start_task_name>start</start_task_name>
    <global_language>en</global_language>
    <global_politeness>2</global_politeness>
