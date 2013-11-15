@@ -53,13 +53,10 @@ $('#userUtterance').keydown(function (e){
     }
 })
   	
-function submit(){
-	submit($("#userUtterance").val());
-}
-
-function submit(text){
+function submit(userText){
+	if (!userText) userText=$("#userUtterance").val();
 	setGuiEnabled(false);
-	$.post(location, {userUtterance: text}, function(data) {
+	$.post(location, {userUtterance: userText}, function(data) {
 		$("#systemUtterance").fadeOut(300, function(){$("#systemUtterance").text(data).fadeIn(600);});
 		setGuiEnabled(true);
 		//is user has used ASR before, automatically start recognition

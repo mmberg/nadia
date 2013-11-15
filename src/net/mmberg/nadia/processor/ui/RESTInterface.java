@@ -11,7 +11,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,6 +21,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import org.apache.commons.lang.RandomStringUtils;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.eclipse.jetty.server.Connector;
@@ -110,13 +110,12 @@ public class RESTInterface extends UserInterface{
 		}
 		else{
 			//security check (to prevent illegal hijacking of sessions):
-			//check ip
-			String dialog_ip=instances.get(instance_id).getDebugInfo("client-ip");
-			String client_ip=request.getRemoteAddr().toString();
-			if(!dialog_ip.equals(client_ip)){
-				logger.info("hijacking dialogue from different IP not allowed: Client "+client_ip+" vs Dialog "+dialog_ip);
-				return Response.serverError().entity("Security Exception").build();
-			}
+//			String dialog_ip=instances.get(instance_id).getDebugInfo("client-ip");
+//			String client_ip=request.getRemoteAddr().toString();
+//			if(!dialog_ip.equals(client_ip)){
+//				logger.info("hijacking dialogue from different IP not allowed: Client "+client_ip+" vs Dialog "+dialog_ip);
+//				return Response.serverError().entity("Security Exception").build();
+//			}
 			
 			//process dialogue:
 			UIConsumerMessage message = process(instance_id, userUtterance);
@@ -137,7 +136,8 @@ public class RESTInterface extends UserInterface{
 			@PathParam("instance_id") String instance_id)
 	{
 		try {
-			return Response.seeOther(new URI(server.getURI()+"/hijack.html?dialogid="+instance_id)).build();
+			//String serverip=(request.getRemoteHost().equals("0:0:0:0:0:0:0:1"))?"https://localhost:8080/nadia":server.getURI().toString();		
+			return Response.seeOther(new URI(server.getURI().toString() +"/hijack.html?dialogid="+instance_id)).build();
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 			return Response.serverError().entity("Error: redirect to dialogue instance failed").build();
@@ -284,7 +284,7 @@ public class RESTInterface extends UserInterface{
 	}
 	
 	private String generateDialogID(){
-		return generateNextID()+"-"+String.valueOf(new Random().nextInt(20000)+10000);
+		return generateNextID()+"-"+RandomStringUtils.randomAlphanumeric(12).toUpperCase();
 	}
 		
 	private String generateNextID(){
