@@ -16,6 +16,7 @@ import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.client.api.ContentResponse;
 import org.eclipse.jetty.client.api.Request;
 import org.eclipse.jetty.http.HttpMethod;
+import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 
@@ -40,7 +41,8 @@ public class HTTPAction extends HTTPActionModel {
 	}
 	
 	private void init(){
-    	client = new HttpClient();
+		SslContextFactory sslContextFactory = new SslContextFactory();
+    	client = new HttpClient(sslContextFactory);
     	try {
 			client.start();
 		} catch (Exception e) {
@@ -107,6 +109,7 @@ public class HTTPAction extends HTTPActionModel {
 		        
 		        //Postprocessing
 		        result = result.replaceAll("\\s\\(.*?\\)", ""); //remove content in brackets
+		        result = result.replaceAll("\\s\\[.*?\\]", "");
 	        }
 	        catch(Exception ex){
 	        	ex.printStackTrace();

@@ -18,7 +18,7 @@ public class CityParser extends Parser{
 		utterance=utterance.replace(',', ' ');
 		
 		String decap_utterance=utterance.toLowerCase();
-		ArrayList<String> gazetteer = new ArrayList<String>(Arrays.asList("aberdeen","edinburgh", "glasgow","inverness", "portree", "uig", "malaig", "balloch"));
+		ArrayList<String> gazetteer = new ArrayList<String>(Arrays.asList("aberdeen","edinburgh", "glasgow","inverness", "portree", "uig", "malaig", "balloch","munich","berlin","hamburg","cologne","redmond"));
 
 		ArrayList<String> tokens=new ArrayList<String>(Arrays.asList(decap_utterance.split(" ")));//tokenize
 		tokens.retainAll(gazetteer);

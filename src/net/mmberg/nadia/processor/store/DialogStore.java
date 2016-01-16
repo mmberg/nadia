@@ -138,8 +138,8 @@ private Dialog createDummyDialog2(){
 		GroovyAction gaction = new GroovyAction("This trip from %getDepartureCity to %getDestinationCity costs #price Euros.");
 		gaction.setCode("executionResults.put(\"price\",\"257\")");
 		//gaction.setReturnAnswer(false);		
-		gaction.addResultMapping(new ActionResultMapping("price","257","#price Euro for %getDestinationCity is cheap!",null));
-		gaction.addResultMapping(new ActionResultMapping("price","1000","#price Euro for %getDestinationCity is expensive!",null));
+		//gaction.addResultMapping(new ActionResultMapping("price","257","#price Euro for %getDestinationCity is cheap!",null));
+		//gaction.addResultMapping(new ActionResultMapping("price","1000","#price Euro for %getDestinationCity is expensive!",null));
 		
 		task1.setAction(gaction);
 		
@@ -215,12 +215,12 @@ private Dialog createDummyDialog2(){
 		//Task3
 		//-----------------------------------------------
 		Task task3 = new Task("getWikipediaCityInfo");
-		bagOfWords = new ArrayList<String>(Arrays.asList("wikipedia","tell me about", "know about"));
+		bagOfWords = new ArrayList<String>(Arrays.asList("wikipedia","tell me about", "tell me something", "know about"));
 		task3.setSelector(new BagOfWordsTaskSelector(bagOfWords));
 		httpaction=new HTTPAction("#result");
 		httpaction.setUrl("http://en.wikipedia.org/w/api.php");
 		httpaction.setMethod("get");
-		httpaction.setParams("format=xml&action=query&prop=extracts&explaintext&exsentences=3&titles=%getWikiCity");
+		httpaction.setParams("format=xml&action=query&prop=extracts&explaintext&exsentences=1&titles=%getWikiCity");
 		httpaction.setXpath("//extract");
 		task3.setAction(httpaction);
 		dialog.addTask(task3);
@@ -251,7 +251,7 @@ private Dialog createDummyDialog2(){
 		bagOfWords = new ArrayList<String>(Arrays.asList("bulb","switch"));
 		task4.setSelector(new BagOfWordsTaskSelector(bagOfWords));
 		httpaction=new HTTPAction("#result");
-		httpaction.setUrl("http://mmt.et.hs-wismar.de:8080/Lightbulb/Lightbulb");
+		httpaction.setUrl("http://mmberg.net:8080/Lightbulb/Lightbulb");
 		httpaction.setMethod("post");
 		httpaction.setParams("state=%getLightAction");
 		httpaction.setXpath("//message");
@@ -272,7 +272,7 @@ private Dialog createDummyDialog2(){
 		bagOfWords = new ArrayList<String>(Arrays.asList("bulb","switch"));
 		task5.setSelector(new BagOfWordsTaskSelector(bagOfWords));
 		httpaction=new HTTPAction("#result");
-		httpaction.setUrl("http://mmt.et.hs-wismar.de:8080/Lightbulb/Lightbulb");
+		httpaction.setUrl("http://mmberg.net:8080/Lightbulb/Lightbulb");
 		httpaction.setMethod("get");
 		httpaction.setParams("getstate");
 		httpaction.setXpath("//message");
@@ -287,7 +287,7 @@ private Dialog createDummyDialog2(){
 		bagOfWords = new ArrayList<String>(Arrays.asList("guess","number","play"));
 		task6.setSelector(new BagOfWordsTaskSelector(bagOfWords));
 		httpaction=new HTTPAction("%getNumber ");
-		httpaction.setUrl("http://mmt.et.hs-wismar.de:8080/NumberGuessing/NumberGuessing");
+		httpaction.setUrl("http://mmberg.net:8080/NumberGuessing/NumberGuessing");
 		httpaction.setMethod("get");
 		httpaction.setParams("guess=%getNumber");
 		httpaction.setXpath("//code");

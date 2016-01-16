@@ -132,18 +132,6 @@
          </itos>
          <action>
             <groovyAction>
-               <resultMappings>
-                  <resultMapping>
-                     <message>#price Euro for %getDestinationCity is cheap!</message>
-                     <resultValue>257</resultValue>
-                     <resultVarName>price</resultVarName>
-                  </resultMapping>
-                  <resultMapping>
-                     <message>#price Euro for %getDestinationCity is expensive!</message>
-                     <resultValue>1000</resultValue>
-                     <resultVarName>price</resultVarName>
-                  </resultMapping>
-               </resultMappings>
                <returnAnswer>true</returnAnswer>
                <utteranceTemplate>This trip from %getDepartureCity to %getDestinationCity costs #price Euros.</utteranceTemplate>
                <code><![CDATA[executionResults.put("price","257")]]></code>
@@ -188,6 +176,7 @@
             <bagOfWordsTaskSelector>
                <word>wikipedia</word>
                <word>tell me about</word>
+               <word>tell me something</word>
                <word>know about</word>
             </bagOfWordsTaskSelector>
          </selector>
@@ -210,7 +199,7 @@
                <returnAnswer>true</returnAnswer>
                <utteranceTemplate>#result</utteranceTemplate>
                <method>get</method>
-               <params>format=xml&amp;action=query&amp;prop=extracts&amp;explaintext&amp;exsentences=3&amp;titles=%getWikiCity</params>
+               <params>format=xml&amp;action=query&amp;prop=extracts&amp;explaintext&amp;exsentences=1&amp;titles=%getWikiCity</params>
                <url>http://en.wikipedia.org/w/api.php</url>
                <xpath>//extract</xpath>
             </httpAction>
@@ -261,7 +250,7 @@
                <utteranceTemplate>#result</utteranceTemplate>
                <method>post</method>
                <params>state=%getLightAction</params>
-               <url>http://mmt.et.hs-wismar.de:8080/Lightbulb/Lightbulb</url>
+               <url>http://mmberg.net:8080/Lightbulb/Lightbulb</url>
                <xpath>//message</xpath>
             </httpAction>
          </action>
@@ -281,7 +270,7 @@
                <utteranceTemplate>#result</utteranceTemplate>
                <method>get</method>
                <params>getstate</params>
-               <url>http://mmt.et.hs-wismar.de:8080/Lightbulb/Lightbulb</url>
+               <url>http://mmberg.net:8080/Lightbulb/Lightbulb</url>
                <xpath>//message</xpath>
             </httpAction>
          </action>
@@ -334,7 +323,7 @@
                <utteranceTemplate>%getNumber </utteranceTemplate>
                <method>get</method>
                <params>guess=%getNumber</params>
-               <url>http://mmt.et.hs-wismar.de:8080/NumberGuessing/NumberGuessing</url>
+               <url>http://mmberg.net:8080/NumberGuessing/NumberGuessing</url>
                <xpath>//code</xpath>
             </httpAction>
          </action>

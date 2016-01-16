@@ -20,8 +20,9 @@ public class InterrogativeFeature extends Feature{
 		String[] words=utterance.split(" ");
 		if(words.length>1){
 			return (
-					(words[1].equals("you") || words[1].equals("is") || words[1].equals("i")) || 
-					(words[0].equals("do") || words[0].equals("can"))
+					//(words[1].equals("you") || words[1].equals("is") || words[1].equals("i")) || 
+					(words[0].equals("do") || /*words[0].equals("can")) ||*/
+					words[0].equals("is")) //05.07.2015, mberg
 					);
 		}
 		else return false;

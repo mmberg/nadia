@@ -53,6 +53,8 @@ public class SodaRecognizer {
 				new TrainingUtterance("What is your destination",Soda.INFORMATION_SEEKING),
 				new TrainingUtterance("Please tell me where you want to go",Soda.INFORMATION_SEEKING),
 				new TrainingUtterance("Please tell me your destination",Soda.INFORMATION_SEEKING),
+				new TrainingUtterance("Can you tell me if the light is switched off",Soda.INFORMATION_SEEKING),
+				new TrainingUtterance("Is the light switched off",Soda.INFORMATION_SEEKING),
 				//action:
 				new TrainingUtterance("Could you please turn the light on",Soda.ACTION_REQUESTING),
 				new TrainingUtterance("Turn the light on",Soda.ACTION_REQUESTING),

@@ -137,7 +137,13 @@ public class RESTInterface extends UserInterface{
 	{
 		try {
 			//String serverip=(request.getRemoteHost().equals("0:0:0:0:0:0:0:1"))?"https://localhost:8080/nadia":server.getURI().toString();		
-			return Response.seeOther(new URI(server.getURI().toString() +"/hijack.html?dialogid="+instance_id)).build();
+			if(server!=null){
+				return Response.seeOther(new URI(server.getURI().toString() +"/hijack.html?dialogid="+instance_id)).build();
+			}
+			else{
+//				return Response.seeOther(new URI("http://mmt.et.hs-wismar.de:8080/nadia"+"/hijack.html?dialogid="+instance_id)).build();
+				return Response.seeOther(new URI("http://mmt.et.hs-wismar.de:8080/nadia"+"/hijack.html?dialogid="+instance_id)).build();
+			}
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 			return Response.serverError().entity("Error: redirect to dialogue instance failed").build();
