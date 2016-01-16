@@ -1,0 +1,37 @@
+Natural Dialogue System (NADIA)
+Copyright 2012-2016 Markus M. Berg
+
+This product includes software developed at
+The Apache Software Foundation (http://www.apache.org/).
+
+This product uses the following open source software:
+
+== OpenCCG ==
+Jason Baldridge, Michael White et al.
+http://openccg.sourceforge.net/
+GNU LESSER GENERAL PUBLIC LICENSE 2.1
+
+== Open NLP, Maxent 3.0 ==
+The Apache Software Foundation
+http://opennlp.apache.org/
+Apache License V2.0
+
+== Apache Commons CLI 1.2 ==
+The Apache Software Foundation
+https://commons.apache.org/proper/commons-cli/
+Apache License V2.0
+
+== Jersey ==
+Oracle Corporation
+https://jersey.java.net/
+GNU GENERAL PUBLIC LICENSE V2.0 with Classpath Exception
+
+== Jetty ==
+Mort Bay Consulting Pty Ltd
+http://www.eclipse.org/jetty/
+Apache License V2.0
+
+== Groovy 2.1.2 ==
+The Apache Software Foundation
+http://www.groovy-lang.org/
+Apache License V2.0
