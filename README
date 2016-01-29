@@ -2,6 +2,7 @@ Natural Dialogue System (NADIA)
 Copyright 2012-2016 Markus M. Berg
 
 This software, the Natural Dialogue System (NADIA), is part of my Ph.D. Thesis at the University of Kiel (Germany), and has been released under an Apache 2.0 license.
+Note: You also need to download the dialogue model (https://github.com/mmberg/nadia-model).
 
 More information on Nadia: http://mmberg.net/nadia
 Ph.D. Thesis: http://mmberg.net/go/phd
