@@ -11,7 +11,7 @@ $(document).ready(function(){
  //---
  
  //do not change:
- var chrome = false;
+ var browserSupportsSpeech = false;
  var wants_speech = false;
  
 setGuiEnabled(false);
@@ -47,12 +47,11 @@ function submit(){
 	$.post(location, {userUtterance: $("#userUtterance").val()}, function(data) {
 		$("#systemUtterance").fadeOut(300, function(){$("#systemUtterance").text(data).fadeIn(600);});
 		setGuiEnabled(true);
-		//is user has used ASR before, automatically start recognition
+		//is user has used ASR before, automatically start TTS
 		if(wants_speech){
-			var query=data.replace(/ /g, '+');
-			var query=query.replace(/\?/g, '');
-			//playtts("http://translate.google.com/translate_tts?tl=en&q="+query);
-			playtts("/nadia/engine/redirect?url=https://translate.google.com/translate_tts%3Ftl=en%26q="+query);
+			//mberg, Feb 2016, Google TTS doesn't work any longer. That's why we use WebSpeech API instead.
+    		tts_msg.text=data;
+    		speechSynthesis.speak(tts_msg);
 		}
 	}).fail(function(xhRequest, status, thrownError){showError("Server error or service unavailable.", true);});
 }
@@ -73,7 +72,7 @@ function setGuiEnabled(state){
  	if(state){
  		$('#userUtterance').prop('disabled', false);
  		$('#submitbtn').prop('disabled', false);
- 		if(chrome) $('#recobtn').prop('disabled', false);
+ 		if(browserSupportsSpeech) $('#recobtn').prop('disabled', false);
  		
 		$('#loader').removeClass("loading");
 		$("#userUtterance").focus();
@@ -97,37 +96,28 @@ function updateGui(state){
 			$("#recobtn").html("Start recognition");
 		}
 }
+		
 	
-function playtts(url){
-	    var audioElement = document.createElement("audio");
-	    audioElement.setAttribute("type", "audio/mpeg");
-	    audioElement.addEventListener("ended", function() {
-	        start_stop_recognition();
-	    });
-	    audioElement.addEventListener("canplaythrough", function() {
-	        audioElement.play();
-	    });
-	    audioElement.addEventListener("error", function(e) {
-	 		showError("Cannot play audio. "+this.error, false);
-	    });
-	    
-   	    audioElement.setAttribute("src", url);
-	    audioElement.load();
-}
-	
-	
-  if (!('webkitSpeechRecognition' in window)) {
-  	showError("Speech recognition only works in Chrome.", false);
+  if (!('SpeechRecognition' in window)&&!('webkitSpeechRecognition' in window)) {
+  	showError("Your Browser doesn't support speech recognition. Try Chrome.", false);
   	$('#recobtn').prop('disabled', true);
   }
   else{
-	chrome=true;
+  	browserSupportsSpeech=true;
     var auto_submit = true;
+  	//TTS
+  	var tts_msg = new SpeechSynthesisUtterance();
+	tts_msg.lang = 'en-GB';
+	tts_msg.onend = function(e) {
+  		 start_stop_recognition();
+	};
+  	//ASR
     var recognizing = false;
   	var final_transcript = '';
  	var ignore_onend=false;
   	var start_timestamp;
-  	var recognition = new webkitSpeechRecognition();
+  	var SpeechRecognition = SpeechRecognition || webkitSpeechRecognition;
+  	var recognition = new SpeechRecognition();
   	recognition.continuous = false;
   	recognition.interimResults = false;
 
@@ -340,7 +330,7 @@ margin-bottom:0px;
 	<div id="debug" class="box"></div>
 	
 	<div id="footer" class="box">
-	&copy; 2013 by <a href="http://mmberg.net">Markus M. Berg</a> | Project on <a href="https://github.com/mmberg/nadia">Github</a></a><br>
+	&copy; 2013-2016 by <a href="http://mmberg.net">Markus M. Berg</a> | Project on <a href="https://github.com/mmberg/nadia">Github</a></a><br>
 	University of Wismar, University of Kiel, University of Edinburgh
 	</div>
 </div>
