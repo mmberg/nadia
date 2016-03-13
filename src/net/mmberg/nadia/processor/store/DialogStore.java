@@ -3,6 +3,7 @@ package net.mmberg.nadia.processor.store;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map.Entry;
 
 import net.mmberg.nadia.processor.dialogmodel.*;
 import net.mmberg.nadia.processor.dialogmodel.actions.*;
@@ -21,6 +22,7 @@ public class DialogStore {
 		store.put("eval", createEvaluationDialog());
 		store.put("eval2", createEvaluationDialog2());
 		store.put("eval3", createEvaluationDialog3());
+		store.put("jsontest", createJsonTestDialog());
 	}
 	
 	public static DialogStore getInstance(){
@@ -39,10 +41,47 @@ public class DialogStore {
 		//test load
 		Dialog d = Dialog.loadFromResourcesDir(test_dialog_name);
 		System.out.println(d.toXML());
+		
+		//ds.saveAllDialoguesInStore();
+	}
+	
+	public void saveAllDialoguesInStore(){
+		for(Entry<String,Dialog> e:store.entrySet()){
+			e.getValue().save();
+		}
 	}
 	
 	public Dialog getDialogFromStore(String key){
 		return store.get(key);
+	}
+	
+	private Dialog createJsonTestDialog(){
+		
+		Dialog dialog = new Dialog("jsontest");
+		Task task=new Task("getSongInfo");
+				
+		//Action
+		HttpAction httpaction=new HttpJsonAction("Ergebnis: #result");
+	    httpaction.setUrl("http://freemusicarchive.org/api/get/genres.json");
+	    httpaction.setMethod("get");
+	    httpaction.setParams("api_key=60BLHNQCAOUFPIBZ&limit=2");
+	    httpaction.setQuery("dataset[0].genre_color");
+	    task.setAction(httpaction);
+	    
+		ITO ito;
+		AQD aqd;
+		
+		//1
+		ito=new ITO("getSongDecision", "Shall I tell you a song?", false);	
+		task.addITO(ito);
+		//an ITO is associated with AQDs
+		aqd=new AQD();
+		aqd.setType(new AQDType("decision"));
+		ito.setAQD(aqd);	
+				
+		dialog.addTask(task);
+		
+		return dialog;		
 	}
 	
 	private Dialog createDummyDialog(){
@@ -195,11 +234,11 @@ private Dialog createDummyDialog2(){
 //		task2.setAction(gaction);
 		
 		//different weather service:
-		HTTPAction httpaction=new HTTPAction("The temperature in %getWeatherCity is #result degrees.");
+		HttpAction httpaction=new HttpXpathAction("The temperature in %getWeatherCity is #result degrees.");
 	    httpaction.setUrl("http://api.openweathermap.org/data/2.5/weather");
 	    httpaction.setMethod("get");
 	    httpaction.setParams("q=%getWeatherCity&mode=xml&units=metric");
-	    httpaction.setXpath("/current/temperature/@value");
+	    httpaction.setQuery("/current/temperature/@value");
 	    task2.setAction(httpaction);
 		
 		dialog.addTask(task2);
@@ -217,11 +256,11 @@ private Dialog createDummyDialog2(){
 		Task task3 = new Task("getWikipediaCityInfo");
 		bagOfWords = new ArrayList<String>(Arrays.asList("wikipedia","tell me about", "tell me something", "know about"));
 		task3.setSelector(new BagOfWordsTaskSelector(bagOfWords));
-		httpaction=new HTTPAction("#result");
+		httpaction=new HttpXpathAction("#result");
 		httpaction.setUrl("http://en.wikipedia.org/w/api.php");
 		httpaction.setMethod("get");
 		httpaction.setParams("format=xml&action=query&prop=extracts&explaintext&exsentences=1&titles=%getWikiCity");
-		httpaction.setXpath("//extract");
+		httpaction.setQuery("//extract");
 		task3.setAction(httpaction);
 		dialog.addTask(task3);
 		
@@ -250,11 +289,11 @@ private Dialog createDummyDialog2(){
 		task4.setAct("action");
 		bagOfWords = new ArrayList<String>(Arrays.asList("bulb","switch"));
 		task4.setSelector(new BagOfWordsTaskSelector(bagOfWords));
-		httpaction=new HTTPAction("#result");
+		httpaction=new HttpXpathAction("#result");
 		httpaction.setUrl("http://mmberg.net:8080/Lightbulb/Lightbulb");
 		httpaction.setMethod("post");
 		httpaction.setParams("state=%getLightAction");
-		httpaction.setXpath("//message");
+		httpaction.setQuery("//message");
 		task4.setAction(httpaction);
 		dialog.addTask(task4);
 		
@@ -271,11 +310,11 @@ private Dialog createDummyDialog2(){
 		task5.setAct("seek");
 		bagOfWords = new ArrayList<String>(Arrays.asList("bulb","switch"));
 		task5.setSelector(new BagOfWordsTaskSelector(bagOfWords));
-		httpaction=new HTTPAction("#result");
+		httpaction=new HttpXpathAction("#result");
 		httpaction.setUrl("http://mmberg.net:8080/Lightbulb/Lightbulb");
 		httpaction.setMethod("get");
 		httpaction.setParams("getstate");
-		httpaction.setXpath("//message");
+		httpaction.setQuery("//message");
 		task5.setAction(httpaction);
 		dialog.addTask(task5);
 		
@@ -286,11 +325,11 @@ private Dialog createDummyDialog2(){
 		task6.setAct("seek");
 		bagOfWords = new ArrayList<String>(Arrays.asList("guess","number","play"));
 		task6.setSelector(new BagOfWordsTaskSelector(bagOfWords));
-		httpaction=new HTTPAction("%getNumber ");
+		httpaction=new HttpXpathAction("%getNumber ");
 		httpaction.setUrl("http://mmberg.net:8080/NumberGuessing/NumberGuessing");
 		httpaction.setMethod("get");
 		httpaction.setParams("guess=%getNumber");
-		httpaction.setXpath("//code");
+		httpaction.setQuery("//code");
 		httpaction.addResultMapping(new ActionResultMapping("result","TOO_BIG","was too big.","guessNumber"));
 		httpaction.addResultMapping(new ActionResultMapping("result","TOO_SMALL","was too small.","guessNumber"));
 		httpaction.addResultMapping(new ActionResultMapping("result","CORRECT","it is! Congratulations!",null));
@@ -385,11 +424,11 @@ private Dialog createEvaluationDialog(){
 	task1.addITO(ito);
 	
 	
-	HTTPAction httpaction=new HTTPAction("The temperature in %getWeatherCity will be #result degrees tomorrow.");
+	HttpAction httpaction=new HttpXpathAction("The temperature in %getWeatherCity will be #result degrees tomorrow.");
     httpaction.setUrl("http://api.openweathermap.org/data/2.5/forecast/daily");
     httpaction.setMethod("get");
     httpaction.setParams("q=%getWeatherCity&mode=xml&units=metric&cnt=2");
-    httpaction.setXpath("/weatherdata/forecast/time[last()]/temperature/@day");
+    httpaction.setQuery("/weatherdata/forecast/time[last()]/temperature/@day");
 	
 //	HTTPAction httpaction=new HTTPAction("The temperature in %getWeatherCity is #result degrees.");
 //    httpaction.setUrl("http://api.openweathermap.org/data/2.5/weather");
@@ -434,11 +473,11 @@ private Dialog createEvaluationDialog2(){
 	task1.addITO(ito);
 	
 	
-	HTTPAction httpaction=new HTTPAction("You will need #result.");
+	HttpAction httpaction=new HttpXpathAction("You will need #result.");
     httpaction.setUrl("http://maps.googleapis.com/maps/api/directions/xml");
     httpaction.setMethod("get");
     httpaction.setParams("origin=%getDepartureCity&destination=%getDestinationCity&sensor=false&mode=driving&alternatives=false");
-    httpaction.setXpath("/DirectionsResponse/route/leg/duration/text");
+    httpaction.setQuery("/DirectionsResponse/route/leg/duration/text");
     task1.setAction(httpaction);
     
     
@@ -452,11 +491,11 @@ private Dialog createEvaluationDialog2(){
 	ito.setAQD(aqd);	
 	task2.addITO(ito);
 	
-	httpaction=new HTTPAction("Today's headline is: #result.");
+	httpaction=new HttpXpathAction("Today's headline is: #result.");
     httpaction.setUrl("http://news.google.com/?output=rss");
     httpaction.setMethod("get");
     httpaction.setParams("q=%category");
-    httpaction.setXpath("/rss/channel/item/title");
+    httpaction.setQuery("/rss/channel/item/title");
     task2.setAction(httpaction);
 	
 	dialog.addTask(task0);
@@ -496,11 +535,11 @@ private Dialog createEvaluationDialog3(){
 	task1.addITO(ito);
 	
 	
-	HTTPAction httpaction=new HTTPAction("%getDepartureCity is #result away from %getDestinationCity.");
+	HttpAction httpaction=new HttpXpathAction("%getDepartureCity is #result away from %getDestinationCity.");
     httpaction.setUrl("http://maps.googleapis.com/maps/api/directions/xml");
     httpaction.setMethod("get");
     httpaction.setParams("origin=%getDepartureCity&destination=%getDestinationCity&sensor=false&mode=driving&alternatives=false");
-    httpaction.setXpath("/DirectionsResponse/route/leg/distance/text");
+    httpaction.setQuery("/DirectionsResponse/route/leg/distance/text");
     task1.setAction(httpaction);
     
     
@@ -514,11 +553,11 @@ private Dialog createEvaluationDialog3(){
 	ito.setAQD(aqd);	
 	task2.addITO(ito);
 	
-	httpaction=new HTTPAction("Today's headline is: #result.");
+	httpaction=new HttpXpathAction("Today's headline is: #result.");
     httpaction.setUrl("http://news.google.com/?output=rss");
     httpaction.setMethod("get");
     httpaction.setParams("q=%category");
-    httpaction.setXpath("/rss/channel/item/title");
+    httpaction.setQuery("/rss/channel/item/title");
     task2.setAction(httpaction);
 	
     Task task3=new Task("getTripInformation");

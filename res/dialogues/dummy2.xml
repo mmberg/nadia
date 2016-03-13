@@ -161,14 +161,14 @@
             </ito>
          </itos>
          <action>
-            <httpAction>
+            <httpXpathAction>
                <returnAnswer>true</returnAnswer>
                <utteranceTemplate>The temperature in %getWeatherCity is #result degrees.</utteranceTemplate>
                <method>get</method>
                <params>q=%getWeatherCity&amp;mode=xml&amp;units=metric</params>
+               <query>/current/temperature/@value</query>
                <url>http://api.openweathermap.org/data/2.5/weather</url>
-               <xpath>/current/temperature/@value</xpath>
-            </httpAction>
+            </httpXpathAction>
          </action>
       </task>
       <task name="getWikipediaCityInfo">
@@ -195,14 +195,14 @@
             </ito>
          </itos>
          <action>
-            <httpAction>
+            <httpXpathAction>
                <returnAnswer>true</returnAnswer>
                <utteranceTemplate>#result</utteranceTemplate>
                <method>get</method>
                <params>format=xml&amp;action=query&amp;prop=extracts&amp;explaintext&amp;exsentences=1&amp;titles=%getWikiCity</params>
+               <query>//extract</query>
                <url>http://en.wikipedia.org/w/api.php</url>
-               <xpath>//extract</xpath>
-            </httpAction>
+            </httpXpathAction>
          </action>
          <followup>
             <ito name="anotherOne">
@@ -245,14 +245,14 @@
             </ito>
          </itos>
          <action>
-            <httpAction>
+            <httpXpathAction>
                <returnAnswer>true</returnAnswer>
                <utteranceTemplate>#result</utteranceTemplate>
                <method>post</method>
                <params>state=%getLightAction</params>
+               <query>//message</query>
                <url>http://mmberg.net:8080/Lightbulb/Lightbulb</url>
-               <xpath>//message</xpath>
-            </httpAction>
+            </httpXpathAction>
          </action>
       </task>
       <task name="getLightbulb">
@@ -265,14 +265,14 @@
          </selector>
          <itos/>
          <action>
-            <httpAction>
+            <httpXpathAction>
                <returnAnswer>true</returnAnswer>
                <utteranceTemplate>#result</utteranceTemplate>
                <method>get</method>
                <params>getstate</params>
+               <query>//message</query>
                <url>http://mmberg.net:8080/Lightbulb/Lightbulb</url>
-               <xpath>//message</xpath>
-            </httpAction>
+            </httpXpathAction>
          </action>
       </task>
       <task name="guessNumber">
@@ -299,7 +299,7 @@
             </ito>
          </itos>
          <action>
-            <httpAction>
+            <httpXpathAction>
                <resultMappings>
                   <resultMapping>
                      <message>was too big.</message>
@@ -323,9 +323,9 @@
                <utteranceTemplate>%getNumber </utteranceTemplate>
                <method>get</method>
                <params>guess=%getNumber</params>
+               <query>//code</query>
                <url>http://mmberg.net:8080/NumberGuessing/NumberGuessing</url>
-               <xpath>//code</xpath>
-            </httpAction>
+            </httpXpathAction>
          </action>
          <followup>
             <ito name="playAgain">

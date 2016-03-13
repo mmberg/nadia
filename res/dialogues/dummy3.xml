@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<n:dialog xsi:schemaLocation="http://mmberg.net/nadia schema1.xsd" xmlns:n="http://mmberg.net/nadia" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="dummy3">
-   <global_formality>4</global_formality>
+<n:dialog xsi:schemaLocation="http://mmberg.net/nadia schema1.xsd" xmlns:n="http://mmberg.net/nadia/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="dummy3">
+   <start_task_name>getWeatherInformation</start_task_name>
    <global_language>en</global_language>
    <global_politeness>4</global_politeness>
-   <start_task_name>getWeatherInformation</start_task_name>
-   <strategy>mixed</strategy>
+   <global_formality>4</global_formality>
+   <useSODA>true</useSODA>
+   <allowSwitchTasks>true</allowSwitchTasks>
+   <allowOverAnswering>true</allowOverAnswering>
+   <allowDifferentQuestion>true</allowDifferentQuestion>
+   <allowCorrection>true</allowCorrection>
    <tasks>
       <task name="getWeatherInformation">
          <selector>
@@ -25,7 +29,7 @@
                <fallback_question>For which city do you want to know the weather?</fallback_question>
                <group>0</group>
                <index>0</index>
-               <required>false</required>
+               <required>true</required>
                <useLG>false</useLG>
             </ito>
          </itos>

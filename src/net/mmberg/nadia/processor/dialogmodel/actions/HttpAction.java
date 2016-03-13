@@ -1,41 +1,32 @@
 package net.mmberg.nadia.processor.dialogmodel.actions;
 
-import java.io.StringReader;
 import java.util.HashMap;
 import java.util.logging.Logger;
 
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpression;
-import javax.xml.xpath.XPathFactory;
 
 import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.client.api.ContentResponse;
 import org.eclipse.jetty.client.api.Request;
 import org.eclipse.jetty.http.HttpMethod;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
-import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
 
-import net.mmberg.nadia.dialogmodel.definition.actions.HTTPActionModel;
+import net.mmberg.nadia.dialogmodel.definition.actions.HttpActionModel;
 import net.mmberg.nadia.processor.NadiaProcessor;
 import net.mmberg.nadia.processor.dialogmodel.Frame;
 
 @XmlRootElement
-public class HTTPAction extends HTTPActionModel {
+public abstract class HttpAction extends HttpActionModel {
 
 	private HttpClient client;
 	private final static Logger logger = NadiaProcessor.getLogger();
 	
-	public HTTPAction(){
+	public HttpAction(){
 		super();
 		init();
 	}
 	
-	public HTTPAction(String template){
+	public HttpAction(String template){
 		super(template);
 		init();
 	}
@@ -97,19 +88,10 @@ public class HTTPAction extends HTTPActionModel {
 	        	response = request.send();
 	        	logger.info("HTTP status: "+response.getStatus());
 	        	
-	        	String xml = response.getContentAsString();
-	        	DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		        DocumentBuilder builder = factory.newDocumentBuilder();
-	        	Document doc = builder.parse(new InputSource(new StringReader(xml)));
-	        	 
-		        XPathFactory xPathfactory = XPathFactory.newInstance();
-		        XPath xPath = xPathfactory.newXPath();
-		        XPathExpression expr = xPath.compile(xpath);
-		        result = (String) expr.evaluate(doc, XPathConstants.STRING);
-		        
-		        //Postprocessing
-		        result = result.replaceAll("\\s\\(.*?\\)", ""); //remove content in brackets
-		        result = result.replaceAll("\\s\\[.*?\\]", "");
+	        	String content = response.getContentAsString();
+	        	logger.info("Response: " + content);
+	        	result=extractResults(content);
+	        	logger.info("Extracting '" + query + "': " + result);
 	        }
 	        catch(Exception ex){
 	        	ex.printStackTrace();

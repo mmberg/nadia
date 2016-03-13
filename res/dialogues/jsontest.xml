@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<n:dialog xsi:schemaLocation="http://mmberg.net/nadia schema1.xsd" xmlns:n="http://mmberg.net/nadia/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="jsontest">
+   <global_language>en</global_language>
+   <global_politeness>3</global_politeness>
+   <global_formality>3</global_formality>
+   <useSODA>true</useSODA>
+   <allowSwitchTasks>true</allowSwitchTasks>
+   <allowOverAnswering>true</allowOverAnswering>
+   <allowDifferentQuestion>true</allowDifferentQuestion>
+   <allowCorrection>true</allowCorrection>
+   <tasks>
+      <task name="getSongInfo">
+         <itos>
+            <ito name="getSongDecision">
+               <AQD>
+                  <type>
+                     <answerType>decision</answerType>
+                  </type>
+               </AQD>
+               <fallback_question>Shall I tell you a song?</fallback_question>
+               <group>0</group>
+               <index>0</index>
+               <required>true</required>
+               <useLG>false</useLG>
+            </ito>
+         </itos>
+         <action>
+            <httpJsonAction>
+               <returnAnswer>true</returnAnswer>
+               <utteranceTemplate>Ergebnis: #result</utteranceTemplate>
+               <method>get</method>
+               <params>api_key=60BLHNQCAOUFPIBZ&amp;limit=2</params>
+               <query>dataset[0].genre_color</query>
+               <url>http://freemusicarchive.org/api/get/genres.json</url>
+            </httpJsonAction>
+         </action>
+      </task>
+   </tasks>
+</n:dialog>

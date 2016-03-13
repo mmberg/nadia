@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<n:dialog xsi:schemaLocation="http://mmberg.net/nadia schema1.xsd" xmlns:n="http://mmberg.net/nadia" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="eval2">
+<n:dialog xsi:schemaLocation="http://mmberg.net/nadia schema1.xsd" xmlns:n="http://mmberg.net/nadia/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="eval2">
    <global_language>en</global_language>
    <global_politeness>3</global_politeness>
    <global_formality>3</global_formality>
@@ -69,14 +69,14 @@
             </ito>
          </itos>
          <action>
-            <httpAction>
+            <httpXpathAction>
                <returnAnswer>true</returnAnswer>
                <utteranceTemplate>You will need #result.</utteranceTemplate>
                <method>get</method>
                <params>origin=%getDepartureCity&amp;destination=%getDestinationCity&amp;sensor=false&amp;mode=driving&amp;alternatives=false</params>
+               <query>/DirectionsResponse/route/leg/duration/text</query>
                <url>http://maps.googleapis.com/maps/api/directions/xml</url>
-               <xpath>/DirectionsResponse/route/leg/duration/text</xpath>
-            </httpAction>
+            </httpXpathAction>
          </action>
       </task>
       <task name="news">
@@ -102,14 +102,14 @@
             </ito>
          </itos>
          <action>
-            <httpAction>
+            <httpXpathAction>
                <returnAnswer>true</returnAnswer>
-               <utteranceTemplate>Today's %category headline is: #result.</utteranceTemplate>
+               <utteranceTemplate>Today's headline is: #result.</utteranceTemplate>
                <method>get</method>
                <params>q=%category</params>
+               <query>/rss/channel/item/title</query>
                <url>http://news.google.com/?output=rss</url>
-               <xpath>/rss/channel/item/title</xpath>
-            </httpAction>
+            </httpXpathAction>
          </action>
       </task>
    </tasks>

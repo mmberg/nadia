@@ -68,14 +68,14 @@
             </ito>
          </itos>
          <action>
-            <httpAction>
+            <httpXpathAction>
                <returnAnswer>true</returnAnswer>
                <utteranceTemplate>%getDepartureCity is #result away from %getDestinationCity.</utteranceTemplate>
                <method>get</method>
                <params>origin=%getDepartureCity&amp;destination=%getDestinationCity&amp;sensor=false&amp;mode=driving&amp;alternatives=false</params>
+               <query>/DirectionsResponse/route/leg/distance/text</query>
                <url>http://maps.googleapis.com/maps/api/directions/xml</url>
-               <xpath>/DirectionsResponse/route/leg/distance/text</xpath>
-            </httpAction>
+            </httpXpathAction>
          </action>
       </task>
       <task name="news">
@@ -101,14 +101,14 @@
             </ito>
          </itos>
          <action>
-            <httpAction>
+            <httpXpathAction>
                <returnAnswer>true</returnAnswer>
                <utteranceTemplate>Today's headline is: #result.</utteranceTemplate>
                <method>get</method>
                <params>q=%category</params>
+               <query>/rss/channel/item/title</query>
                <url>http://news.google.com/?output=rss</url>
-               <xpath>/rss/channel/item/title</xpath>
-            </httpAction>
+            </httpXpathAction>
          </action>
       </task>
       <task name="getTripInformation">

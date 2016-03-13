@@ -1,52 +1,60 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<dialog name="dummy1">
-    <tasks>
-        <task name="bsp">
-            <itos>
-                <ito name="getDrinkDecision">
-                    <AQD>
-                        <type>
-                            <answerType>decision</answerType>
-                        </type>
-                    </AQD>
-                    <fallback_question>Would you like a drink?</fallback_question>
-                    <group>0</group>
-                    <index>0</index>
-                    <required>false</required>
-                    <useLG>false</useLG>
-                </ito>
-                <ito name="getCity">
-                    <AQD>
-                        <type>
-                            <answerType>fact.named_entity.non_animated.location.city</answerType>
-                        </type>
-                    </AQD>
-                    <fallback_question>Where do you want to go?</fallback_question>
-                    <group>0</group>
-                    <index>0</index>
-                    <required>false</required>
-                    <useLG>false</useLG>
-                </ito>
-                <ito name="getDate">
-                    <AQD>
-                        <context>
-                            <reference>trip</reference>
-                            <specification>begin</specification>
-                        </context>
-                        <form>
-                            <temporalOpener>false</temporalOpener>
-                        </form>
-                        <type>
-                            <answerType>fact.temporal.date</answerType>
-                        </type>
-                    </AQD>
-                    <fallback_question>When do you want to leave?</fallback_question>
-                    <group>0</group>
-                    <index>0</index>
-                    <required>false</required>
-                    <useLG>true</useLG>
-                </ito>
-            </itos>
-        </task>
-    </tasks>
-</dialog>
+<?xml version="1.0" encoding="UTF-8"?>
+<n:dialog xsi:schemaLocation="http://mmberg.net/nadia schema1.xsd" xmlns:n="http://mmberg.net/nadia/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="dummy1">
+   <global_language>en</global_language>
+   <global_politeness>3</global_politeness>
+   <global_formality>3</global_formality>
+   <useSODA>true</useSODA>
+   <allowSwitchTasks>true</allowSwitchTasks>
+   <allowOverAnswering>true</allowOverAnswering>
+   <allowDifferentQuestion>true</allowDifferentQuestion>
+   <allowCorrection>true</allowCorrection>
+   <tasks>
+      <task name="bsp">
+         <itos>
+            <ito name="getDrinkDecision">
+               <AQD>
+                  <type>
+                     <answerType>decision</answerType>
+                  </type>
+               </AQD>
+               <fallback_question>Would you like a drink?</fallback_question>
+               <group>0</group>
+               <index>0</index>
+               <required>true</required>
+               <useLG>false</useLG>
+            </ito>
+            <ito name="getCity">
+               <AQD>
+                  <type>
+                     <answerType>fact.named_entity.non_animated.location.city</answerType>
+                  </type>
+               </AQD>
+               <fallback_question>Where do you want to go?</fallback_question>
+               <group>0</group>
+               <index>0</index>
+               <required>true</required>
+               <useLG>false</useLG>
+            </ito>
+            <ito name="getDate">
+               <AQD>
+                  <context>
+                     <reference>trip</reference>
+                     <specification>begin</specification>
+                  </context>
+                  <form>
+                     <temporalOpener>false</temporalOpener>
+                  </form>
+                  <type>
+                     <answerType>fact.temporal.date</answerType>
+                  </type>
+               </AQD>
+               <fallback_question>When do you want to leave?</fallback_question>
+               <group>0</group>
+               <index>0</index>
+               <required>true</required>
+               <useLG>true</useLG>
+            </ito>
+         </itos>
+      </task>
+   </tasks>
+</n:dialog>

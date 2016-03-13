@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<n:dialog xsi:schemaLocation="http://mmberg.net/nadia schema1.xsd" xmlns:n="http://mmberg.net/nadia" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="eval">
+<n:dialog xsi:schemaLocation="http://mmberg.net/nadia schema1.xsd" xmlns:n="http://mmberg.net/nadia/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="eval">
    <global_language>en</global_language>
    <global_politeness>3</global_politeness>
    <global_formality>3</global_formality>
@@ -24,7 +24,7 @@
                <fallback_question>How may I help you?</fallback_question>
                <group>0</group>
                <index>0</index>
-               <required>false</required>
+               <required>true</required>
                <useLG>false</useLG>
             </ito>
          </itos>
@@ -45,7 +45,7 @@
                <fallback_question>For which city do you want to know the weather?</fallback_question>
                <group>0</group>
                <index>0</index>
-               <required>false</required>
+               <required>true</required>
                <useLG>false</useLG>
             </ito>
             <ito name="getForecastType">
@@ -62,14 +62,14 @@
             </ito>
          </itos>
          <action>
-            <httpAction>
+            <httpXpathAction>
                <returnAnswer>true</returnAnswer>
-               <utteranceTemplate>The temperature in %getWeatherCity is #result degrees.</utteranceTemplate>
+               <utteranceTemplate>The temperature in %getWeatherCity will be #result degrees tomorrow.</utteranceTemplate>
                <method>get</method>
                <params>q=%getWeatherCity&amp;mode=xml&amp;units=metric&amp;cnt=2</params>
+               <query>/weatherdata/forecast/time[last()]/temperature/@day</query>
                <url>http://api.openweathermap.org/data/2.5/forecast/daily</url>
-               <xpath>/weatherdata/forecast/time[last()]/temperature/@day</xpath>
-            </httpAction>
+            </httpXpathAction>
          </action>
       </task>
    </tasks>
