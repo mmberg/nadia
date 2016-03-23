@@ -22,7 +22,7 @@ public class DialogStore {
 		store.put("eval", createEvaluationDialog());
 		store.put("eval2", createEvaluationDialog2());
 		store.put("eval3", createEvaluationDialog3());
-		store.put("jsontest", createJsonTestDialog());
+		store.put("jsontest", createTestDialog());
 	}
 	
 	public static DialogStore getInstance(){
@@ -55,18 +55,29 @@ public class DialogStore {
 		return store.get(key);
 	}
 	
-	private Dialog createJsonTestDialog(){
+	private Dialog createTestDialog(){
 		
 		Dialog dialog = new Dialog("jsontest");
 		Task task=new Task("getSongInfo");
 				
-		//Action
+		//JsonAction
+		
 		HttpAction httpaction=new HttpJsonAction("Ergebnis: #result");
 	    httpaction.setUrl("http://freemusicarchive.org/api/get/genres.json");
 	    httpaction.setMethod("get");
 	    httpaction.setParams("api_key=60BLHNQCAOUFPIBZ&limit=2");
 	    httpaction.setQuery("dataset[0].genre_color");
 	    task.setAction(httpaction);
+	    
+		
+		//TextAction
+	    /*
+  		HttpTextAction httpaction=new HttpTextAction("Ergebnis: #result");
+  		httpaction.setUrl("https://www.example.com/");
+  		httpaction.setMethod("get");
+  		httpaction.setQuery("coo.{5}");
+  	    task.setAction(httpaction);
+	    */
 	    
 		ITO ito;
 		AQD aqd;

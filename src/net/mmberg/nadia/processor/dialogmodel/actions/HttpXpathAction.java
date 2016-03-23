@@ -13,6 +13,8 @@ import javax.xml.xpath.XPathFactory;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 
+import net.mmberg.nadia.processor.exceptions.ModelException;
+
 @XmlRootElement
 public class HttpXpathAction extends HttpAction {
 
@@ -25,7 +27,14 @@ public class HttpXpathAction extends HttpAction {
 	}
 
 	@Override
-	protected String extractResults(String content) {
+	/**
+	 * Extracts a value from an XML response.
+	 * The query needs to be a XPath.
+	 */
+	protected String extractResults(String content)  throws ModelException{
+		
+		if(query==null) throw new ModelException("No query provided.");
+		
 		String result="";
 		try {
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -37,9 +46,7 @@ public class HttpXpathAction extends HttpAction {
 			XPathExpression expr = xPath.compile(query);
 			result = (String) expr.evaluate(doc, XPathConstants.STRING);
 
-			// Postprocessing
-			result = result.replaceAll("\\s\\(.*?\\)", ""); // remove content in brackets
-			result = result.replaceAll("\\s\\[.*?\\]", "");
+			result = postProcess(result); //remove brackets etc
 			
 		} catch (Exception ex) {
 			ex.printStackTrace();

@@ -14,6 +14,7 @@ import org.eclipse.jetty.util.ssl.SslContextFactory;
 import net.mmberg.nadia.dialogmodel.definition.actions.HttpActionModel;
 import net.mmberg.nadia.processor.NadiaProcessor;
 import net.mmberg.nadia.processor.dialogmodel.Frame;
+import net.mmberg.nadia.processor.exceptions.ModelException;
 
 @XmlRootElement
 public abstract class HttpAction extends HttpActionModel {
@@ -40,6 +41,8 @@ public abstract class HttpAction extends HttpActionModel {
 			e.printStackTrace();
 		}
 	}
+	
+	protected abstract String extractResults(String content) throws ModelException;
 	
 	@Override
 	public HashMap<String, String> execute(Frame frame) {
@@ -98,6 +101,17 @@ public abstract class HttpAction extends HttpActionModel {
 	        }
 	        executionResults.put("result", result);
 			return executionResults;
+	}
+	
+	/**
+	 * postprocessing (can be useful for Wiki pages)
+	 */
+	protected String postProcess(String content){
+		
+		content = content.replaceAll("\\s\\(.*?\\)", ""); // remove content in brackets
+		content = content.replaceAll("\\s\\[.*?\\]", "");
+		
+		return content;
 	}
 
 }
